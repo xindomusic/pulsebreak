@@ -1,0 +1,8 @@
+.godot/
+.tools/
+build/
+qa/**/captures/
+qa/captures/
+.DS_Store
+.superpowers/
+*.tmp

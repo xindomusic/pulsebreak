@@ -1,0 +1,44 @@
+{
+  "absorbed": 259,
+  "accelerated": false,
+  "cpu": "Apple M1 Max",
+  "engine": "4.7.2-stable (official)",
+  "gpu": "",
+  "health": 0.0,
+  "kills": 178,
+  "memory": {
+    "available": 16743301120,
+    "free": 16743301120,
+    "physical": 34359738368,
+    "stack": 8372224
+  },
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 66,
+  "render_frame_median_ms": null,
+  "render_frame_p95_ms": null,
+  "render_frame_p99_ms": null,
+  "render_samples": 0,
+  "renderer": "mobile",
+  "score": 7125,
+  "segments": {},
+  "settings": {
+    "assist": false,
+    "low_effects": false,
+    "overdrive": false,
+    "shake": 0.45,
+    "volume": 0.65
+  },
+  "simulation": true,
+  "time": 283.500000000071,
+  "upgrades": [
+    "ignite",
+    "frost",
+    "collector",
+    "wake"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "warmup_excluded_seconds": 3,
+  "win": false,
+  "window_pixels": "(64, 64)"
+}

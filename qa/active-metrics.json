@@ -1,0 +1,23 @@
+{
+  "absorbed": 264,
+  "accelerated": false,
+  "engine": "4.7.2-stable (official)",
+  "gpu": "Apple M1 Max (Apple7)",
+  "health": 80.0,
+  "kills": 231,
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "physics_p95_ms": 16.6666666666667,
+  "pulses": 71,
+  "renderer": "mobile",
+  "score": 12235,
+  "time": 395.799999999969,
+  "upgrades": [
+    "echo",
+    "chain",
+    "siphon",
+    "radius",
+    "ignite"
+  ],
+  "win": true
+}

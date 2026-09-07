@@ -1,0 +1,28 @@
+{
+  "absorbed": 264,
+  "accelerated": false,
+  "engine": "4.7.2-stable (official)",
+  "gpu": "Apple M1 Max (Apple7)",
+  "health": 80.0,
+  "kills": 231,
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 71,
+  "render_frame_median_ms": 8.431,
+  "render_frame_p95_ms": 12.172,
+  "render_frame_p99_ms": 14.475,
+  "render_samples": 47036,
+  "renderer": "mobile",
+  "score": 12235,
+  "simulation": false,
+  "time": 395.799999999969,
+  "upgrades": [
+    "echo",
+    "chain",
+    "siphon",
+    "radius",
+    "ignite"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "win": true
+}

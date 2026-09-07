@@ -1,0 +1,88 @@
+{
+  "absorbed": 373,
+  "accelerated": false,
+  "cpu": "Apple M1 Max",
+  "engine": "4.7.2-stable (official)",
+  "gpu": "Apple M1 Max (Apple7)",
+  "health": 30.0,
+  "kills": 266,
+  "memory": {
+    "available": 15438708736,
+    "free": 15438708736,
+    "physical": 34359738368,
+    "stack": 8372224
+  },
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 102,
+  "render_frame_median_ms": 8.462,
+  "render_frame_p95_ms": 10.353,
+  "render_frame_p99_ms": 11.754,
+  "render_samples": 48258,
+  "renderer": "mobile",
+  "score": 12830,
+  "segments": {
+    "boss": {
+      "median_ms": 8.454,
+      "p95_ms": 10.071,
+      "p99_ms": 11.172,
+      "samples": 5462
+    },
+    "minute_1": {
+      "median_ms": 8.456,
+      "p95_ms": 9.909,
+      "p99_ms": 11.375,
+      "samples": 6829
+    },
+    "minute_2": {
+      "median_ms": 8.465,
+      "p95_ms": 9.815,
+      "p99_ms": 10.898,
+      "samples": 7187
+    },
+    "minute_3": {
+      "median_ms": 8.47,
+      "p95_ms": 10.353,
+      "p99_ms": 11.632,
+      "samples": 7195
+    },
+    "minute_4": {
+      "median_ms": 8.506,
+      "p95_ms": 10.454,
+      "p99_ms": 11.775,
+      "samples": 7189
+    },
+    "minute_5": {
+      "median_ms": 8.436,
+      "p95_ms": 10.964,
+      "p99_ms": 12.425,
+      "samples": 7198
+    },
+    "minute_6": {
+      "median_ms": 8.428,
+      "p95_ms": 10.572,
+      "p99_ms": 11.957,
+      "samples": 7198
+    }
+  },
+  "settings": {
+    "assist": false,
+    "low_effects": false,
+    "overdrive": false,
+    "shake": 0.45,
+    "volume": 0.65
+  },
+  "simulation": false,
+  "time": 405.59999999996,
+  "upgrades": [
+    "ignite",
+    "echo",
+    "capacitor",
+    "siphon",
+    "chain"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "warmup_excluded_seconds": 3,
+  "win": true,
+  "window_pixels": "(1920, 1080)"
+}

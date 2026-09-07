@@ -1,0 +1,25 @@
+{
+  "absorbed": 0,
+  "accelerated": false,
+  "engine": "4.7.2-stable (official)",
+  "gpu": "",
+  "health": 0.0,
+  "kills": 39,
+  "os": "macOS 26.6.2",
+  "passive": true,
+  "pulses": 0,
+  "render_frame_median_ms": null,
+  "render_frame_p95_ms": null,
+  "render_frame_p99_ms": null,
+  "render_samples": 0,
+  "renderer": "mobile",
+  "score": 1340,
+  "simulation": true,
+  "time": 134.799999999999,
+  "upgrades": [
+    "echo",
+    "chain"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "win": false
+}

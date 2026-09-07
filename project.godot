@@ -1,0 +1,32 @@
+config_version=5
+
+[application]
+config/name="Pulsebreak"
+config/description="Steal the storm. Break the machine."
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.4", "Mobile")
+config/icon="res://assets/icon.svg"
+
+[display]
+window/size/viewport_width=1440
+window/size/viewport_height=900
+window/size/window_width_override=1280
+window/size/window_height_override=800
+window/stretch/mode="canvas_items"
+window/size/min_width=960
+window/size/min_height=600
+
+[rendering]
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+rendering_device/driver.macos="metal"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_3d=1
+environment/defaults/default_clear_color=Color(0.025, 0.04, 0.07, 1)
+
+[audio]
+driver/enable_input=false
+
+[debug]
+gdscript/warnings/inference_on_variant=0
