@@ -57,3 +57,7 @@
 - Clean-source import completed without errors or warnings. The three documented commands passed all 131 checks against that fresh cache (25 combat, 68 save, 38 integration).
 - Confirmed game scripts, tests, tools, assets and game configuration have no changes in this documentation iteration.
 - Created local main branch from the existing implementation history, retaining build/pulsebreak as the original development branch. Documentation is ready for public creation and push.
+
+- Published https://github.com/xindomusic/pulsebreak as PUBLIC, with main as the default branch. Initial implementation history and documentation commit da54a3e were pushed successfully.
+- Added descriptive topics for Codex, GPT-6 Astra, Godot, GDScript, Apple Silicon, AI experiments, roguelites, and game development.
+- Verified the public README without authentication and compared it byte-for-byte with the local file. Verified its title screenshot returns HTTP 200. All publication phases are complete.
