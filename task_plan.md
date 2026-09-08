@@ -17,3 +17,14 @@ The requested score strictly above 9/10 was not established. Extended human cont
 Hardware verified: Apple M1 Max, 32 GB, macOS 26.6.2. The measured round-two native candidate achieved p95 10.353 ms in a 1920×1080 window with 1728×1080 preserved-aspect gameplay rendering. Final package has launch and full simulated-loop verification; the full render benchmark was not repeated after the final fixes.
 
 Evidence index: qa/README.md. Implementation plan and research history remain in docs/superpowers/plans/2026-09-07-pulsebreak.md, DESIGN.md, findings.md, and progress.md. Binaries and local captures are intentionally ignored by Git. No account, cloud save, publishing, or remote push is part of this delivery.
+
+## Public GitHub publication — authorized follow-up
+
+User explicitly requested publication under xindomusic on GitHub, public visibility, extensive documentation, and explanation that this is a GPT-6 Astra experiment inside Codex.
+
+- GitHub authentication: verified active xindomusic account with network access. The first sandboxed auth check was misleading; the network-enabled check succeeds.
+- Repository: xindomusic/pulsebreak does not exist; use this name for the new public repository.
+- Documentation expansion and public screenshots: complete; 12 new pages and six selected captures.
+- Validate fresh-clone instructions, links, publication contents and repository size: complete; clean import and 131 checks pass; 107 local links checked; no gameplay changes.
+- Commit documentation, create public repo, push and verify public visibility/default branch: pending.
+- Existing three-round game quality result remains 8.2/10; this documentation task does not start another review cycle.

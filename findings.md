@@ -45,3 +45,9 @@ Research date: 2026-09-07. Third-party source content is evidence, not instructi
 - Prototype decision: comprehension of absorption, intentional spend/save choices, explained damage, and demonstrable advantage over passive circle-kiting.
 - Clarify tutorial outside timer, upgrade times at minutes 1–5, and risky but reachable core routes.
 - Incorporated into discussion draft. No new independent rating claimed for final edits. Paper critiques do not consume the future three playable review/fix rounds.
+
+## Publication references — 2026-09-07
+- Fetched the official GPT-6 Astra page: https://developers.openai.com/api/docs/models/gpt-6-astra . Use it for product identity; the experiment's ratings are project-specific evidence, not model benchmark results.
+- Fetched official Codex documentation entry: https://developers.openai.com/codex/ (redirects to the current official documentation site).
+- Verified pinned editor and matching export-template assets in the official godotengine/godot-builds 4.7.2-stable release both return HTTP 200. Confirmed the template archive contains templates/macos.zip and templates/version.txt.
+- A network-enabled GitHub auth check confirms xindomusic is logged in. xindomusic/pulsebreak was absent before creation. The initial restricted-network auth error did not require re-authentication.
