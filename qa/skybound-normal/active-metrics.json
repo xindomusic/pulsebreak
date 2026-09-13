@@ -1,0 +1,51 @@
+{
+  "absorbed": 37,
+  "accelerated": false,
+  "air_relays": 9,
+  "boss_health_remaining": 531.0,
+  "boss_started": true,
+  "cpu": "Apple M4",
+  "engine": "4.7.2-stable (official)",
+  "gpu": "",
+  "health": 0.0,
+  "kills": 13,
+  "memory": {
+    "available": 5287264256,
+    "free": 3530702848,
+    "physical": 17179869184,
+    "stack": 8372224
+  },
+  "mode": "skybound",
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 12,
+  "render_frame_median_ms": null,
+  "render_frame_p95_ms": null,
+  "render_frame_p99_ms": null,
+  "render_samples": 0,
+  "renderer": "mobile",
+  "score": 3265,
+  "sector": 3,
+  "sector_checkpoints": [
+    20.2166666666668,
+    52.716666666665
+  ],
+  "segments": {},
+  "settings": {
+    "assist": false,
+    "low_effects": false,
+    "overdrive": false,
+    "shake": 0.45,
+    "volume": 0.65
+  },
+  "simulation": true,
+  "time": 83.8499999999965,
+  "upgrades": [
+    "capacitor",
+    "chain"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "warmup_excluded_seconds": 3,
+  "win": false,
+  "window_pixels": "(64, 64)"
+}

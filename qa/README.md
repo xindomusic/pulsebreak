@@ -1,5 +1,21 @@
 # Pulsebreak verification evidence
 
+## Skybound follow-up
+
+The new work on `feat/skybound-showcase` is recorded in [the independent review](skybound-review.md), [native controls report](skybound-controls.md), and [runtime source manifest](skybound-source.json). Seven suites pass **261 checks**. The original evidence below remains unchanged.
+
+- `skybound-release-normal/active-metrics.json`: full fixed-60 production campaign, all nine relays, victory at 128.40 seconds with 16 hull.
+- `skybound-release-alternate/active-metrics.json`: alternate seed/build, all nine relays, victory at 123.15 seconds with 52 hull.
+- `skybound-review-sim`, `skybound-normal`, `skybound-alternate`, `skybound-flight-*`, `skybound-diagnostic`, and `skybound-spatial-normal`: retained development losses. The diagnostic identifies body collisions caused by the pilot's old 3D spacing policy.
+- `skybound-final-*`: successful candidate runs before the final authored route hazards. `skybound-release-*` includes those hazards.
+- `skybound-native-timing`: actual single-instance native frame measurements, separately described in the independent review.
+- `skybound-native-windowed`: fixed 1280×800 capture dimensions; another full victory, median 16.47 ms and p95 17.842 ms. The first native run resized during play, so its aggregate is a mixed-resolution measurement.
+- `skybound-visuals/captures` and `skybound-controls/captures`: ignored raw staged/native input captures; selected staged images are published under `docs/images/skybound-*`.
+
+Headless reports are simulations, not FPS evidence. The score is a qualified independent assessment, not a guarantee of 9/10, human enjoyment, or event acceptance.
+
+## Original experiment
+
 Date: 2026-09-07. Godot 4.7.2; Apple M1 Max, 32 GB, macOS 26.6.2.
 
 ## Delivered package

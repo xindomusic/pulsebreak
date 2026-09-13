@@ -1,5 +1,7 @@
 extends Node3D
 ## Bounded visual effects, pooled projectiles and swept collision.
+const Traversal = preload("res://scripts/traversal.gd")
+const HAZARD_HEIGHT := 0.7
 var game: Node3D
 var bullets: Array = []
 var pool: Array[MeshInstance3D] = []
@@ -123,7 +125,7 @@ func add_field(at: Vector3, burning: bool) -> void:
 	var color := Color(0.3,0.85,1,0.5) if not burning else Color(1,0.62,0.22,0.7)
 	var node := ring(0.8,color)
 	add_child(node)
-	node.position = at + Vector3(0,0.12,0)
+	node.position = Vector3(at.x,0.12,at.z)
 	fields.append({"node":node,"timer":2.0,"burning":burning})
 
 func update(delta: float) -> void:
@@ -132,22 +134,42 @@ func update(delta: float) -> void:
 		var node: MeshInstance3D = b.node
 		var previous := node.position
 		node.position += b.velocity * delta
+		var player_end: Vector3 = game.player_position
+		var gate_hit := false
+		if game.campaign_active:
+			var blocked: Vector3 = game.campaign.resolve_gates(previous,node.position)
+			gate_hit = not blocked.is_equal_approx(node.position)
+			if gate_hit:
+				# Resolve the nearer gate first, then test only the time before
+				# impact. A target behind a solid shutter cannot steal the shot.
+				var travel_z := node.position.z-previous.z
+				var fraction := clampf((blocked.z-previous.z)/travel_z,0.0,1.0) if absf(travel_z)>0.00001 else 0.0
+				node.position = previous.lerp(node.position,fraction)
+				player_end = game.player_previous.lerp(game.player_position,fraction)
 		node.rotate_y(delta * 5)
 		b.life -= delta
-		# Relative segment captures both fast dash motion and moving projectiles.
-		var start: Vector3 = previous - game.player_previous
-		var finish: Vector3 = node.position - game.player_position
-		start.y = 0; finish.y = 0
-		var near := Geometry3D.get_closest_point_to_segment(Vector3.ZERO,start,finish).length()
+		# Match horizontal AND vertical overlap at the swept crossing. Flight
+		# above a low volley must avoid both damage and free remote harvesting.
 		var reach := 1.55 if game.rules.upgrades.has("collector") else 0.82
-		if game.rules.dash_time > 0 and near < reach:
+		var harvest_hit: bool = game.rules.dash_time > 0 and Traversal.swept_body_hit(game.player_previous,player_end,previous,node.position,reach,-0.2,0.2)
+		if harvest_hit and game.campaign_active:
+			# Wide Receiver's radius reaches across a shut door. Require an
+			# unobstructed link at closest approach, not at the frame endpoint.
+			var crossing := Traversal.crossing_fraction(game.player_previous,player_end,previous,node.position)
+			var shot_at := previous.lerp(node.position,crossing)
+			var receiver_at: Vector3 = game.player_previous.lerp(player_end,crossing)+Vector3(0,0.85,0)
+			harvest_hit = game.campaign.resolve_gates(shot_at,receiver_at).is_equal_approx(receiver_at)
+		if harvest_hit:
 			game.rules.harvest(15 if game.rules.upgrades.has("capacitor") else 10)
 			line(node.position,game.player_position+Vector3(0,1,0),Color("76f7df"),0.06)
 			game.cue("absorb",0.65)
 			game.harvest_flash = 0.25
 			discard_bullet(i)
-		elif near < 0.48:
+		elif Traversal.swept_body_hit(game.player_previous,player_end,previous,node.position,0.48,-0.2,0.2):
 			game.hit_player(12)
+			discard_bullet(i)
+		elif gate_hit:
+			spark(node.position,Color("ffb465"))
 			discard_bullet(i)
 		elif b.life <= 0 or absf(node.position.x)>20 or absf(node.position.z)>20:
 			discard_bullet(i)
@@ -167,14 +189,28 @@ func update(delta: float) -> void:
 			e.node.scale = Vector3.ONE * (1+ratio*2)
 	for i in range(hazards.size()-1,-1,-1):
 		var h: Dictionary = hazards[i]
+		var timer_before: float = h.timer
+		var active_start := 0.0
+		var active_end := 1.0
 		h.timer -= delta
 		h.node.scale = Vector3.ONE * (1.0 + sin(h.timer*16)*0.03)
 		if h.timer <= 0 and not h.active:
-			h.active = true; h.timer = 0.45
+			h.active = true
+			h.timer += 0.45
+			if delta > 0.0:
+				active_start = clampf(timer_before/delta,0.0,1.0)
+				active_end = clampf((timer_before+0.45)/delta,0.0,1.0)
 			add_effect(h.node.position,Color("ff5272"),h.radius,0.45)
 			game.cue("hit",0.35)
+		elif h.active and delta > 0.0:
+			active_end = clampf(timer_before/delta,0.0,1.0)
 		if h.active:
-			if h.node.position.distance_to(game.player_position)<h.radius:
+			# Telegraph rings cover an XZ disk with a low damage volume. Clip
+			# the sweep to the active part of this step so warning time is safe.
+			var ground: Vector3 = Vector3(h.node.position.x,0.0,h.node.position.z)
+			var from: Vector3 = game.player_previous.lerp(game.player_position,active_start)
+			var to: Vector3 = game.player_previous.lerp(game.player_position,active_end)
+			if Traversal.swept_body_hit(from,to,ground,ground,h.radius,0.0,HAZARD_HEIGHT):
 				game.hit_player(20,true)
 			if h.timer<=0:
 				h.node.queue_free(); hazards.remove_at(i)

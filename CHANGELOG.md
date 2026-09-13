@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-13 — Skybound feature branch
+
+- Added the three-sector Skybound campaign, airborne relay objectives, upgrade transitions, timed gates and authored shock-pad patterns.
+- Added buffered jump, finite hold-to-glide flight, actual altitude-aware collision and cover-aware shots/harvesting/AI.
+- Rebuilt the courier with beveled armor, articulated gait, wing deployment, jet effects and landing compression; added distinct sector scenery and closer framing.
+- Added remappable flight controls with legacy-binding migration, persistent objectives, fuel/height HUD and a local source launcher.
+- Added traversal, altitude/gate, campaign and injected-keyboard suites; preserved the original experiment reports and development losses.
+- See [Skybound](docs/SKYBOUND.md) and the [independent review](qa/skybound-review.md) for exact validation and quality limits.
+
 ## Public experiment documentation — 2026-09-07
 
 - Published the source under xindomusic with the GPT-6 Astra-inside-Codex experiment explained prominently.

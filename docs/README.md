@@ -1,5 +1,7 @@
 # Documentation
 
+**Current feature branch:** [Skybound player/developer guide](SKYBOUND.md) · [Research](SKYBOUND_RESEARCH.md) · [Independent review](../qa/skybound-review.md).
+
 Pulsebreak has two stories: a playable native Mac game, and an experiment in building it with **GPT-6 Astra inside Codex**. These guides connect both stories to inspectable evidence.
 
 ## Choose a reading path

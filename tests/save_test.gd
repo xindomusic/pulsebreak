@@ -24,7 +24,7 @@ func unique_bindings(data: Dictionary) -> bool:
 		if seen.has(key):
 			return false
 		seen[key] = true
-	return seen.size() == 6
+	return seen.size() == 7
 
 func _initialize() -> void:
 	if not ResourceLoader.exists("res://scripts/save_store.gd"):
@@ -80,13 +80,19 @@ func _initialize() -> void:
 	write_fixture(JSON.stringify({"bindings": {"left": KEY_D, "right": "broken", "pulse": KEY_Q, "unknown": KEY_M}}))
 	restored = store.load_data()
 	check(restored.bindings.left == KEY_A and restored.bindings.right == KEY_D and restored.bindings.pulse == KEY_Q, "partial binding collision restores defaults and preserves independent custom key")
-	check(restored.bindings.size() == 6 and unique_bindings(restored), "unknown bindings cannot add actions or duplicate keys")
+	check(restored.bindings.size() == 7 and unique_bindings(restored), "unknown bindings cannot add actions or duplicate keys")
 	write_fixture(JSON.stringify({"bindings": {"left": KEY_J, "right": KEY_J, "up": KEY_D}}))
 	restored = store.load_data()
 	check(unique_bindings(restored) and restored.bindings.left == KEY_A and restored.bindings.right == KEY_D and restored.bindings.up == KEY_W, "cascading duplicate fallback remains playable")
 	write_fixture(JSON.stringify({"bindings": {"left": KEY_D, "right": KEY_A}}))
 	restored = store.load_data()
 	check(restored.bindings.left == KEY_D and restored.bindings.right == KEY_A, "complete valid key swaps survive")
+	write_fixture(JSON.stringify({"bindings": {"pulse": KEY_F}}))
+	restored = store.load_data()
+	check(unique_bindings(restored) and restored.bindings.jump == KEY_J and restored.bindings.pulse == KEY_F, "legacy F binding survives with an unused jump fallback")
+	data = store.default_data()
+	data.bindings.jump = KEY_J
+	check(store.save_data(data) and store.load_data().bindings.jump == KEY_J, "new jump binding survives roundtrip")
 	var bytes_before := FileAccess.get_file_as_bytes(fixture)
 	var blocked_temporary := ProjectSettings.globalize_path(fixture + ".tmp")
 	check(DirAccess.make_dir_absolute(blocked_temporary) == OK, "temporary output can be blocked by isolated test directory")

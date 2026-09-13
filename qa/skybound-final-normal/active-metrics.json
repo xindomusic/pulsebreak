@@ -1,0 +1,114 @@
+{
+  "absorbed": 20,
+  "accelerated": false,
+  "air_relays": 9,
+  "boss_entry": {
+    "health": 100.0,
+    "position": "(-0.386866, 2.262944, -8.259243)",
+    "time": 57.1833333333314
+  },
+  "boss_health_remaining": 0.0,
+  "boss_started": true,
+  "cpu": "Apple M4",
+  "damage_events": [
+    {
+      "damage": 18.0,
+      "ground": false,
+      "health": 82.0,
+      "position": "(7.084785, 0.0, -8.062369)",
+      "time": 36.0499999999992
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 88.0,
+      "position": "(8.392254, 0.0, 0.734586)",
+      "time": 62.0166666666644
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 76.0,
+      "position": "(-11.3772, 0.0, -4.961026)",
+      "time": 85.6499999999964
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 64.0,
+      "position": "(-10.61301, 0.0, -4.54845)",
+      "time": 89.7166666666629
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 52.0,
+      "position": "(2.355181, 0.0, 6.085953)",
+      "time": 96.7166666666625
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 40.0,
+      "position": "(-3.756627, 0.0, 4.246194)",
+      "time": 99.4666666666623
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 28.0,
+      "position": "(3.776087, 0.0, 5.530336)",
+      "time": 116.016666666661
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 16.0,
+      "position": "(-2.603458, 0.0, 5.262387)",
+      "time": 118.766666666661
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "gpu": "",
+  "health": 16.0,
+  "kills": 13,
+  "memory": {
+    "available": 9999499264,
+    "free": 8242937856,
+    "physical": 17179869184,
+    "stack": 8372224
+  },
+  "mode": "skybound",
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 10,
+  "render_frame_median_ms": null,
+  "render_frame_p95_ms": null,
+  "render_frame_p99_ms": null,
+  "render_samples": 0,
+  "renderer": "mobile",
+  "score": 5750,
+  "sector": 3,
+  "sector_checkpoints": [
+    20.2166666666668,
+    52.9499999999983
+  ],
+  "segments": {},
+  "settings": {
+    "assist": false,
+    "low_effects": false,
+    "overdrive": false,
+    "shake": 0.45,
+    "volume": 0.65
+  },
+  "simulation": true,
+  "time": 128.399999999994,
+  "upgrades": [
+    "capacitor",
+    "chain"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "warmup_excluded_seconds": 3,
+  "win": true,
+  "window_pixels": "(64, 64)"
+}

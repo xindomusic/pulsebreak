@@ -1,5 +1,11 @@
 # Pulsebreak
 
+**New on `feat/skybound-showcase`: [Skybound](docs/SKYBOUND.md)** — a three-sector aerial heist with an articulated winged courier, real jumping and gliding, timed shutters, aerial relays, and authored shock-pad encounters. Double-click **Play Pulsebreak.command** in this checkout, then choose **Begin Skybound**. Classic survival and practice remain available.
+
+![Staged native Skybound title and courier model](docs/images/skybound-title.png)
+
+*Current source title rendered natively for visual review. [Research](docs/SKYBOUND_RESEARCH.md), [independent review](qa/skybound-review.md), and [controls evidence](qa/skybound-controls.md) document the follow-up. The original experiment below remains historical.*
+
 ### A game-making experiment with GPT-6 Astra inside Codex
 
 **Steal the storm. Break the machine.** Pulsebreak is a playable 3D arena roguelite for Apple Silicon Macs, built with Godot 4.7.2.

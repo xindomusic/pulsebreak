@@ -4,13 +4,23 @@ const Art = preload("res://scripts/art.gd")
 const Enemy = preload("res://scripts/enemy.gd")
 const Field = preload("res://scripts/combat_field.gd")
 const HUD = preload("res://scripts/hud.gd")
+const Traversal = preload("res://scripts/traversal.gd")
+const Campaign = preload("res://scripts/campaign.gd")
+var traversal = Traversal.new()
+var campaign: Node3D
+var campaign_active := false
+var player_marker: MeshInstance3D
+var world_environment: Environment
+var qa_jump_held := false
+var qa_damage_events: Array = []
+var qa_boss_entry: Dictionary = {}
 var rules = Rules.new()
 var rng := RandomNumberGenerator.new()
 var state := "title"
 var previous_state := "run"
 var settings_origin := "title"
 var settings: Dictionary = {"volume":0.65,"shake":0.45,"assist":false,"low_effects":false,"best":0,"practiced":false}
-var bindings: Dictionary = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E}
+var bindings: Dictionary = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F}
 var rebind_action := ""
 var player_node: Node3D
 var player_position: Vector3:
@@ -22,6 +32,7 @@ var dash_direction := Vector3.FORWARD
 var dash_hit: Array = []
 var enemies: Array = []
 var boss_ref: Node3D
+var camera_home := Vector3(0,24,29)
 var camera: Camera3D
 var key_light: DirectionalLight3D
 var field: Node3D
@@ -71,6 +82,8 @@ func _ready() -> void:
 	Art.build_arena(self)
 	field = Field.new(); field.game = self; add_child(field)
 	player_node = Art.player(); add_child(player_node)
+	player_marker = field.ring(0.62,Color(0.46,1,0.87,0.65)); add_child(player_marker)
+	campaign = Campaign.new(); campaign.game = self; add_child(campaign)
 	ui = HUD.new(); add_child(ui)
 	ui.set_bindings(bindings)
 	ui.action.connect(on_ui_action)
@@ -81,6 +94,7 @@ func _ready() -> void:
 		if sound.has_method("set_volume"): sound.set_volume(settings.volume)
 	apply_settings()
 	ui.show_title(settings.best,settings.practiced)
+	show_title_scene()
 	var args := OS.get_cmdline_user_args()
 	qa_mode = args.has("--qa")
 	qa_passive = args.has("--qa-passive")
@@ -93,7 +107,8 @@ func _ready() -> void:
 		settings.assist=args.has("--qa-assist")
 		settings.overdrive=args.has("--qa-overdrive")
 		rng.seed = 271828
-		start_run(false)
+		if args.has("--qa-campaign"): start_campaign()
+		else: start_run(false)
 		if args.has("--qa-alt"):
 			rng.seed=42
 			qa_captured["alternate"]=true
@@ -112,7 +127,7 @@ func _process(_delta: float) -> void:
 		var frame_ms := float(now-qa_last_frame_usec)/1000.0
 		if last_render_state in ["run","boss"]:
 			qa_render_frames.append(frame_ms)
-			var segment := "boss" if state=="boss" else "minute_%d" % (1+int(run_time/60))
+			var segment := "boss" if state=="boss" else "sector_%d" % (campaign.sector+1) if campaign_active else "minute_%d" % (1+int(run_time/60))
 			if not qa_segments.has(segment): qa_segments[segment]=[]
 			qa_segments[segment].append(frame_ms)
 	qa_last_frame_usec=now
@@ -145,6 +160,7 @@ func setup_world() -> void:
 	env.fog_light_color = Color("30495b")
 	env.fog_density = 0.003
 	world.environment = env
+	world_environment = env
 	add_child(world)
 	key_light = DirectionalLight3D.new()
 	key_light.rotation_degrees = Vector3(-58,-28,0)
@@ -181,6 +197,7 @@ func configure_input() -> void:
 		InputMap.action_add_event(pair[0],event)
 	if is_instance_valid(ui): ui.set_bindings(bindings)
 	if is_instance_valid(ui) and practice: refresh_practice_hint()
+	if campaign_active and is_instance_valid(campaign): campaign.refresh_target_label()
 
 func key_name(id: String) -> String:
 	return OS.get_keycode_string(int(bindings[id]))
@@ -202,8 +219,83 @@ func apply_settings() -> void:
 	if sound and sound.has_method("set_volume"): sound.set_volume(float(settings.volume))
 	key_light.shadow_enabled = not settings.get("low_effects",false)
 
+func show_title_scene() -> void:
+	campaign.clear()
+	campaign.stage = Campaign.Visuals.build_stage(campaign,0)
+	var pedestal: Node3D = Campaign.Visuals.hero_display()
+	campaign.stage.add_child(pedestal)
+	pedestal.position = Vector3(8,0,3)
+	set_sector_lighting(0)
+	player_node.position = Vector3(8,0,3)
+	player_node.scale = Vector3.ONE*5.8
+	player_node.rotation = Vector3(0,0.35,0)
+	player_node.visible = true
+	player_marker.visible = false
+	camera.size = 34
+	camera.position = Vector3(0,17,29)
+	camera.look_at(Vector3.ZERO)
+
+func set_sector_lighting(index: int) -> void:
+	var colors := [Color("a8e5ec"),Color("ffd1a0"),Color("c5b6ff")]
+	var fogs := [Color("30495b"),Color("50404d"),Color("302b56")]
+	key_light.light_color = colors[index]
+	world_environment.fog_light_color = fogs[index]
+	var sky_material: ProceduralSkyMaterial = world_environment.sky.sky_material
+	sky_material.sky_horizon_color = fogs[index].lightened(0.13)
+	sky_material.ground_horizon_color = fogs[index]
+	sky_material.sky_top_color = fogs[index].darkened(0.78)
+
+func start_campaign() -> void:
+	start_run(false)
+	campaign_active = true
+	campaign.start()
+
+func complete_sector() -> void:
+	state = "sector_complete"
+	field.clear()
+	rules.dash_time = 0
+	player_node.visible = true
+	ui.show_sector_complete(campaign.sector,Campaign.SECTORS[campaign.sector].name,run_time,campaign.total_relays)
+	if qa_mode: print("QA sector complete: ",campaign.sector+1," at ",run_time)
+
+func next_sector() -> void:
+	if state != "sector_complete": return
+	clear_run()
+	campaign.enter_sector(campaign.sector+1)
+	upgrade_choices = rules.upgrade_options(rng)
+	state = "upgrade"
+	ui.show_upgrades(upgrade_choices)
+	if sound and sound.has_method("set_intensity"): sound.set_intensity(0.4+campaign.sector*0.2)
+
+func begin_campaign_boss() -> void:
+	for enemy in enemies: enemy.queue_free()
+	enemies.clear()
+	field.clear()
+	if is_instance_valid(core_node): core_node.queue_free()
+	core_node = null
+	rules.health = minf(100,rules.health+25)
+	rules.energy = maxf(40,rules.energy)
+	rules.recovery = 2.0
+	for gate in campaign.gates:
+		gate.open=1.0
+		gate.previous_open=1.0
+		Campaign.Visuals.animate_gate(gate.node,1.0,campaign.elapsed)
+	boss_ref = spawn_enemy("boss",Vector3(0,0,-2.8))
+	boss_ref.hp = 1800.0*(1.2 if hard_mode else 1.0)
+	boss_ref.max_hp = boss_ref.hp
+	qa_boss_entry = {"time":run_time,"health":rules.health,"position":str(player_position)}
+	state = "boss"
+	announce("THE REACTOR GUARDIAN", "Jump its shock zones. Land to steal its volleys.")
+	cue("boss")
+
 func start_run(is_practice: bool = false) -> void:
 	clear_run()
+	qa_damage_events.clear()
+	qa_boss_entry.clear()
+	campaign_active = false
+	campaign.clear()
+	traversal.reset()
+	set_sector_lighting(0)
 	rules.reset()
 	practice = is_practice
 	state = "run"
@@ -219,13 +311,16 @@ func start_run(is_practice: bool = false) -> void:
 	hard_mode=bool(settings.get("overdrive",false)) and not is_practice
 	practice_start = Vector3.ZERO
 	player_node.position = Vector3.ZERO
-	player_node.scale = Vector3.ONE * 1.2
-	camera.size = 36
+	player_node.scale = Vector3.ONE * 1.35
+	camera.size = 31.8
+	camera.position = camera_home
+	camera.look_at(Vector3.ZERO)
 	player_node.rotation = Vector3.ZERO
 	player_previous = Vector3.ZERO
 	player_velocity = Vector3.ZERO
 	facing = Vector3.FORWARD
 	ui.show_game()
+	ui.objective_text.text = ""
 	if practice:
 		ui.show_hint("MOVE  /  Use %s or the arrow keys to explore the deck." % ui.movement_keys(),60)
 	else:
@@ -247,13 +342,21 @@ func clear_run() -> void:
 
 func on_ui_action(action: String, value: Variant) -> void:
 	match action:
-		"start", "restart": start_run(false)
+		"start": start_run(false)
+		"campaign": start_campaign()
+		"next_sector": next_sector()
+		"restart":
+			if campaign_active: start_campaign()
+			else: start_run(false)
 		"overdrive": settings.overdrive=value; save_settings()
 		"practice": start_run(true)
 		"resume": state = previous_state; ui.show_game()
 		"title":
 			clear_run(); state = "title"
-			player_node.position = Vector3.ZERO
+			campaign_active = false
+			campaign.clear()
+			traversal.reset()
+			show_title_scene()
 			ui.show_title(settings.best,settings.practiced)
 		"settings":
 			settings_origin = state
@@ -267,7 +370,7 @@ func on_ui_action(action: String, value: Variant) -> void:
 			apply_settings(); save_settings()
 		"rebind": state = "rebind"; rebind_action = value; ui.show_rebind(value)
 		"reset_controls":
-			bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E}
+			bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F}
 			configure_input(); save_settings(); ui.show_settings(settings,bindings)
 		"upgrade": choose_upgrade(value)
 
@@ -299,6 +402,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if state in ["run","boss"]:
 		if event.is_action_pressed("dash"): dash()
 		if event.is_action_pressed("pulse"): pulse()
+		if event.is_action_pressed("jump"): traversal.request_jump()
 
 func _physics_process(delta: float) -> void:
 	display_time += delta
@@ -306,11 +410,15 @@ func _physics_process(delta: float) -> void:
 		if state == "title":
 			player_node.rotation.y += delta * 0.25
 			player_node.position.y = sin(display_time*1.5)*0.05
+			Art.animate_player(player_node,delta,0.0,true,true,false,display_time)
+			player_marker.visible = false
+			Campaign.Visuals.animate_stage(campaign.stage,delta,display_time)
 		if qa_mode and state == "upgrade":
 			var preferred := ["capacitor","siphon","echo","chain","radius","ignite","collector","wake","frost"]
 			if qa_captured.has("alternate"): preferred=["wake","frost","ignite","collector","radius","capacitor","echo","chain","siphon"]
 			for id in preferred:
 				if id in upgrade_choices: choose_upgrade(id); break
+		if qa_mode and state == "sector_complete": next_sector()
 		return
 	var step := delta
 	if qa_fast: step = delta * 4
@@ -318,29 +426,36 @@ func _physics_process(delta: float) -> void:
 	player_previous = player_position
 	var movement := Vector3(Input.get_axis("left","right"),0,Input.get_axis("up","down"))
 	if qa_mode: movement = pilot(step)
+	movement.y = 0
 	movement = movement.limit_length(1.0)
+	traversal.step(step,qa_jump_held if qa_mode else Input.is_action_pressed("jump"))
+	if traversal.jumped: cue("dash",0.5)
+	if traversal.landed:
+		player_node.set_meta("landing_impact",clampf(traversal.landing_speed/12.0,0.2,1.0))
+		add_effect(Vector3(player_position.x,0,player_position.z),Color("a0fff0"),0.95)
+		cue("ready",0.32)
 	if movement.length_squared()>0.01: facing = movement.normalized()
 	if rules.dash_time > 0:
 		var dash_speed := 30.0 * (0.85 if rules.upgrades.has("collector") else 1.0)
 		player_velocity = dash_direction * dash_speed
 	else:
-		player_velocity = movement * 7.0
+		player_velocity = movement * (9.0 if traversal.gliding else 7.0)
 	player_node.position += player_velocity * step
 	player_node.position.x = clampf(player_node.position.x,-14.4,14.4)
 	player_node.position.z = clampf(player_node.position.z,-14.4,14.4)
-	player_node.position.y = 0
+	player_node.position.y = traversal.height
+	if campaign_active: player_node.position = campaign.resolve_gates(player_previous,player_position)
 	player_node.rotation.y = lerp_angle(player_node.rotation.y,atan2(facing.x,facing.z),minf(1,step*18))
-	var body: Node3D = player_node.get_node_or_null("Body")
-	if body:
-		body.rotation.x = lerpf(body.rotation.x,0.22 if rules.dash_time>0 else movement.length()*0.08,minf(1,step*14))
-	var ring_node: Node3D = player_node.get_node_or_null("Ring")
-	if ring_node: ring_node.rotate_y(step*(2+rules.energy*0.04))
+	Art.animate_player(player_node,step,movement.length(),not traversal.grounded,traversal.gliding,rules.dash_time>0,display_time)
+	player_marker.visible = true
+	player_marker.position = Vector3(player_position.x,0.06,player_position.z)
+	player_marker.scale = Vector3.ONE*(1.0+traversal.height*0.12)
 	player_node.visible = not (rules.recovery>0 and sin(display_time*45)>0.7)
 	trail_timer -= step
 	if rules.dash_time>0 and trail_timer<=0:
 		trail_timer = 0.045
 		add_trail(player_position,Color(0.38,1,0.83,0.65),0.65)
-		if rules.upgrades.has("wake") or rules.upgrades.has("frost"):
+		if traversal.height<0.45 and (rules.upgrades.has("wake") or rules.upgrades.has("frost")):
 			field.add_field(player_position,rules.upgrades.has("wake"))
 		if rules.upgrades.has("ignite"):
 			for enemy in enemies:
@@ -357,6 +472,9 @@ func _physics_process(delta: float) -> void:
 		auto_timer = 0.34
 		auto_shoot()
 	if practice: update_practice(step)
+	elif campaign_active:
+		run_time += step
+		campaign.update(step)
 	else: update_director(step)
 	update_core(step)
 	var previous_charges: int=rules.dash_charges
@@ -364,12 +482,16 @@ func _physics_process(delta: float) -> void:
 	if rules.dash_charges>previous_charges: cue("ready",0.6)
 	harvest_flash = maxf(0,harvest_flash-step)
 	shake = maxf(0,shake-step*2.5)
-	camera.position = Vector3(0,27,24)+Vector3(sin(display_time*83),0,cos(display_time*69))*shake*float(settings.shake)
+	camera.position = camera_home+Vector3(sin(display_time*83),0,cos(display_time*69))*shake*float(settings.shake)
 	var boss_hp := 0.0
 	var boss_max := 0.0
 	if is_instance_valid(boss_ref) and not boss_ref.dead:
 		boss_hp = boss_ref.hp; boss_max = boss_ref.max_hp
 	ui.update_game(rules,run_time,boss_hp,boss_max,practice)
+	ui.update_traversal(traversal)
+	if campaign_active:
+		ui.status_text.text = "0%d / 03   %s" % [campaign.sector+1,Campaign.SECTORS[campaign.sector].name]
+		ui.objective_text.text = campaign.objective()
 	if rules.health<=0:
 		finish(false)
 	elif ending_delay > 0:
@@ -433,6 +555,9 @@ func auto_shoot() -> void:
 	var best_hp := INF
 	for enemy in enemies:
 		if not enemy.dead and enemy.spawning<=0 and enemy.position.distance_to(player_position)<7.5:
+			var from: Vector3 = player_position+Vector3(0,1,0)
+			var to: Vector3 = enemy.position+Vector3(0,0.8,0)
+			if campaign_active and campaign.resolve_gates(from,to).distance_to(to)>0.05: continue
 			if enemy.hp<best_hp: target=enemy; best_hp=enemy.hp
 	if target:
 		field.line(player_position+Vector3(0,1,0),target.position+Vector3(0,0.8,0),Color("c6fff1"))
@@ -443,7 +568,7 @@ func spawn_enemy(kind: String, at: Vector3) -> Node3D:
 	if enemies.size()>=27: return null
 	var enemy := Enemy.new()
 	add_child(enemy)
-	enemy.setup(self,kind,at)
+	enemy.setup(self,kind,Vector3(at.x,0,at.z))
 	enemies.append(enemy)
 	return enemy
 
@@ -497,7 +622,7 @@ func update_director(delta: float) -> void:
 
 func update_practice(delta: float) -> void:
 	practice_timer += delta
-	if practice_step == 0 and player_position.length()>2:
+	if practice_step == 0 and Vector2(player_position.x,player_position.z).length()>2:
 		practice_step = 1
 		spawn_enemy("gunner",Vector3(0,0,-7))
 		ui.show_hint("HARVEST  /  Face the orange shots and press %s to dash THROUGH them." % key_name("dash"),60)
@@ -576,6 +701,8 @@ func enemy_defeated(enemy: Node3D) -> void:
 
 func hit_player(amount: float, ground_hazard: bool = false) -> void:
 	if rules.damage(amount,ground_hazard):
+		if qa_mode:
+			qa_damage_events.append({"time":run_time,"damage":amount,"ground":ground_hazard,"health":rules.health,"position":str(player_position)})
 		shake=0.22
 		cue("hit")
 		add_effect(player_position,Color("ff6c7c"),1.5)
@@ -587,7 +714,7 @@ func finish(won: bool) -> void:
 	if won: settings.won=true
 	if not practice: save_settings()
 	player_node.visible=true
-	ui.show_result(won,{"score":rules.score,"best":settings.best,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"time":run_time,"upgrades":rules.upgrades,"overdrive":hard_mode})
+	ui.show_result(won,{"score":rules.score,"best":settings.best,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"time":run_time,"upgrades":rules.upgrades,"overdrive":hard_mode,"campaign":campaign_active,"relays":campaign.total_relays if campaign_active else 0,"sector":campaign.sector+1 if campaign_active else 0})
 	cue("victory" if won else "defeat")
 	if qa_mode:
 		write_qa(won)
@@ -610,19 +737,40 @@ func announce(title: String,subtitle: String) -> void: ui.show_banner(title,subt
 
 func pilot(delta: float) -> Vector3:
 	# Deterministic test driver; it uses the same abilities/collision, never invulnerability.
+	qa_jump_held = false
+	if campaign_active and not campaign.boss_started:
+		var destination := Vector3.ZERO
+		var navigating := false
+		if is_instance_valid(campaign.target):
+			destination = campaign.target.position
+			navigating = true
+		elif campaign.gate_open:
+			destination = Vector3(0,0,-14)
+			navigating = true
+		if navigating:
+			var route: Vector3 = destination-player_position
+			route.y = 0
+			qa_jump_held = true
+			if traversal.grounded and route.length()<6.2: traversal.request_jump()
+			if traversal.grounded and campaign.resolve_gates(player_position,player_position+route.normalized()).distance_to(player_position+route.normalized())>0.1:
+				traversal.request_jump()
+			if rules.energy>=40: pulse()
+			return route.normalized() if route.length()>0.2 else Vector3.ZERO
 	qa_dash_wait=maxf(0,qa_dash_wait-delta)
 	var move := Vector3(cos(run_time*0.32),0,sin(run_time*0.32))
 	var target: Node3D = null
 	var distance := INF
 	for enemy in enemies:
 		if not enemy.dead:
-			var d: float=enemy.position.distance_to(player_position)
+			var d: float=Vector2(enemy.position.x-player_position.x,enemy.position.z-player_position.z).length()
 			if d<distance: distance=d; target=enemy
 	if target:
 		var toward: Vector3=(target.position-player_position).normalized()
+		toward.y=0
+		toward=toward.normalized()
 		move=toward.rotated(Vector3.UP,1.25)
 		if distance>6: move=toward
-		if distance<3: move=-toward
+		if distance<(4.5 if campaign_active and target.kind=="boss" else 3.0): move=-toward
 	if absf(player_position.x)>11 or absf(player_position.z)>11:
 		move=(-player_position).normalized()
 	if is_instance_valid(core_node) and rules.health<80:
@@ -630,6 +778,8 @@ func pilot(delta: float) -> Vector3:
 	for hazard in field.hazards:
 		if player_position.distance_to(hazard.node.position)<hazard.radius+1:
 			move=(player_position-hazard.node.position).normalized()
+			if campaign_active and not qa_passive and traversal.grounded and hazard.timer<0.55:
+				traversal.request_jump()
 	if not qa_passive:
 		# React to the same visible, committed charger lane a player can read.
 		for enemy in enemies:
@@ -648,10 +798,18 @@ func pilot(delta: float) -> Vector3:
 		for bullet in field.bullets:
 			var d:float=bullet.node.position.distance_to(player_position+Vector3(0,0.85,0))
 			if d<bullet_distance: bullet_distance=d; bullet_at=bullet.node.position
-		if bullet_distance<3.5 and rules.dash_charges>0 and rules.dash_time<=0 and qa_dash_wait<=0:
+		if bullet_distance<3.5 and player_position.y<1.0 and rules.dash_charges>0 and rules.dash_time<=0 and qa_dash_wait<=0:
 			facing=(bullet_at-player_position).normalized(); facing.y=0
+			facing=facing.normalized()
+			if campaign_active and is_instance_valid(boss_ref):
+				var near: Vector3=Geometry3D.get_closest_point_to_segment(boss_ref.position,Vector3(player_position.x,0,player_position.z),Vector3(player_position.x,0,player_position.z)+facing*5.4)
+				if near.distance_to(boss_ref.position)<3.0:
+					facing=(Vector3(player_position.x,0,player_position.z)-boss_ref.position).normalized()
 			dash(); qa_dash_wait=0.45
 		if rules.energy>=40 and distance<6.5: pulse()
+		if campaign_active and is_instance_valid(boss_ref):
+			var away: Vector3=Vector3(player_position.x,0,player_position.z)-boss_ref.position
+			if away.length()<4.3: move=away.normalized()
 	return move
 
 func capture(label: String) -> void:
@@ -677,6 +835,15 @@ func write_qa(won: bool) -> void:
 		samples.sort()
 		segments[id]={"samples":samples.size(),"median_ms":samples[int(samples.size()*0.5)],"p95_ms":samples[int(samples.size()*0.95)],"p99_ms":samples[int(samples.size()*0.99)]}
 	var report := {"win":won,"time":run_time,"score":rules.score,"health":rules.health,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"upgrades":rules.upgrades,"passive":qa_passive,"simulation":qa_simulation,"accelerated":qa_fast,"render_frame_p95_ms":render_p95,"render_frame_median_ms":render_median,"render_frame_p99_ms":render_p99,"render_samples":qa_render_frames.size(),"segments":segments,"warmup_excluded_seconds":3,"settings":{"assist":settings.assist,"low_effects":settings.low_effects,"shake":settings.shake,"volume":settings.volume,"overdrive":hard_mode},"engine":Engine.get_version_info().string,"renderer":RenderingServer.get_current_rendering_method(),"gpu":RenderingServer.get_video_adapter_name(),"cpu":OS.get_processor_name(),"memory":OS.get_memory_info(),"os":OS.get_name()+" "+OS.get_version(),"viewport":str(get_viewport().get_visible_rect().size),"window_pixels":str(get_window().size)}
+	report["mode"] = "skybound" if campaign_active else "classic"
+	if campaign_active:
+		report["sector"] = campaign.sector+1
+		report["air_relays"] = campaign.total_relays
+		report["sector_checkpoints"] = campaign.checkpoint_times
+		report["boss_started"] = campaign.boss_started
+		report["boss_entry"] = qa_boss_entry
+		report["damage_events"] = qa_damage_events
+		report["boss_health_remaining"] = boss_ref.hp if is_instance_valid(boss_ref) else 0.0
 	print("QA_RESULT "+JSON.stringify(report))
 	DirAccess.make_dir_recursive_absolute(qa_output_dir)
 	var file := FileAccess.open(qa_output_dir+"/"+("passive" if qa_passive else "active")+"-metrics.json",FileAccess.WRITE)

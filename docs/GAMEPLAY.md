@@ -1,5 +1,7 @@
 # Player guide
 
+**Skybound follow-up:** choose **Begin Skybound** for the three-sector route. **F** jumps; hold through the apex to glide. Flight is available in Classic too. See [Skybound](SKYBOUND.md) for relay objectives, moving shutters, wing fuel and the new campaign. The six-minute survival guide below remains applicable to Classic.
+
 ## Objective and controls
 
 Survive six minutes of waves, then destroy the Reactor Guardian. Your automatic weapon handles nearby targets; the central skill is turning enemy projectiles into pulse energy.

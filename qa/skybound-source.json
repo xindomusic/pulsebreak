@@ -1,0 +1,19 @@
+{
+  "base_commit": "9017872",
+  "runtime_source_digest": "91fd3c02b761fcfb8831369edfbc90b90f7376d23034ea62dc488bab342c753a",
+  "sha256": {
+    "scripts/art.gd": "71d9cda7b0a3ab66506d406abfb212757b81d1f8edba88228b3337b03ebe444f",
+    "scripts/audio_director.gd": "e6aa5b629ac98f1fcae909b928accc64e714d970ad977b1953c36d94d36d75a4",
+    "scripts/campaign.gd": "c3683cdc76f9980df0788f81b2ff904f1e948cb5c298e519be69ca9601300aec",
+    "scripts/combat_field.gd": "d18a38b458097a997ca4e2586babf7be9e3458bf929f5ec1498fa8348a3959d4",
+    "scripts/enemy.gd": "ad154d3f5b804288560a73bbf701fa3407e9b8114a6abacddc9f04af1e6f6503",
+    "scripts/game.gd": "cf0be3d6030212413f7a99f7bb78d618ee419647a9070aed2300a4ce9d0c23e8",
+    "scripts/hud.gd": "cab66515c83a6fa5d29642e451d37f474048bdd039ea8b62b6c368e94be7ed70",
+    "scripts/rules.gd": "2aad33f667f3141984b75b545ee6d3b541d4ed408c59ee09f4a8884b056c2fa4",
+    "scripts/save_store.gd": "8008fa7ee4aee78f7b6b7f309aa065c8f004e719716be9a40e56a3c344cdcf70",
+    "scripts/showcase_art.gd": "4b63ca210fd471018904e0fc1a00848c6a5db4069b6c82e578b4f6bd60a91bfd",
+    "scripts/traversal.gd": "45e9eb4de07c4a8bf9a7b8737b2d30efa60e3dd0955787e17ae307f5d6075a44",
+    "project.godot": "17c3a289ddecc5d6706c001763691c8220d8dc7db800a7237096521e482714e3",
+    "main.tscn": "2cdc569559997d5e8cc62c3572131901c13dd6ab97392de3485478b238139e7c"
+  }
+}

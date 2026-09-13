@@ -1,6 +1,7 @@
 extends Node3D
 ## Enemy patterns expose windups before committing to an attack.
 const Art = preload("res://scripts/art.gd")
+const Traversal = preload("res://scripts/traversal.gd")
 var game: Node3D
 var kind := "gunner"
 var hp := 45.0
@@ -72,6 +73,8 @@ func update(delta: float) -> void:
 		if spawning <= 0:
 			telegraph.visible = false
 		return
+	var previous_position := position
+	var was_charging := charge_time > 0.0
 	shield_broken = maxf(0, shield_broken - delta)
 	slow = maxf(0, slow - delta)
 	hurt = maxf(0, hurt - delta)
@@ -111,7 +114,9 @@ func update(delta: float) -> void:
 		cooldown -= delta * (0.78 if game.settings.get("assist", false) else 1.0)
 		if cooldown <= 0:
 			windup = 0.8 if kind != "boss" else 1.0
-			charge_direction = (to_player + game.player_velocity * 0.32).normalized()
+			charge_direction = to_player + game.player_velocity * 0.32
+			charge_direction.y = 0.0
+			charge_direction = charge_direction.normalized()
 			if warning_lane:
 				warning_lane.visible=true
 				warning_lane.rotation.y=atan2(charge_direction.x,charge_direction.z)-rotation.y
@@ -124,7 +129,16 @@ func update(delta: float) -> void:
 			game.cue("warning", 0.5)
 	position.x = clampf(position.x, -14.5, 14.5)
 	position.z = clampf(position.z, -14.5, 14.5)
-	if position.distance_to(game.player_position) < radius + 0.42:
+	if game.campaign_active:
+		var resolved: Vector3 = game.campaign.resolve_gates(previous_position,position)
+		if not resolved.is_equal_approx(position):
+			if was_charging:
+				charge_time = 0.0
+				position = resolved
+			else:
+				position = steer_around_gate(previous_position,position,move_speed*delta)
+	var body_height := 2.8 if kind == "boss" else 1.5
+	if Traversal.swept_body_hit(game.player_previous,game.player_position,previous_position,position,radius+0.42,0.0,body_height):
 		game.hit_player(18 if kind != "boss" else 24)
 	if kind == "boss" and phase == 1 and hp < max_hp * 0.5:
 		phase = 2
@@ -137,7 +151,33 @@ func distance_to_wall(direction: Vector3, maximum: float) -> float:
 		distance=minf(distance,maxf(0,((14.5 if direction.x>0 else -14.5)-position.x)/direction.x))
 	if absf(direction.z)>0.001:
 		distance=minf(distance,maxf(0,((14.5 if direction.z>0 else -14.5)-position.z)/direction.z))
+	if game.campaign_active:
+		var wanted := position+direction*distance
+		var blocked: Vector3 = game.campaign.resolve_gates(position,wanted)
+		if not blocked.is_equal_approx(wanted):
+			var gate_distance := maxf(0.0,(blocked.z-position.z)/direction.z) if absf(direction.z)>0.00001 else 0.0
+			distance = minf(distance,gate_distance)
 	return distance
+
+func steer_around_gate(from: Vector3, wanted: Vector3, distance: float) -> Vector3:
+	# Authored shutters are horizontal. Seek their nearest opening or outside
+	# edge when a direct path is blocked, instead of walking forever into metal.
+	var blockers: Array = game.campaign.gates.duplicate()
+	if is_instance_valid(game.campaign.exit_gate):
+		blockers.append({"node":game.campaign.exit_gate,"open":game.campaign.exit_openness,"previous_open":game.campaign.exit_openness})
+	for gate in blockers:
+		var at: Vector3 = gate.node.position
+		var openness: float = minf(gate.open,gate.previous_open)
+		if game.campaign.block_gate(from,wanted,at,openness).is_equal_approx(wanted): continue
+		var candidates: Array[float] = [at.x-5.7-5.0*openness,at.x+5.7+5.0*openness]
+		if openness > 0.2: candidates.append(at.x)
+		var target_x: float = candidates[0]
+		for candidate in candidates:
+			if absf(candidate-from.x)<absf(target_x-from.x): target_x=candidate
+		var tangent := from+Vector3(signf(target_x-from.x)*distance,0.0,0.0)
+		tangent.x = clampf(tangent.x,-14.5,14.5)
+		return game.campaign.resolve_gates(from,tangent)
+	return game.campaign.resolve_gates(from,wanted)
 
 func perform_attack(direction: Vector3) -> void:
 	if kind == "gunner":

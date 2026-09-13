@@ -28,8 +28,12 @@ var heavy: SystemFont
 var hint_time := 0.0
 var banner_time := 0.0
 var offers: Array = []
-var key_names: Dictionary = {"left":"A","right":"D","up":"W","down":"S","dash":"Space","pulse":"E"}
+var key_names: Dictionary = {"left":"A","right":"D","up":"W","down":"S","dash":"Space","pulse":"E","jump":"F"}
 var harvest_guide: Label
+var flight_bar: ProgressBar
+var flight_text: Label
+var altitude_text: Label
+var objective_text: Label
 
 func set_bindings(bindings: Dictionary) -> void:
 	for id in bindings: key_names[id]=OS.get_keycode_string(int(bindings[id]))
@@ -131,6 +135,18 @@ func bar_at(parent: Node, pos: Vector2, size: Vector2, color: Color) -> Progress
 	return bar
 
 func build_hud() -> void:
+	var top_shade := TextureRect.new()
+	var gradient := Gradient.new()
+	gradient.set_color(0,Color(0.018,0.035,0.05,0.84))
+	gradient.set_color(1,Color(0.018,0.035,0.05,0))
+	var texture := GradientTexture2D.new()
+	texture.gradient=gradient
+	texture.fill_from=Vector2.ZERO
+	texture.fill_to=Vector2(0,1)
+	top_shade.texture=texture
+	top_shade.size=Vector2(1440,195)
+	top_shade.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top_shade)
 	health_text = label_at(hud, "HULL  /  100", Vector2(35, 26), 17)
 	health_bar = bar_at(hud, Vector2(35, 58), Vector2(238, 7), CYAN)
 	status_text = label_at(hud, "SKYFORGE   /   SECTOR 07", Vector2(35, 82), 13, MUTED)
@@ -163,6 +179,20 @@ func build_hud() -> void:
 	boss_bar = bar_at(hud, Vector2(430, 120), Vector2(580, 8), AMBER)
 	boss_bar.visible = false
 	boss_name.visible = false
+	objective_text = label_at(hud,"",Vector2(280,142),16,CYAN)
+	objective_text.size = Vector2(880,52)
+	objective_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	objective_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	banner.position.y = 204
+	var flight := Panel.new()
+	flight.position = Vector2(983,785)
+	flight.size = Vector2(305,91)
+	flight.add_theme_stylebox_override("panel",panel(Color(0.025,0.07,0.1,0.9)))
+	flight.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(flight)
+	flight_text = label_at(flight,"F  JUMP / HOLD TO GLIDE",Vector2(18,12),14,CYAN)
+	flight_bar = bar_at(flight,Vector2(18,44),Vector2(268,7),Color("b7d8ff"))
+	altitude_text = label_at(flight,"WINGS READY",Vector2(18,62),11,MUTED)
 
 func clear_modal() -> void:
 	for child in modal.get_children():
@@ -199,24 +229,27 @@ func show_title(best: int, practiced: bool) -> void:
 	veil.texture = tex
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(veil)
-	label_at(modal, "A REACTOR HEIST IN SIX MINUTES", Vector2(65, 60), 13, CYAN)
+	label_at(modal, "S K Y B O U N D     /     A THREE-SECTOR HEIST", Vector2(65, 60), 13, CYAN)
 	var title := label_at(modal, "PULSE\nBREAK", Vector2(58, 115), 104)
 	title.add_theme_font_override("font", heavy)
 	title.add_theme_constant_override("line_spacing", -25)
 	label_at(modal, "STEAL THE STORM.", Vector2(65, 394), 25, CYAN)
-	var desc := label_at(modal, "Dash into enemy fire. Steal its energy.\nBreak the machine with one perfect pulse.", Vector2(65, 446), 19, MUTED)
+	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nSteal enemy fire. Bring down the Guardian.", Vector2(65, 442), 19, MUTED)
 	desc.size.x = 490
-	var box := column(Vector2(65, 536), 365)
-	var play := button("ENTER THE SKYFORGE    →", func(): action.emit("start", false), true)
+	var box := column(Vector2(65, 515), 385)
+	box.add_theme_constant_override("separation",10)
+	var play := button("BEGIN SKYBOUND    →", func(): action.emit("campaign", false), true)
 	box.add_child(play)
 	box.add_child(button("PRACTICE THE HEIST", func(): action.emit("practice", true)))
+	box.add_child(button("CLASSIC  /  SIX-MINUTE SURVIVAL", func(): action.emit("start", false)))
 	box.add_child(button("SETTINGS", func(): action.emit("settings", null)))
 	play.grab_focus()
-	label_at(modal, "PERSONAL BEST  /  %06d" % best, Vector2(65, 779), 14, AMBER)
-	label_at(modal, "%s  MOVE     %s  DASH     %s  PULSE" % [movement_keys(),key_names.dash.to_upper(),key_names.pulse.to_upper()], Vector2(65, 834), 13, MUTED)
-	label_at(modal, "07\nSKYFORGE", Vector2(1220, 744), 23, CYAN)
+	label_at(modal, "PERSONAL BEST  /  %06d" % best, Vector2(65, 786), 14, AMBER)
+	label_at(modal, "%s  MOVE    %s  DASH    %s  PULSE    %s  JUMP / GLIDE" % [movement_keys(),key_names.dash.to_upper(),key_names.pulse.to_upper(),key_names.jump.to_upper()], Vector2(65, 846), 12, MUTED)
+	label_at(modal, "01 — 03\nSKYPORT / FOUNDRY / STORM", Vector2(971, 790), 16, CYAN)
+	label_at(modal,"COURIER / MK.II\nVECTOR WING SYSTEM",Vector2(1020,91),14,CYAN)
 	if not practiced:
-		label_at(modal, "FIRST RUN? PRACTICE TEACHES THE CORE MOVE IN UNDER A MINUTE.", Vector2(65, 805), 10, MUTED)
+		label_at(modal, "FIRST RUN? PRACTICE TEACHES HARVESTING. SKYBOUND TEACHES FLIGHT.", Vector2(65, 814), 10, MUTED)
 
 func show_game() -> void:
 	modal.visible = false
@@ -238,8 +271,8 @@ func show_practice_complete() -> void:
 	clear_modal(); shade(0.9)
 	var box := column(Vector2(455,240),530)
 	box.add_child(text_line("READY FOR THE HEIST",38,CYAN))
-	box.add_child(text_line("You have the core move: harvest, reposition, pulse.\nTake it into the full six-minute challenge.",21,MUTED))
-	var start := button("BEGIN THE FULL RUN    →",func():action.emit("start",false),true)
+	box.add_child(text_line("You have the core move: harvest, reposition, pulse.\nTake flight across three sectors in Skybound.",21,MUTED))
+	var start := button("BEGIN SKYBOUND    →",func():action.emit("campaign",false),true)
 	box.add_child(start)
 	box.add_child(button("PRACTICE AGAIN",func():action.emit("practice",true)))
 	box.add_child(button("RETURN TO TITLE",func():action.emit("title",null)))
@@ -284,7 +317,7 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	keys.columns = 2
 	keys.add_theme_constant_override("h_separation", 12)
 	keys.add_theme_constant_override("v_separation", 8)
-	for id in ["left","right","up","down","dash","pulse"]:
+	for id in ["left","right","up","down","dash","pulse","jump"]:
 		var key_name := OS.get_keycode_string(int(bindings[id]))
 		var key_button := button(id.to_upper() + "   [" + key_name + "]", func(): action.emit("rebind", id))
 		key_button.custom_minimum_size = Vector2(344,42)
@@ -338,6 +371,8 @@ func show_result(won: bool, data: Dictionary) -> void:
 	box.add_child(text_line("SCORE     /     BEST %06d" % data.best, 14, AMBER))
 	box.add_child(text_line("%d machines broken   ·   %d shots stolen   ·   %d pulses" % [data.kills,data.absorbed,data.pulses], 17))
 	box.add_child(text_line("TIME  %02d:%02d" % [int(data.time)/60,int(data.time)%60], 17, MUTED))
+	if data.get("campaign",false):
+		box.add_child(text_line("SKYBOUND  /  SECTOR %d OF 3  ·  %d / 9 AIR RELAYS" % [data.sector,data.relays],14,CYAN))
 	if won: box.add_child(text_line("OVERDRIVE UNLOCKED  /  Enable it in Settings for a tougher heist.",14,CYAN))
 	var names: PackedStringArray = []
 	for id in data.upgrades: names.append(Rules.UPGRADE_DATA[id].name)
@@ -346,6 +381,30 @@ func show_result(won: bool, data: Dictionary) -> void:
 	box.add_child(again)
 	box.add_child(button("RETURN TO TITLE", func(): action.emit("title", null)))
 	again.grab_focus()
+
+func show_sector_complete(index: int, sector_name: String, elapsed: float, relays: int) -> void:
+	clear_modal(); shade(0.88)
+	hud.visible = false
+	var box := column(Vector2(420,205),600)
+	box.add_child(text_line("SECTOR 0%d / SECURED" % (index+1),15,CYAN))
+	box.add_child(text_line(sector_name,46,WHITE))
+	box.add_child(text_line("The route is open. Your reactor has room for one more evolution.",22,MUTED))
+	box.add_child(text_line("%d AIR RELAYS  ·  %02d:%02d ELAPSED" % [relays,int(elapsed)/60,int(elapsed)%60],16,AMBER))
+	box.add_child(text_line("NEXT  /  " + ("SOLAR FOUNDRY\nGlide through the relay. Time the moving shutters." if index==0 else "STORM CORE\nBreak three locks and confront the Guardian."),21,CYAN))
+	var next := button("INSTALL UPGRADE & CONTINUE    →",func():action.emit("next_sector",null),true)
+	box.add_child(next)
+	box.add_child(button("RETURN TO TITLE",func():action.emit("title",null)))
+	next.grab_focus()
+
+func update_traversal(traversal) -> void:
+	flight_bar.value = traversal.fuel*100.0
+	flight_text.text = "%s  JUMP / HOLD TO GLIDE" % key_names.jump.to_upper()
+	if traversal.gliding:
+		altitude_text.text = "GLIDING  /  %.1f m  ·  RELEASE TO DROP" % traversal.height
+	elif not traversal.grounded:
+		altitude_text.text = "AIRBORNE  /  %.1f m  ·  %s" % [traversal.height,"WINGS EMPTY" if traversal.fuel<0.01 else "HOLD TO GLIDE"]
+	else:
+		altitude_text.text = "WINGS READY  /  JUMP OVER LOW SHOTS & GATES" if traversal.fuel>=0.99 else "RECHARGING WINGS  /  STAY ON THE DECK"
 
 func show_hint(text: String, seconds: float = 4) -> void:
 	hint.text = text

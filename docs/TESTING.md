@@ -1,5 +1,7 @@
 # Testing and reproducing the evidence
 
+**Skybound follow-up:** run `./tools/test.sh` for all seven suites (**261 checks**). Add `--qa-campaign` to the driver commands below to exercise the new three-sector route. Use `tests/skybound_visuals.gd` for its staged screens and `tests/native_controls_check.gd` for injected-keyboard/animation checks. See [Skybound](SKYBOUND.md), [native controls evidence](../qa/skybound-controls.md), and [independent review](../qa/skybound-review.md). Counts and results in the original experiment sections below are historical.
+
 Run commands from the repository root after the import step in [Getting started](GETTING_STARTED.md). This guide distinguishes correctness, simulated completion, visual inspection, and real rendering performance.
 
 ## Engineering suites
