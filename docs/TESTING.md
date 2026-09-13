@@ -1,5 +1,7 @@
 # Testing and reproducing the evidence
 
+**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
+
 **Current release: [Pulsebreak 1.1](RELEASE_1_1.md).** The [release validation inventory](../qa/release-validation.json), [audio review](../qa/release-review.md) and [packaged M4 run](../qa/release-native/active-metrics.json) describe the shipped revision.
 
 **Current checks:** run `sh tools/test.sh` for fourteen suites (**591 checks**). Add `--qa-campaign --qa-sectors=6` to exercise a finite six-sector slice of continuous play. Record native release audio with `tools/release_audio_capture.gd`; it writes separate release evidence and verifies music-loop transport before a 36-second staged recording.

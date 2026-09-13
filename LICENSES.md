@@ -10,6 +10,12 @@ Earlier procedural music and remaining interface cues were synthesized by `tools
 
 This notice records provenance; it does not assign an open-source license to the original game code or assets. Godot's license below applies to the engine, not automatically to the game's original content.
 
+## Prism Drive music update (1.2)
+
+The 1.2 feature build replaces the background track with **Prism Drive**, an original instrumental generated using ElevenLabs `music_v2_5`. The user named Ray Volpe's “Laserbeam” as a high-level direction; the generation prompt describes half-time festival dubstep, synth stabs and growling bass without naming the artist or song. No reference recording was supplied. The new music and existing 1.1 combat effects play offline.
+
+`tools/prepare_prism_music.py` documents local loudness preparation and encoding; `qa/prism-music.json` records provenance, hashes and measurements. These checks do not certify musical similarity or replace listening. The 1.1 soundtrack and audition history remain in the source checkout, with the new export using `music_prism_drive.ogg`.
+
 ## Godot Engine
 
 Pulsebreak uses **Godot Engine 4.7.2**, distributed under the **MIT license**.

@@ -1,8 +1,8 @@
 extends Node
-## The player's accepted first ElevenLabs DnB track, played entirely offline.
+## Original Prism Drive half-time dubstep, played entirely offline.
 ## Threats shape music gain; reserved cue voices and blast ducking retain clarity.
 
-const MUSIC_PATH := "res://assets/audio/elevenlabs/music_reactor_rush.ogg"
+const MUSIC_PATH := "res://assets/audio/elevenlabs/music_prism_drive.ogg"
 const RELEASE_CUES := ["kinetic_fire", "scatter_fire", "arc_fire", "plasma_fire", "armor_impact", "machine_break", "guardian_break", "weapon_install", "pulse"]
 
 const CUE_NAMES: Array[String] = ["dash", "absorb", "pulse", "shoot", "hit", "kill", "warning", "upgrade", "boss", "core", "victory", "defeat", "ready", "kinetic_fire", "scatter_fire", "arc_fire", "plasma_fire", "armor_impact", "machine_break", "guardian_break", "weapon_install"]

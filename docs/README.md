@@ -1,5 +1,7 @@
 # Documentation
 
+**New on this branch: [Prism Drive 1.2](PRISM_DRIVE.md)** — an original half-time dubstep soundtrack. [Listen](audio/prism/prism_drive.mp3) · [Independent review](../qa/prism-review.md). The current source uses this track; the prior release is recorded below.
+
 **Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md), merged to `main`.** The release uses the player-selected first ElevenLabs DnB track and combat effects, with endless sectors, evolving weapons, flight and Quit controls. [Release notes](RELEASE_1_1.md) · [Changelog](../CHANGELOG.md) · [Release verification](../qa/README.md).
 
 [Resonance](RESONANCE.md) records the earlier visual and procedural-music iteration. [Overdrive](OVERDRIVE.md) records evolving weapons and continuous levels. Those reports retain their original measurements and audio versions.
@@ -23,7 +25,7 @@ Pulsebreak has two stories: a playable native Mac game, and an experiment in bui
 
 ## Current guides and historical records
 
-The release notes and current guide introductions describe version 1.1. The original [design](../DESIGN.md), [research notes](../findings.md), [implementation plan](superpowers/plans/2026-09-07-pulsebreak.md), and [progress log](../progress.md) preserve the development record. Some historical targets and early measurements were superseded. Use the release validation and QA index for the current outcome.
+The Prism Drive notes describe the 1.2 feature build; release 1.1 notes preserve the previous shipped version. The original [design](../DESIGN.md), [research notes](../findings.md), [implementation plan](superpowers/plans/2026-09-07-pulsebreak.md), and [progress log](../progress.md) preserve the development record. Some historical targets and early measurements were superseded. Use the release validation and QA index for the current outcome.
 
 The implementation was first committed as `a992452`. Public documentation was added afterward without changing gameplay. Native resource-pack hashes in QA reports identify evaluated packages independently of later documentation commits.
 

@@ -1,5 +1,7 @@
 # Art, audio, and asset provenance
 
+**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
+
 **Current release: [Pulsebreak 1.1](RELEASE_1_1.md).** The release retains the procedural art and richer Resonance palette and uses the player-selected first ElevenLabs DnB track and combat effects. [Overdrive](OVERDRIVE.md) and [Resonance](RESONANCE.md) describe earlier visual/audio iterations; their audio inventories are historical.
 
 Pulsebreak's visuals are constructed in source with Codex assistance; no external model or texture pack was imported. Release audio includes ElevenLabs-generated recordings as described below. Earlier procedural audio remains in the checkout as development history.

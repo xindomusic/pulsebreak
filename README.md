@@ -1,14 +1,16 @@
 # Pulsebreak
 
-**Current Mac release: [Pulsebreak 1.1](docs/RELEASE_1_1.md)** — the player-selected first ElevenLabs DnB track, new combat sounds, richer navy/cobalt/coral colors and a layered reactor blast. Endless generated sectors, evolving weapons, flight, animated enemy breakup and Quit controls carry forward. Open **build/Pulsebreak.app**, then choose **Begin Skybound**. **F** jumps/holds to glide; **Q** switches unlocked weapons; **Esc** opens pause and Quit. The game runs offline without an API key.
+**New on this branch: [Prism Drive 1.2](docs/PRISM_DRIVE.md)** — original half-time dubstep with a 150 BPM brief, growling bass and sharp synth stabs. [Listen](docs/audio/prism/prism_drive.mp3) or open **build/Pulsebreak.app** after building. Endless sectors, weapons, flight and Quit controls continue from 1.1. **F** jumps/holds to glide; **Q** switches weapons; **Esc** opens pause and Quit. The game runs offline without an API key.
+
+The latest release on `main` remains [Pulsebreak 1.1](docs/RELEASE_1_1.md). This music update is on `feat/prism-drive-music`; see its [notes and verification](docs/PRISM_DRIVE.md).
 
 ![Staged native Resonance title and courier](docs/images/resonance-title.png)
 
-*[Release notes](docs/RELEASE_1_1.md), [hear the selected DnB track](docs/audio/elevenlabs/reactor_rush.mp3), and [release review](qa/release-review.md). [Resonance](docs/RESONANCE.md), [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
+*[Prism Drive notes](docs/PRISM_DRIVE.md), [hear the new soundtrack](docs/audio/prism/prism_drive.mp3), and [music review](qa/prism-review.md). [Release 1.1](docs/RELEASE_1_1.md), [Resonance](docs/RESONANCE.md), [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
 
 ## Release 1.1.0 on main
 
-| Check | Current release result |
+| Check | Release 1.1 result |
 |---|---|
 | Regression suites | **591 checks in 14 suites**, all passed; includes 768 generated layouts |
 | Packaged Mac campaign | Three sectors, nine airborne relays and one Guardian completed; 64 hull at 97.13 game seconds |

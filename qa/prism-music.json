@@ -1,0 +1,492 @@
+{
+  "brief": "Original 150 BPM half-time festival dubstep, responding to the user's high-level reference direction.",
+  "reference": "https://soundcloud.com/rayvolpemusic/laserbeam",
+  "reference_audio_used": false,
+  "musical_similarity_reviewed_by_listening": false,
+  "tempo": "150 BPM requested; no exact tempo/beat-grid certification.",
+  "provider_receipt": "qa/elevenlabs-audition/prism_drive.json",
+  "provider_original_sha256": "376cf8f6308e332abe1e9e31180068acde02537dfe50eef474e6010c58f22b12",
+  "original_loudness": {
+    "input_i": "-11.35",
+    "input_tp": "0.58",
+    "input_lra": "1.10",
+    "input_thresh": "-21.35",
+    "output_i": "-13.90",
+    "output_tp": "-1.86",
+    "output_lra": "0.70",
+    "output_thresh": "-23.90",
+    "normalization_type": "dynamic",
+    "target_offset": "-0.20"
+  },
+  "processing": "Two-pass loudness normalization, 10ms boundary fades and final measured MP3 loudness matching. Full arrangement retained.",
+  "runtime": {
+    "path": "assets/audio/elevenlabs/music_prism_drive.ogg",
+    "sha256": "3236dbbc9897641b4e0ac433b4da2a024ecc7776720f05855288fc91bc0ec0d6",
+    "decoded": {
+      "duration_seconds": 102.4261224489796,
+      "sample_peak": 0.855829119682312,
+      "peak_dbfs": -1.3522588136392701,
+      "rms": 0.15947675305174133,
+      "samples_at_or_above_full_scale": 0,
+      "dc_offset_per_channel": [
+        -0.000333184785757971,
+        -0.0005048893337466516
+      ]
+    },
+    "loop_boundary_sample_difference": 0.002131066906626712,
+    "loudness": {
+      "input_i": "-13.97",
+      "input_tp": "-1.35",
+      "input_lra": "1.10",
+      "input_thresh": "-23.97",
+      "output_i": "-13.80",
+      "output_tp": "-1.50",
+      "output_lra": "0.70",
+      "output_thresh": "-23.80",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.20"
+    }
+  },
+  "music_preview": {
+    "wav": "qa/prism-music/prepared/prism_drive.wav",
+    "preview": "docs/audio/prism/prism_drive.mp3",
+    "sha256": "7f7a000251dc5a9ce0e197f8b808abf9cdbef593ad42a852b49c0b7cdea8b007",
+    "prepared_pcm": {
+      "duration_seconds": 102.4261224489796,
+      "sample_peak": 0.7872002720832825,
+      "peak_dbfs": -2.078295289393856,
+      "rms": 0.1603138398427662,
+      "samples_at_or_above_full_scale": 0,
+      "dc_offset_per_channel": [
+        -0.0003695301637540679,
+        -0.0004921904672529643
+      ]
+    },
+    "decoded_mp3": {
+      "duration_seconds": 102.4261224489796,
+      "sample_peak": 0.7855924963951111,
+      "peak_dbfs": -2.0960534675015827,
+      "rms": 0.155772127730217,
+      "samples_at_or_above_full_scale": 0,
+      "dc_offset_per_channel": [
+        -0.0003417956266448016,
+        -0.0004765784099230582
+      ]
+    },
+    "preview_loudness": {
+      "input_i": "-14.10",
+      "input_tp": "-2.07",
+      "input_lra": "1.10",
+      "input_thresh": "-24.10",
+      "output_i": "-13.80",
+      "output_tp": "-1.65",
+      "output_lra": "0.70",
+      "output_thresh": "-23.80",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.20"
+    },
+    "matched_target_lufs": -14.1
+  },
+  "battle_preview": {
+    "wav": "qa/prism-music/prepared/battle_preview.wav",
+    "preview": "docs/audio/prism/battle_preview.mp3",
+    "sha256": "9a8d36942bfc4e68663a1729071f2952dadb9b40ed756fbd3f2d12165e7a0cb5",
+    "prepared_pcm": {
+      "duration_seconds": 44.2,
+      "sample_peak": 0.7943282347242815,
+      "peak_dbfs": -2.0,
+      "rms": 0.1384247664951501,
+      "samples_at_or_above_full_scale": 0,
+      "dc_offset_per_channel": [
+        0.0005040870552500856,
+        0.0007825883365891692
+      ]
+    },
+    "decoded_mp3": {
+      "duration_seconds": 44.20024943310658,
+      "sample_peak": 0.7803903222084045,
+      "peak_dbfs": -2.153762500505492,
+      "rms": 0.13437803596468256,
+      "samples_at_or_above_full_scale": 0,
+      "dc_offset_per_channel": [
+        0.00047691441306637613,
+        0.0007291400346287764
+      ]
+    },
+    "preview_loudness": {
+      "input_i": "-17.39",
+      "input_tp": "-2.09",
+      "input_lra": "4.10",
+      "input_thresh": "-27.42",
+      "output_i": "-13.81",
+      "output_tp": "-1.50",
+      "output_lra": "3.40",
+      "output_thresh": "-23.83",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.19"
+    }
+  },
+  "battle_method": "Offline 44.2s montage using release 1.1 effects and representative full-combat gains. Not an engine recording; no pitch variation or voice limiting is simulated.",
+  "battle_events": [
+    {
+      "seconds": 3.0,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 3.09,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 3.28,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 3.56,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 3.65,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 3.84,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 4.12,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 4.21,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 4.4,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 4.68,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 4.77,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 6.0,
+      "cue": "machine_break",
+      "strength": 0.7,
+      "gain_db": -1.8
+    },
+    {
+      "seconds": 8.0,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 8.09,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 8.28,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 8.56,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 8.65,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 8.84,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 9.12,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 9.21,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 9.4,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 9.68,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 9.77,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 13.0,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 13.95,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 14.9,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 16.5,
+      "cue": "machine_break",
+      "strength": 0.7,
+      "gain_db": -1.8
+    },
+    {
+      "seconds": 18.0,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 18.95,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 19.9,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 21.5,
+      "cue": "pulse",
+      "strength": 1.0,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 26.0,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 26.09,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 26.28,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 26.56,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 26.65,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 26.84,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 27.12,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 27.21,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 27.4,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 27.68,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 27.77,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 29.0,
+      "cue": "machine_break",
+      "strength": 0.7,
+      "gain_db": -1.8
+    },
+    {
+      "seconds": 30.0,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 30.95,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 31.9,
+      "cue": "plasma_fire",
+      "strength": 0.82,
+      "gain_db": -2.5
+    },
+    {
+      "seconds": 34.0,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 34.09,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 34.28,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 34.56,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 34.65,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 34.84,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 35.12,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 35.21,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 35.4,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 35.68,
+      "cue": "kinetic_fire",
+      "strength": 0.82,
+      "gain_db": -3.9
+    },
+    {
+      "seconds": 35.77,
+      "cue": "armor_impact",
+      "strength": 0.48,
+      "gain_db": -4.2
+    },
+    {
+      "seconds": 39.5,
+      "cue": "pulse",
+      "strength": 1.0,
+      "gain_db": -2.5
+    }
+  ],
+  "preserved_release_audio_sha256": {
+    "assets/audio/elevenlabs/guardian_break.wav": "b1364eecb98d3daba4d0a46faf83bfcf674b2ab0bbe2420e03e9f0386fb2e0c5",
+    "assets/audio/elevenlabs/plasma_fire.wav": "c68179ad1ad3c59ea43f40aa32416c5183ee77ad297dc6a61eba90c2009704f3",
+    "assets/audio/elevenlabs/arc_fire.wav": "d2210d10f19570721d632084b8a2da5bf2ed613d769eadc31e84fbe66f1ce308",
+    "assets/audio/elevenlabs/weapon_install.wav": "6333f4852daa7620ed1f7e0a50b93cf274c9ac0fe251661b65bd201b5d544e7b",
+    "assets/audio/elevenlabs/armor_impact.wav": "34942bd96c0ce92ced3cee1347167291d823b956b110941bbcf07ee693ec91ae",
+    "assets/audio/elevenlabs/music_reactor_rush.ogg": "dd518e0eebfd7380881d3a497589be5af7c7ae753252d598fe3d8d6b995d2ad9",
+    "assets/audio/elevenlabs/machine_break.wav": "11aa318a7d8391cb945aaf23d61b1e87bbcf95934c17c73942ff7b841527cb26",
+    "assets/audio/elevenlabs/pulse.wav": "4e622de7c1eae2ab9c143f326d0fc7ec48847108492c213ea07c81112a03de5e",
+    "assets/audio/elevenlabs/scatter_fire.wav": "b31898c53058ee56868e850524e5d6c3cd9007a52d728d5b434f89f4d652ce8c",
+    "assets/audio/elevenlabs/kinetic_fire.wav": "2b1c821e97ad13e70b4ebf06f067d2134537b16934b90bc28b5c1e8c165b99b8"
+  }
+}

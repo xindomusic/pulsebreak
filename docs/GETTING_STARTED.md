@@ -1,5 +1,7 @@
 # Getting started on a Mac
 
+**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
+
 **Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md) on `main`.** Choose **Begin Skybound** for continuous generated levels, four evolving weapons, jump/glide and moving gates. The selected first ElevenLabs soundtrack and prepared effects are included in the source. A local standalone app can be opened at `build/Pulsebreak.app`; a fresh clone needs the editor or a local export.
 
 ## Requirements

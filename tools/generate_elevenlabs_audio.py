@@ -130,6 +130,41 @@ ASSETS.append({
 })
 
 
+# Original music brief for the user's next battle-music direction. The provider
+# receives musical traits only, with no reference recording or artist/song name.
+ASSETS.append({
+    "name": "prism_drive", "kind": "music", "title": "Prism Drive — half-time festival dubstep",
+    "body": {
+        "model_id": "music_v2_5", "music_length_ms": 102400, "force_instrumental": True,
+        "prompt": (
+            "Create an ORIGINAL instrumental sci-fi arena combat soundtrack, 150 BPM, heavy "
+            "festival dubstep with a 75 BPM half-time backbeat. A distinctive newly composed "
+            "short rhythmic hook drives the track. Sharp resonant FM synth stabs with fast "
+            "pitch bends trade syncopated phrases with deep gritty growling bass. Alternate "
+            "bright metallic zaps, guttural bass answers and compact silence gaps for a "
+            "huge physical stop-start groove. Powerful tight low punchy kick, enormous "
+            "dry snare/clap body on the half-time backbeat, crisp rapid hi-hat accents, "
+            "occasional tom fills and clean controlled mono sub. Massive defined transients "
+            "and strong bass weight, restrained high-end harshness. Strong futuristic "
+            "arcade-battle excitement; the music should make movement and impacts feel powerful. "
+            "Keep pads and sustained melodies minimal so game sound effects have room. "
+            "Begin on the very first beat with the full bass-and-drum groove. Approximately "
+            "64 bars: four bars establishing the hook, sixteen bars of first-drop bass "
+            "call-and-response, eight bars developing the rhythm, four bars of tight "
+            "rising tension with the drums still present, sixteen bars of a heavier second "
+            "drop with a contrasting original bass phrase, then sixteen bars of evolving "
+            "full-energy variations. Fill or change bass articulation every four bars. "
+            "Finish at full groove on a clean bar boundary, ready to return to the opening. "
+            "No long ambient introduction, no extended breakdown, no fadeout. Modern polished "
+            "wide club mix with clear centered kick, snare and sub. Entirely instrumental: "
+            "no singing, speech, chants, crowd, sampled dialogue or vocal hook. Music only, "
+            "no literal weapon/explosion game effects. No drum-and-bass breakbeat, no house "
+            "four-on-the-floor, no pop chorus. All melodies, rhythms and arrangements newly composed."
+        ),
+    },
+})
+
+
 def timestamp():
     return datetime.now(timezone.utc).isoformat()
 

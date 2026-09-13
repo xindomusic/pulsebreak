@@ -1,5 +1,7 @@
 # Possible next steps
 
+**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
+
 The original experiment completed three review/fix cycles with an 8.2/10 observational result. Since then, [release 1.1](RELEASE_1_1.md) has added endless seeded sectors, flight, weapon progression, richer effects, a player-selected soundtrack and packaged M4 validation. The proposals below began with the original experiment; current release evidence is in the [QA index](../qa/README.md).
 
 ## Improve the evidence first

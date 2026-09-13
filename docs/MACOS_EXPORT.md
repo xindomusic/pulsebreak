@@ -1,6 +1,6 @@
 # Building a standalone Mac app
 
-Release **1.1.0** exports a universal `.app` containing arm64 and x86_64 code, a versioned ZIP and checksums. The packaged game was tested on Mac mini M4 / 16 GB; Intel hardware was not. Use **Godot 4.7.2 and matching 4.7.2 templates** to reproduce the recorded environment. See [release notes](RELEASE_1_1.md) and [package evidence](../qa/release-package.json).
+The **1.2.0 feature build** exports a universal `.app` containing arm64 and x86_64 code, a versioned ZIP and checksums. Release 1.1 was tested on Mac mini M4 / 16 GB; those performance measurements describe that build. Intel hardware was not tested. Use **Godot 4.7.2 and matching 4.7.2 templates** to reproduce the recorded environment. See [Prism Drive notes](PRISM_DRIVE.md) and [package evidence](../qa/prism-package.json).
 
 ## Install the local prerequisites
 
@@ -38,9 +38,9 @@ bash tools/export_macos.sh
 open build/Pulsebreak.app
 ```
 
-The script checks editor/template versions and archive integrity, refreshes asset imports, exports the `macOS` preset, copies `LICENSES.md` into Resources, applies a local ad-hoc signature, and verifies it with `codesign --verify --deep --strict`. It checks both architectures, creates **build/Pulsebreak-1.1.0-macOS-universal.zip**, verifies the ZIP and writes **build/SHA256SUMS.txt** for the archive and PCK.
+The script checks editor/template versions and archive integrity, refreshes asset imports, exports the `macOS` preset, copies `LICENSES.md` into Resources, applies a local ad-hoc signature, and verifies it with `codesign --verify --deep --strict`. It checks both architectures, creates **build/Pulsebreak-1.2.0-macOS-universal.zip**, verifies the ZIP and writes **build/SHA256SUMS.txt** for the archive and PCK.
 
-The built app runs without Godot installed elsewhere or any API key. Re-exporting replaces the local build; commit source changes rather than the generated bundle. The validated 1.1.0 ZIP is 60,923,117 bytes; its exact checksum is in the package report. Most uncompressed app size is the universal engine binary.
+The built app runs without Godot installed elsewhere or any API key. Re-exporting replaces the local build; commit source changes rather than the generated bundle. Exact 1.2.0 sizes and checksums are in the [package report](../qa/prism-package.json). The previous 1.1.0 archive is preserved separately, with its [original evidence](../qa/release-package.json). Most uncompressed app size is the universal engine binary.
 
 ## Configuration map
 
@@ -49,8 +49,8 @@ The built app runs without Godot installed elsewhere or any API key. Re-exportin
 | Export preset | `macOS` in [export_presets.cfg](../export_presets.cfg) |
 | Output | `build/Pulsebreak.app` |
 | Bundle identifier | `games.pulsebreak.local` |
-| Current game version | `1.1.0` |
-| Archive / checksums | `build/Pulsebreak-1.1.0-macOS-universal.zip` / `build/SHA256SUMS.txt` |
+| Current feature build version | `1.2.0` |
+| Archive / checksums | `build/Pulsebreak-1.2.0-macOS-universal.zip` / `build/SHA256SUMS.txt` |
 | Templates | Local `.tools/export/templates/macos.zip` for both debug/release |
 | Renderer | Mobile, Metal on the tested Mac |
 | Texture compression | S3TC/BPTC and ETC2/ASTC enabled for the universal export |

@@ -1,13 +1,13 @@
 extends SceneTree
-## Records the shipped first-candidate mix after the production limiter.
-## Separate release evidence; historical Resonance captures remain untouched.
+## Records the configured soundtrack after the production limiter.
+## Per-track evidence directories preserve historical release captures.
 ## Automated campaign combat with explicitly logged weapon/charge injections;
 ## this is an engine-audio demonstration, not a human playthrough or benchmark.
 ## API: https://docs.godotengine.org/en/stable/classes/class_audioeffectrecord.html
 ## WAV: https://docs.godotengine.org/en/stable/classes/class_audiostreamwav.html
 
 const ReleaseAudio = preload("res://scripts/audio_director.gd")
-const APPROVED_MUSIC := "res://assets/audio/elevenlabs/music_reactor_rush.ogg"
+const CONFIGURED_MUSIC := ReleaseAudio.MUSIC_PATH
 const DURATION := 36.0
 const HARD_DEADLINE := 50.0
 const MODES: Array[String] = ["kinetic", "scatter", "arc", "plasma"]
@@ -50,7 +50,7 @@ func _initialize() -> void:
 
 
 func capture_audio() -> void:
-	output_dir = ProjectSettings.globalize_path("res://qa/release-native-audio")
+	output_dir = ProjectSettings.globalize_path("res://qa/native-audio-" + CONFIGURED_MUSIC.get_file().get_basename())
 	if DisplayServer.get_name() == "headless" or AudioServer.get_driver_name() == "Dummy":
 		failure = "Native rendering and a real audio driver are required."
 	for arg: String in OS.get_cmdline_user_args():
@@ -76,8 +76,8 @@ func capture_audio() -> void:
 	if not failure.is_empty():
 		await finish_capture()
 		return
-	if ReleaseAudio.MUSIC_PATH != APPROVED_MUSIC or not ResourceLoader.exists(APPROVED_MUSIC):
-		failure = "The accepted first-candidate release soundtrack is not available."
+	if not ResourceLoader.exists(CONFIGURED_MUSIC):
+		failure = "The configured soundtrack is not available."
 	for cue: String in ReleaseAudio.RELEASE_CUES:
 		if not ResourceLoader.exists(ReleaseAudio.cue_path(cue)):
 			failure = "Missing imported release cue: " + cue
@@ -173,7 +173,7 @@ func verify_music_loop() -> void:
 	var player: AudioStreamPlayer = game.sound._music
 	var stream := player.stream as AudioStreamOggVorbis
 	if stream == null or not stream.loop or not player.playing:
-		failure = "Approved music did not start with an enabled Ogg loop."
+		failure = "Configured music did not start with an enabled Ogg loop."
 		return
 	var seek_position := maxf(0.0, stream.get_length() - 0.8)
 	player.seek(seek_position)
@@ -196,7 +196,7 @@ func verify_music_loop() -> void:
 		"loops_before": before_loops, "loops_after": after_loops, "same_playback": same_playback,
 		"note": "Transport wrap verified before recording; no listening or beat-grid claim."}
 	playback = null
-	if not passed: failure = "Approved music failed the native loop-wrap transport check."
+	if not passed: failure = "Configured music failed the native loop-wrap transport check."
 
 
 func elapsed() -> float:
@@ -292,7 +292,7 @@ func finish_capture() -> void:
 		recording = null
 	else:
 		if failure.is_empty(): failure = "AudioEffectRecord returned no recording."
-	var metadata := {"kind": "scripted_native_engine_master_audio", "music_path": ReleaseAudio.MUSIC_PATH, "music_sha256": FileAccess.get_sha256(APPROVED_MUSIC), "music_loop_check": loop_check, "human_playthrough": false, "progression_test": false, "performance_test": false, "success": failure.is_empty(), "failure": failure, "requested_seconds": DURATION, "wall_record_seconds": record_seconds, "volume": volume, "seed": seed_value, "recorded_after_limiter": not bus_effects.is_empty() and bus_effects[-1].get("class") == "AudioEffectRecord", "bus_effect_order": bus_effects, "engine": Engine.get_version_info().string, "audio_driver": AudioServer.get_driver_name(), "mix_rate": AudioServer.get_mix_rate(), "wav": wav_path, "pcm": stats, "scripted_events": events, "telemetry": telemetry, "notes": "Staged audio audition, not progression or performance evidence. First half installs four rank III weapons and spawns one gunner per install. At18s the tool jumps to sector3 and invokes the production Guardian entry with four scripted escorts. Two full charges are injected. Combat, pilot, enemy attacks and adaptive intensity remain production behavior; health/recovery only change through normal gameplay and production entry. No preference saves."}
+	var metadata := {"kind": "scripted_native_engine_master_audio", "music_path": ReleaseAudio.MUSIC_PATH, "music_sha256": FileAccess.get_sha256(CONFIGURED_MUSIC), "music_loop_check": loop_check, "human_playthrough": false, "progression_test": false, "performance_test": false, "success": failure.is_empty(), "failure": failure, "requested_seconds": DURATION, "wall_record_seconds": record_seconds, "volume": volume, "seed": seed_value, "recorded_after_limiter": not bus_effects.is_empty() and bus_effects[-1].get("class") == "AudioEffectRecord", "bus_effect_order": bus_effects, "engine": Engine.get_version_info().string, "audio_driver": AudioServer.get_driver_name(), "mix_rate": AudioServer.get_mix_rate(), "wav": wav_path, "pcm": stats, "scripted_events": events, "telemetry": telemetry, "notes": "Staged audio audition, not progression or performance evidence. First half installs four rank III weapons and spawns one gunner per install. At18s the tool jumps to sector3 and invokes the production Guardian entry with four scripted escorts. Two full charges are injected. Combat, pilot, enemy attacks and adaptive intensity remain production behavior; health/recovery only change through normal gameplay and production entry. No preference saves."}
 	var file := FileAccess.open(output_dir.path_join("release-engine-audio.json"), FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(metadata, "  "))

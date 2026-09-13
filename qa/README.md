@@ -1,5 +1,9 @@
 # Pulsebreak verification evidence
 
+## Prism Drive 1.2 — feature branch
+
+[Music update notes](../docs/PRISM_DRIVE.md) · [Independent review](prism-review.md) · [Audio manifest](prism-music.json) · [Native audio capture](prism-native-audio/release-engine-audio.json) · [Regression log](prism-tests.log) · [Package report](prism-package.json). These describe the new half-time dubstep soundtrack; the 1.1 performance and release evidence below remain specific to the earlier build.
+
 ## Release 1.1.0 — current main
 
 [Release notes](../docs/RELEASE_1_1.md) document the selected first ElevenLabs music candidate and packaged Mac game. Current release evidence:
