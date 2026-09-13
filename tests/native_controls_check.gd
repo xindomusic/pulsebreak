@@ -69,7 +69,9 @@ func run_checks() -> void:
 	# production callback is reconnected and explicitly tested below.
 	game.get_window().focus_exited.disconnect(game.pause_on_focus_loss)
 	Input.use_accumulated_input = false
-	game.qa_output_dir = ProjectSettings.globalize_path("res://qa/overdrive-controls")
+	game.qa_output_dir = ProjectSettings.globalize_path("res://qa/resonance-controls")
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--qa-dir="): game.qa_output_dir=arg.trim_prefix("--qa-dir=")
 	# The fixture is deterministic and never writes the user's settings. Rebind
 	# input temporarily uses qa_mode only to suppress save_settings, not movement.
 	game.bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F,"weapon":KEY_Q}

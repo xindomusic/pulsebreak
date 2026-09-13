@@ -6,36 +6,46 @@ static var _materials: Dictionary = {}
 static var _meshes: Dictionary = {}
 
 const PALETTE: Dictionary = {
-	"deck": Color("344653"),
-	"deck_alt": Color("30414f"),
-	"seam": Color("152430"),
-	"steel": Color("202d3d"),
-	"edge": Color("526778"),
-	"dark": Color("101b2b"),
-	"distant": Color("182337"),
-	"teal_dim": Color("237881"),
-	"teal": Color("3bd7db"),
-	"cyan": Color("72f7ff"),
-	"white": Color("e2f4f3"),
-	"white_shadow": Color("94b9c6"),
-	"amber": Color("edb256"),
-	"orange": Color("f78239"),
-	"hot": Color("ffdf99"),
-	"magenta": Color("e8498c"),
-	"pink": Color("ff93be"),
-	"purple": Color("6961a1"),
-	"violet": Color("bc98f7"),
-	"ceramic": Color("d9eeed"),
-	"titanium": Color("73919c"),
-	"visor": Color("052d39"),
-	"solar": Color("ffc56a"),
-	"storm": Color("ae82f4"),
-	"deck_deep": Color("233744"),
-	"deck_mark": Color("6e929e"),
-	"solar_dim": Color("847259"),
-	"storm_dim": Color("655780"),
-	"gunmetal": Color("182c38"),
-	"mint": Color("70ffc5"),
+	"deck": Color("172340"),
+	"deck_alt": Color("1c2b4c"),
+	"seam": Color("060b1d"),
+	"steel": Color("17223c"),
+	"edge": Color("415c85"),
+	"dark": Color("070c1a"),
+	"distant": Color("10142d"),
+	"teal_dim": Color("0e647a"),
+	"teal": Color("11ddea"),
+	"cyan": Color("40edff"),
+	"white": Color("eef8ff"),
+	"white_shadow": Color("709bc7"),
+	"amber": Color("ffa83a"),
+	"orange": Color("ff6b29"),
+	"hot": Color("ffe4a2"),
+	"magenta": Color("f33866"),
+	"pink": Color("ff819e"),
+	"purple": Color("6150b2"),
+	"violet": Color("ad79ff"),
+	"ceramic": Color("e6edff"),
+	"titanium": Color("6588ba"),
+	"visor": Color("07182f"),
+	"solar": Color("ffae42"),
+	"storm": Color("9453ff"),
+	"deck_deep": Color("101932"),
+	"deck_mark": Color("377caa"),
+	"solar_dim": Color("9a6941"),
+	"storm_dim": Color("6553aa"),
+	"gunmetal": Color("101c33"),
+	"mint": Color("43f7c6"),
+	"cobalt": Color("244dbe"),
+	"threat_armor": Color("b93d56"),
+	"threat_plate": Color("ef6248"),
+	"threat_edge": Color("ff9962"),
+	"sky_inlay": Color("102c50"),
+	"solar_inlay": Color("2b1c40"),
+	"storm_inlay": Color("201945"),
+	"sky_lamp": Color("12bcd9"),
+	"solar_lamp": Color("ff932e"),
+	"storm_lamp": Color("7943ed"),
 }
 
 
@@ -60,6 +70,20 @@ static func _material(key: String) -> StandardMaterial3D:
 	if key == "ceramic":
 		result.roughness = 0.32
 		result.metallic = 0.18
+	if key == "cobalt":
+		result.roughness = 0.34
+		result.metallic = 0.42
+	if key in ["threat_armor", "threat_plate", "orange", "magenta"]:
+		# Painted enemy armor stays warm under the cool environmental rim.
+		result.roughness = 0.45
+		result.metallic = 0.12
+		result.emission_enabled = true
+		result.emission = result.albedo_color
+		result.emission_energy_multiplier = 0.16
+	if key == "threat_edge":
+		result.emission_enabled = true
+		result.emission = result.albedo_color
+		result.emission_energy_multiplier = 1.25
 	if key in ["titanium", "visor", "gunmetal"]:
 		result.roughness = 0.26
 		result.metallic = 0.72
@@ -67,6 +91,10 @@ static func _material(key: String) -> StandardMaterial3D:
 		result.emission_enabled = true
 		result.emission = result.albedo_color
 		result.emission_energy_multiplier = 1.4
+	if key.ends_with("_lamp"):
+		result.emission_enabled = true
+		result.emission = result.albedo_color
+		result.emission_energy_multiplier = 0.75
 	_materials[key] = result
 	return result
 
@@ -298,9 +326,9 @@ static func build_arena(parent: Node3D) -> void:
 	_build_perimeter(arena)
 	_build_supports(arena)
 	_build_backdrop(arena)
-	_label(deck, "S K Y F O R G E    /    0 7", Vector3(0, 0.042, -15.56), 46, "white_shadow")
+	_label(deck, "S K Y F O R G E    /    FLIGHT ARRAY", Vector3(0, 0.042, -15.56), 38, "white_shadow")
 	_label(deck, "REACTOR TRANSFER DECK", Vector3(0, 0.042, 15.54), 30, "white_shadow")
-	_label(deck, "07", Vector3(-13.7, 0.042, 12.8), 100, "edge")
+	_label(deck, "SF", Vector3(-13.7, 0.042, 12.8), 100, "edge")
 	_label(deck, "+", Vector3(13.7, 0.042, -12.8), 76, "edge")
 
 
@@ -441,7 +469,7 @@ static func player() -> Node3D:
 	rig["torso"] = torso
 	_part(torso, "armor", Vector3(0, 0.21, 0), Vector3(0.50, 0.47, 0.32), "dark", Vector3(-0.06, 0, 0))
 	_part(torso, "cuirass", Vector3(0, 0.28, 0.07), Vector3(0.65, 0.43, 0.36), "ceramic", Vector3(-0.08, 0, 0))
-	_part(torso, "armor", Vector3(0, 0.08, 0.16), Vector3(0.35, 0.20, 0.13), "titanium", Vector3(-0.16, 0, 0))
+	_part(torso, "armor", Vector3(0, 0.08, 0.16), Vector3(0.35, 0.20, 0.13), "cobalt", Vector3(-0.16, 0, 0))
 	for side: float in [-1.0, 1.0]:
 		_part(torso, "armor", Vector3(side * 0.155, 0.32, 0.246), Vector3(0.15, 0.19, 0.042), "white")
 		_part(torso, "box", Vector3(side * 0.17, 0.405, 0.255), Vector3(0.14, 0.025, 0.025), "cyan")
@@ -477,7 +505,7 @@ static func player() -> Node3D:
 		var shoulder: Node3D = _group(torso, "Shoulder" + suffix, Vector3(side * 0.355, 0.36, 0))
 		rig.shoulders.append(shoulder)
 		_part(shoulder, "sphere", Vector3.ZERO, Vector3.ONE * 0.105, "dark")
-		_part(shoulder, "armor", Vector3(side * 0.025, 0.032, 0), Vector3(0.26, 0.20, 0.32), "ceramic", Vector3(0, 0, -side * 0.15))
+		_part(shoulder, "armor", Vector3(side * 0.025, 0.032, 0), Vector3(0.26, 0.20, 0.32), "cobalt", Vector3(0, 0, -side * 0.15))
 		_part(shoulder, "box", Vector3(side * 0.148, 0.025, 0.035), Vector3(0.025, 0.063, 0.13), "amber" if side < 0 else "cyan")
 		_part(shoulder, "armor", Vector3(side * 0.025, -0.15, 0), Vector3(0.135, 0.23, 0.15), "dark")
 		var elbow: Node3D = _group(shoulder, "Elbow" + suffix, Vector3(side * 0.025, -0.27, 0))
@@ -492,7 +520,7 @@ static func player() -> Node3D:
 	_part(head, "cylinder", Vector3(0, -0.09, 0), Vector3(0.086, 0.12, 0.086), "dark")
 	_part(head, "helmet", Vector3(0, 0.085, -0.005), Vector3(0.46, 0.45, 0.41), "ceramic", Vector3(-0.06, 0, 0))
 	_part(head, "armor", Vector3(0, 0.088, 0.168), Vector3(0.38, 0.16, 0.13), "visor", Vector3(-0.15, 0, 0))
-	_part(head, "armor", Vector3(0, 0.154, 0.175), Vector3(0.415, 0.065, 0.14), "titanium", Vector3(-0.12, 0, 0))
+	_part(head, "armor", Vector3(0, 0.154, 0.175), Vector3(0.415, 0.065, 0.14), "cobalt", Vector3(-0.12, 0, 0))
 	_part(head, "armor", Vector3(0, 0.108, 0.238), Vector3(0.28, 0.031, 0.023), "cyan")
 	_part(head, "armor", Vector3(0, -0.024, 0.151), Vector3(0.21, 0.12, 0.16), "titanium", Vector3(-0.29, 0, 0))
 	_part(head, "box", Vector3(-0.07, 0.299, -0.015), Vector3(0.060, 0.019, 0.15), "amber")
@@ -514,7 +542,7 @@ static func player() -> Node3D:
 		rig.wings.append(wing)
 		var panels: Node3D = _group(wing, "Panels")
 		panels.scale.x = side
-		_part(panels, "wing", Vector3.ZERO, Vector3.ONE, "titanium")
+		_part(panels, "wing", Vector3.ZERO, Vector3.ONE, "cobalt")
 		_part(panels, "wing", Vector3(0.04, 0.045, -0.012), Vector3(0.94, 0.6, 0.80), "ceramic")
 		_beam(panels, Vector3(0.19, 0.07, 0.10), Vector3(0.72, 0.07, 0.07), 0.023, "cyan")
 		_beam(panels, Vector3(0.74, 0.07, 0.046), Vector3(1.21, 0.07, -0.39), 0.025, "cyan")
@@ -826,24 +854,24 @@ static func _bruiser() -> Node3D:
 	var body: Node3D = _group(root, "Body")
 	for side: float in [-1.0, 1.0]:
 		_part(body, "box", Vector3(side * 0.24, 0.12, 0.045), Vector3(0.30, 0.23, 0.43), "dark")
-		_part(body, "box", Vector3(side * 0.24, 0.4, 0), Vector3(0.23, 0.37, 0.25), "purple", Vector3(0, 0, side * -0.1))
+		_part(body, "box", Vector3(side * 0.24, 0.4, 0), Vector3(0.23, 0.37, 0.25), "threat_armor", Vector3(0, 0, side * -0.1))
 		_part(body, "box", Vector3(side * 0.24, 0.45, 0.15), Vector3(0.19, 0.13, 0.07), "edge")
 	_part(body, "box", Vector3(0, 0.73, 0), Vector3(0.59, 0.23, 0.34), "dark")
-	_part(body, "box", Vector3(0, 0.99, 0), Vector3(0.67, 0.48, 0.44), "purple")
+	_part(body, "box", Vector3(0, 0.99, 0), Vector3(0.67, 0.48, 0.44), "threat_armor")
 	for side: float in [-1.0, 1.0]:
-		_part(body, "box", Vector3(side * 0.39, 1.075, 0), Vector3(0.26, 0.28, 0.40), "purple", Vector3(0, 0, side * -0.15))
+		_part(body, "box", Vector3(side * 0.39, 1.075, 0), Vector3(0.26, 0.28, 0.40), "threat_armor", Vector3(0, 0, side * -0.15))
 		_part(body, "box", Vector3(side * 0.4, 0.84, 0.12), Vector3(0.19, 0.30, 0.25), "steel")
 	_part(body, "box", Vector3(0, 1.33, 0.02), Vector3(0.40, 0.25, 0.31), "steel")
-	_part(body, "box", Vector3(0, 1.37, 0.185), Vector3(0.28, 0.043, 0.025), "violet")
+	_part(body, "box", Vector3(0, 1.37, 0.185), Vector3(0.28, 0.043, 0.025), "threat_edge")
 	var shield: Node3D = _group(root, "Shield", Vector3(0, 0.75, 0.33))
 	_part(shield, "box", Vector3.ZERO, Vector3(0.70, 0.94, 0.15), "dark", Vector3(0.10, 0, 0))
-	_part(shield, "box", Vector3(0, 0, 0.096), Vector3(0.59, 0.84, 0.09), "purple", Vector3(0.10, 0, 0))
+	_part(shield, "box", Vector3(0, 0, 0.096), Vector3(0.59, 0.84, 0.09), "threat_armor", Vector3(0.10, 0, 0))
 	for side: float in [-1.0, 1.0]:
-		_part(shield, "box", Vector3(side * 0.30, 0, 0.14), Vector3(0.035, 0.73, 0.025), "violet")
-	_part(shield, "box", Vector3(0, 0.23, 0.157), Vector3(0.40, 0.04, 0.023), "violet")
+		_part(shield, "box", Vector3(side * 0.30, 0, 0.14), Vector3(0.035, 0.73, 0.025), "threat_edge")
+	_part(shield, "box", Vector3(0, 0.23, 0.157), Vector3(0.40, 0.04, 0.023), "threat_edge")
 	_part(shield, "prism", Vector3(0, -0.09, 0.169), Vector3(0.23, 0.28, 0.032), "edge", Vector3(0, 0, PI))
 	var reactor: Node3D = _group(root, "Reactor", Vector3(0, 1.02, -0.26))
-	_part(reactor, "cylinder", Vector3.ZERO, Vector3(0.14, 0.10, 0.14), "violet", Vector3(PI * 0.5, 0, 0))
+	_part(reactor, "cylinder", Vector3.ZERO, Vector3(0.14, 0.10, 0.14), "threat_edge", Vector3(PI * 0.5, 0, 0))
 	return root
 
 
@@ -857,11 +885,11 @@ static func boss() -> Node3D:
 		_part(body, "box", Vector3(side * 0.54, 0.76, 0), Vector3(0.47, 0.77, 0.50), "steel", Vector3(0, 0, side * -0.08))
 		_part(body, "box", Vector3(side * 0.55, 0.90, 0.29), Vector3(0.41, 0.33, 0.18), "amber")
 	_part(body, "octagon", Vector3(0, 1.18, 0), Vector3(0.72, 0.29, 0.58), "dark")
-	_part(body, "octagon", Vector3(0, 1.72, 0), Vector3(0.90, 0.92, 0.64), "steel", Vector3(0, PI * 0.125, 0))
-	_part(body, "box", Vector3(0, 2.14, 0.15), Vector3(1.42, 0.20, 0.86), "edge")
+	_part(body, "octagon", Vector3(0, 1.72, 0), Vector3(0.90, 0.92, 0.64), "threat_armor", Vector3(0, PI * 0.125, 0))
+	_part(body, "box", Vector3(0, 2.14, 0.15), Vector3(1.42, 0.20, 0.86), "threat_plate")
 	for side: float in [-1.0, 1.0]:
 		_part(body, "octagon", Vector3(side * 1.0, 1.93, 0), Vector3(0.36, 0.66, 0.41), "amber", Vector3(0, 0, side * -0.24))
-		_part(body, "box", Vector3(side * 1.12, 1.43, 0.10), Vector3(0.46, 0.67, 0.61), "steel", Vector3(-0.20, 0, side * -0.08))
+		_part(body, "box", Vector3(side * 1.12, 1.43, 0.10), Vector3(0.46, 0.67, 0.61), "threat_armor", Vector3(-0.20, 0, side * -0.08))
 		_part(body, "box", Vector3(side * 1.12, 1.24, 0.33), Vector3(0.40, 0.32, 0.33), "dark")
 		_part(body, "box", Vector3(side * 1.12, 1.68, 0.44), Vector3(0.25, 0.06, 0.032), "hot")
 		_part(body, "prism", Vector3(side * 0.68, 2.30, -0.08), Vector3(0.32, 0.56, 0.45), "steel", Vector3(0, 0, side * -0.3))

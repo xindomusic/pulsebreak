@@ -1,0 +1,543 @@
+{
+  "audio_driver": "CoreAudio",
+  "bus_effect_order": [
+    {
+      "class": "AudioEffectHardLimiter",
+      "enabled": true,
+      "index": 0
+    },
+    {
+      "class": "AudioEffectRecord",
+      "enabled": true,
+      "index": 1
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "failure": "",
+  "human_playthrough": false,
+  "kind": "scripted_native_engine_master_audio",
+  "mix_rate": 48000.0,
+  "notes": "Production campaign physics, pilot, adaptive music and gameplay cues. Tool installs rankIII weapons, spawns one gunner per install and injects two full charges. No invulnerability, damage modifiers or preference saves.",
+  "pcm": {
+    "audio_seconds": 36.0213333333333,
+    "channels": 2,
+    "clipped_samples": 0,
+    "pcm_bits": 16,
+    "pcm_bytes": 6916096,
+    "peak": 0.390960693359375,
+    "rms": 0.037375004357398,
+    "sample_rate": 48000
+  },
+  "recorded_after_limiter": true,
+  "requested_seconds": 36.0,
+  "scripted_events": [
+    {
+      "campaign_seed": 74921,
+      "kind": "start",
+      "music_restarted_at_seconds": 0.0,
+      "pilot": "production game.pilot",
+      "seconds": 0.00209,
+      "volume": 0.65
+    },
+    {
+      "kind": "scripted_weapon_install",
+      "mode": "kinetic",
+      "rank": 3,
+      "seconds": 0.002529,
+      "spawn_position": [
+        4.0,
+        0.0,
+        7.0
+      ],
+      "spawned_gunner": true
+    },
+    {
+      "kind": "scripted_weapon_install",
+      "mode": "scatter",
+      "rank": 3,
+      "seconds": 9.011687,
+      "spawn_position": [
+        5.75023794174194,
+        0.0,
+        1.53131771087646
+      ],
+      "spawned_gunner": true
+    },
+    {
+      "injected_energy": 100.0,
+      "kind": "scripted_full_charge_pulse",
+      "normal_game_pulse_called": true,
+      "seconds": 14.016012
+    },
+    {
+      "kind": "scripted_weapon_install",
+      "mode": "arc",
+      "rank": 3,
+      "seconds": 18.001317,
+      "spawn_position": [
+        7.64138174057007,
+        0.0,
+        -4.76561164855957
+      ],
+      "spawned_gunner": true
+    },
+    {
+      "kind": "scripted_weapon_install",
+      "mode": "plasma",
+      "rank": 3,
+      "seconds": 27.004224,
+      "spawn_position": [
+        -4.65496921539307,
+        0.0,
+        -10.412727355957
+      ],
+      "spawned_gunner": true
+    },
+    {
+      "injected_energy": 100.0,
+      "kind": "scripted_full_charge_pulse",
+      "normal_game_pulse_called": true,
+      "seconds": 31.006136
+    }
+  ],
+  "seed": 74921,
+  "success": true,
+  "telemetry": [
+    {
+      "enemies": 1,
+      "game_seconds": 0.0,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.0,
+      "seconds": 0.002167,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 0
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 1.03333333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.31075065367488,
+      "seconds": 1.007466,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 1
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 2.03333333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.320723918527187,
+      "seconds": 2.013077,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 3
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 3.03333333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.299630579664961,
+      "seconds": 3.010485,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 3
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 4.03333333333332,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.295764798770155,
+      "seconds": 4.009099,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 3
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 5.03333333333332,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.297932502771436,
+      "seconds": 5.009417,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 3
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 6.03333333333332,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.297997961760309,
+      "seconds": 6.010662,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 3
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 7.03333333333331,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.339157555355786,
+      "seconds": 7.010379,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 4
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 8.03333333333331,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.329679974481275,
+      "seconds": 8.012477,
+      "sector": 1,
+      "state": "run",
+      "weapon": "kinetic",
+      "weapon_shots": 6
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 9.03333333333336,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.315602727572938,
+      "seconds": 9.011003,
+      "sector": 1,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 6
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 10.0333333333334,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.349540791817025,
+      "seconds": 10.011777,
+      "sector": 1,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 7
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 11.0333333333335,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.338512221818408,
+      "seconds": 11.01413,
+      "sector": 1,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 8
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 12.0333333333335,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.344055439284553,
+      "seconds": 12.013895,
+      "sector": 1,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 13.0333333333336,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.327669550798702,
+      "seconds": 13.013411,
+      "sector": 1,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 14.0333333333336,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.319929405141042,
+      "seconds": 14.015361,
+      "sector": 1,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 15.0000000000003,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.291439678230812,
+      "seconds": 15.015135,
+      "sector": 2,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 16.0000000000004,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.285403721370355,
+      "seconds": 16.016511,
+      "sector": 2,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 17.0000000000003,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.296743228929877,
+      "seconds": 17.016935,
+      "sector": 2,
+      "state": "run",
+      "weapon": "scatter",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 2,
+      "game_seconds": 17.9833333333336,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.333656663564293,
+      "seconds": 18.000463,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 2,
+      "game_seconds": 19.0000000000002,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.365109082288335,
+      "seconds": 19.0163,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 9
+    },
+    {
+      "enemies": 2,
+      "game_seconds": 19.9833333333335,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.361862337884206,
+      "seconds": 20.001541,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 10
+    },
+    {
+      "enemies": 2,
+      "game_seconds": 20.9833333333334,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.352669445064953,
+      "seconds": 21.000078,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 11
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 21.9833333333334,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.362254159574896,
+      "seconds": 22.000236,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 12
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 22.9833333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.377835427937474,
+      "seconds": 23.00063,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 13
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 23.9833333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.328852351067061,
+      "seconds": 24.001456,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 13
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 24.9833333333332,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.311245712402785,
+      "seconds": 25.003492,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 13
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 25.9833333333331,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.327113200811645,
+      "seconds": 26.002245,
+      "sector": 2,
+      "state": "run",
+      "weapon": "arc",
+      "weapon_shots": 15
+    },
+    {
+      "enemies": 3,
+      "game_seconds": 26.9833333333331,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.333301315611555,
+      "seconds": 27.003619,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 16
+    },
+    {
+      "enemies": 2,
+      "game_seconds": 27.983333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.352002037691626,
+      "seconds": 28.003146,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 17
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 28.983333333333,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.334782836817406,
+      "seconds": 29.004064,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 18
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 29.9833333333329,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.338104695899616,
+      "seconds": 30.003989,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 19
+    },
+    {
+      "enemies": 2,
+      "game_seconds": 30.9833333333329,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.348992880490312,
+      "seconds": 31.004971,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 21
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 31.9833333333328,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.317358938563217,
+      "seconds": 32.005405,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 21
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 32.9833333333327,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.307533023765774,
+      "seconds": 33.005621,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 22
+    },
+    {
+      "enemies": 1,
+      "game_seconds": 33.9833333333327,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.305375461391048,
+      "seconds": 34.007964,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 22
+    },
+    {
+      "enemies": 0,
+      "game_seconds": 34.9833333333326,
+      "health": 100.0,
+      "hostile_shots": 0,
+      "music_intensity": 0.310705986239408,
+      "seconds": 35.00664,
+      "sector": 2,
+      "state": "run",
+      "weapon": "plasma",
+      "weapon_shots": 23
+    }
+  ],
+  "volume": 0.65,
+  "wall_record_seconds": 36.019673,
+  "wav": "qa/resonance-initial-audio/resonance-engine-audio.wav",
+  "archived_from": "First Resonance audio candidate before user requested more aggressive bass and drums"
+}

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-13 — Resonance follow-up
+
+- Composed original 174 BPM drum and bass with a 64-bar arrangement and three synchronized stereo stems responding to nearby threats, incoming attacks, charge and Guardians.
+- Recolored the courier, enemies and three environments; added shared exterior power rails and soft colored light washes.
+- Replaced simple pulse rings with bounded core/gather/shard/shock-front/aftermath animation and an original layered stereo discharge; retained immediate damage and actual radius.
+- Added a Master peak limiter, meaningful pulse/Low Effects/transition checks and production Classic-mode music regression coverage.
+- See [Resonance](docs/RESONANCE.md) and [its independent review](qa/resonance-review.md) for previews, current evidence and listening limits.
+
 ## 2026-09-13 — Overdrive follow-up
 
 - Added visible working Quit controls on title, pause, checkpoint and results screens.

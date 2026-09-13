@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Metal 4.0 - Forward Mobile - Using Device #0: Apple - Apple M4 (Apple9)
+
+AUDIO_CAPTURE_EVENT {"campaign_seed":74921,"kind":"start","music_restarted_at_seconds":0.0,"pilot":"production game.pilot","seconds":0.001539,"volume":0.65}
+AUDIO_CAPTURE_EVENT {"kind":"scripted_weapon_install","mode":"kinetic","rank":3,"seconds":0.001866,"spawn_position":[4.0,0.0,7.0],"spawned_gunner":true}
+AUDIO_CAPTURE_EVENT {"kind":"scripted_weapon_install","mode":"scatter","rank":3,"seconds":4.504043,"spawn_position":[10.3261623382568,0.0,-7.40000009536743],"spawned_gunner":true}
+AUDIO_CAPTURE_EVENT {"kind":"scripted_weapon_install","mode":"arc","rank":3,"seconds":9.005371,"spawn_position":[3.14513826370239,0.0,2.43901586532593],"spawned_gunner":true}
+QA sector complete: 1 at 12.5833333333335
+QA upgrade: echo
+AUDIO_CAPTURE_EVENT {"kind":"scripted_weapon_install","mode":"plasma","rank":3,"seconds":13.507629,"spawn_position":[-1.25152826309204,0.0,2.49868774414062],"spawned_gunner":true}
+AUDIO_CAPTURE_EVENT {"injected_energy":100.0,"kind":"scripted_full_charge_pulse","normal_game_pulse_called":true,"seconds":14.009238}
+AUDIO_CAPTURE_EVENT {"guardian_health":1800.0,"health_after_production_entry":100.0,"health_before":100.0,"intensity_source":"unmodified game.update_battle_audio; actual enemies and incoming projectiles","kind":"scripted_guardian_encounter","production_entry":"game.begin_campaign_boss","production_recovery_seconds":2.0,"relay_bookkeeping_skipped":3,"scripted_escorts":[{"kind":"gunner","position":[-8.0,0.0,2.0]},{"kind":"gunner","position":[8.0,0.0,2.0]},{"kind":"bruiser","position":[-10.0,0.0,-6.0]},{"kind":"bruiser","position":[10.0,0.0,-6.0]}],"seconds":18.014398,"sector_jump":3}
+AUDIO_CAPTURE_EVENT {"injected_energy":100.0,"kind":"scripted_full_charge_pulse","normal_game_pulse_called":true,"seconds":31.016316}
+Engine audio capture saved: /Users/xinboonchen/pulsebreak/qa/resonance-engine-audio.wav (36.0106666666667 seconds).

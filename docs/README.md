@@ -1,8 +1,8 @@
 # Documentation
 
-**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+**Current branch update:** see [Resonance](RESONANCE.md) for adaptive 174 BPM drum and bass, richer colors, a layered pulse, and current M4 verification. [Overdrive](OVERDRIVE.md) records evolving weapons, Quit controls and continuous generated levels. The earlier content below describes historical updates and the original experiment.
 
-**Current feature branch:** [Skybound player/developer guide](SKYBOUND.md) · [Research](SKYBOUND_RESEARCH.md) · [Independent review](../qa/skybound-review.md).
+**Earlier Skybound update:** [Player/developer guide](SKYBOUND.md) · [Research](SKYBOUND_RESEARCH.md) · [Independent review](../qa/skybound-review.md).
 
 Pulsebreak has two stories: a playable native Mac game, and an experiment in building it with **GPT-6 Astra inside Codex**. These guides connect both stories to inspectable evidence.
 

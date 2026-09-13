@@ -66,7 +66,7 @@ func reset_voices(director: Node) -> void:
 
 func occupy(director: Node, index: int, priority: int, started: float) -> void:
 	var voice: AudioStreamPlayer=director._voices[index]
-	voice.stream=director._music.stream
+	voice.stream=director._streams.guardian_break
 	voice.set_meta("priority",priority)
 	voice.set_meta("started",started)
 	voice.play()
@@ -96,8 +96,17 @@ func run_checks() -> void:
 		var stream: AudioStreamWAV=director._streams.get(name) as AudioStreamWAV
 		imported_stereo=imported_stereo and stream!=null and stream.stereo and stream.mix_rate==44100
 	check(imported_stereo,"engine import preserves stereo and sample rate for all new cues")
-	check(director._music.playing and director._pressure.playing and is_equal_approx(director._music.stream.get_length(),director._pressure.stream.get_length()),"both equal-length music stems start playback")
-	check(director._music.stream.loop_mode==AudioStreamWAV.LOOP_FORWARD and director._pressure.stream.loop_mode==AudioStreamWAV.LOOP_FORWARD and director._music.stream.loop_end>0,"both stems have explicit nonempty forward loops")
+	var synchronized: AudioStreamSynchronized=director._music.stream as AudioStreamSynchronized
+	var aligned := synchronized!=null and synchronized.stream_count==3
+	var looping := aligned
+	if aligned:
+		var length: float=synchronized.get_sync_stream(0).get_length()
+		for index in range(synchronized.stream_count):
+			var stem: AudioStreamOggVorbis=synchronized.get_sync_stream(index) as AudioStreamOggVorbis
+			aligned=aligned and stem!=null and absf(stem.get_length()-length)<1.0/44100.0
+			looping=looping and stem!=null and stem.loop and is_zero_approx(stem.loop_offset) and stem.get_length()>0.0
+	check(director._music.playing and aligned,"three equal-length music stems start through one synchronized player")
+	check(looping,"all three music stems have explicit nonempty loops from their common origin")
 
 	reset_voices(director)
 	director.play_cue("kinetic_fire")
@@ -142,15 +151,15 @@ func run_checks() -> void:
 	check(director._music.volume_db<music_before-4.0,"a major combat cue ducks the music level immediately on the next mix-state update")
 	director._process(1.0)
 	check(is_equal_approx(director._music.volume_db,music_before),"music gain recovers after the bounded duck envelope")
-	var pressure_before: float=director._pressure.volume_db
+	var pressure_before: float=director.mix_levels()[1]
 	director.set_intensity(2.0)
 	director._process(1.0)
-	check(director._intensity==1.0 and director._pressure.volume_db>pressure_before,"clamped combat intensity raises the pressure stem")
+	check(director._intensity==1.0 and director.mix_levels()[1]>pressure_before,"clamped combat intensity raises the drive stem")
 
 	director.set_muted(true)
 	sequence=director._cue_sequence
 	director.play_cue("guardian_break")
-	var silent: bool = director._music.volume_db<=-80 and director._pressure.volume_db<=-80
+	var silent: bool = director._music.volume_db<=-80
 	for voice: AudioStreamPlayer in director._voices: silent=silent and voice.volume_db<=-80
 	check(silent and director._cue_sequence==sequence,"mute attenuates current playback and suppresses new cue requests")
 	director.set_muted(false)

@@ -1,0 +1,29 @@
+{
+  "source_manifest": "qa/resonance-source.json",
+  "runtime_aggregate": "c08ceb78fc101c6c3ce857d27bade937e9562ccc04075b5dc6e0a7b665b2eaea",
+  "command": ".tools/Godot.app/Contents/MacOS/Godot --windowed --resolution 1280x800 --disable-vsync --path . --quit-after 36000 --log-file /tmp/pulsebreak-resonance-native.log -- --qa --qa-campaign --qa-alt --qa-sectors=6 --qa-dir=qa/resonance-native",
+  "coordination": "Prior audio capture and native-controls engines exited before this one began; no agent engines or audio generation/decoding during benchmark.",
+  "captures": [
+    {
+      "path": "qa/resonance-native/captures/result.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "path": "qa/resonance-native/captures/run-15.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "path": "qa/resonance-native/captures/run-190.png",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "path": "qa/resonance-native/captures/run-90.png",
+      "width": 1280,
+      "height": 800
+    }
+  ],
+  "interpretation": "Wall-clock process/render intervals from native automated production gameplay, not GPU execution time or human play. First 3 seconds and noncombat states excluded."
+}

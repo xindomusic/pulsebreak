@@ -493,7 +493,11 @@ func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practi
 	health_text.text = "HULL  /  %03d" % ceili(rules.health)
 	health_bar.get_theme_stylebox("fill").bg_color = CYAN if rules.health > 30 else Color("ff7467")
 	energy_bar.value = rules.energy
-	energy_text.text = "%s  PULSE  /  %03d%s" % [key_names.pulse.to_upper(),int(rules.energy), "  READY" if rules.energy >= 30 else ""]
+	var charged: bool = rules.energy >= 85
+	var pulse_color := Color("bd98ff") if charged else CYAN
+	energy_bar.get_theme_stylebox("fill").bg_color = pulse_color
+	energy_text.add_theme_color_override("font_color",pulse_color)
+	energy_text.text = "%s  PULSE  /  %03d%s" % [key_names.pulse.to_upper(),int(rules.energy), "  OVERLOAD" if charged else "  READY" if rules.energy >= 30 else ""]
 	dash_text.text = key_names.dash.to_upper()+"  DASH\n" + ("●  ●" if rules.dash_charges == 2 else "●  ○" if rules.dash_charges == 1 else "○  ○")
 	time_text.text = "%02d:%02d" % [int(run_time)/60,int(run_time)%60]
 	score_text.text = "%06d  /  SCORE" % rules.score

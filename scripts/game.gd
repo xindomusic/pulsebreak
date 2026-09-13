@@ -42,6 +42,9 @@ var boss_ref: Node3D
 var camera_home := Vector3(0,24,29)
 var camera: Camera3D
 var key_light: DirectionalLight3D
+var pulse_light: OmniLight3D
+var pulse_light_time := 0.0
+var pulse_light_strength := 0.0
 var field: Node3D
 var ui: CanvasLayer
 var sound: Node
@@ -165,27 +168,34 @@ func setup_world() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("9ec8dd")
-	env.ambient_light_energy = 0.45
+	env.ambient_light_color = Color("7a92ca")
+	env.ambient_light_energy = 0.25
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	env.fog_enabled = true
-	env.fog_light_color = Color("30495b")
-	env.fog_density = 0.003
+	env.fog_light_color = Color("142344")
+	env.fog_density = 0.0015
 	world.environment = env
 	world_environment = env
 	add_child(world)
 	key_light = DirectionalLight3D.new()
 	key_light.rotation_degrees = Vector3(-58,-28,0)
-	key_light.light_color = Color("cbe6f1")
-	key_light.light_energy = 1.65
+	key_light.light_color = Color("dbe5ff")
+	key_light.light_energy = 1.3
 	key_light.shadow_enabled = true
 	key_light.directional_shadow_max_distance = 90
 	add_child(key_light)
 	var rim := DirectionalLight3D.new()
 	rim.rotation_degrees = Vector3(-25,140,0)
-	rim.light_color = Color("5df0d9")
-	rim.light_energy = 0.65
+	rim.light_color = Color("8d69ff")
+	rim.light_energy = 0.55
 	add_child(rim)
+	pulse_light = OmniLight3D.new()
+	pulse_light.light_color = Color("67dfff")
+	pulse_light.light_energy = 0.0
+	pulse_light.omni_range = 9.0
+	pulse_light.shadow_enabled = false
+	pulse_light.visible = false
+	add_child(pulse_light)
 	camera = Camera3D.new()
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.size = 41
@@ -231,6 +241,8 @@ func apply_settings() -> void:
 	if sound and sound.has_method("set_volume"): sound.set_volume(float(settings.volume))
 	key_light.shadow_enabled = not settings.get("low_effects",false)
 	if is_instance_valid(weapon_fx): weapon_fx.low_effects=bool(settings.get("low_effects",false))
+	if is_instance_valid(pulse_light):
+		pulse_light.visible = pulse_light_time > 0.0 and not settings.get("low_effects",false)
 
 func show_title_scene() -> void:
 	campaign.clear()
@@ -249,12 +261,12 @@ func show_title_scene() -> void:
 	camera.look_at(Vector3.ZERO)
 
 func set_sector_lighting(index: int) -> void:
-	var colors := [Color("a8e5ec"),Color("ffd1a0"),Color("c5b6ff")]
-	var fogs := [Color("30495b"),Color("50404d"),Color("302b56")]
+	var colors := [Color("dbe5ff"),Color("ffe1c0"),Color("e4d9ff")]
+	var fogs := [Color("142344"),Color("321c36"),Color("241735")]
 	key_light.light_color = colors[index]
 	world_environment.fog_light_color = fogs[index]
 	var sky_material: ProceduralSkyMaterial = world_environment.sky.sky_material
-	sky_material.sky_horizon_color = fogs[index].lightened(0.13)
+	sky_material.sky_horizon_color = fogs[index].lightened(0.025)
 	sky_material.ground_horizon_color = fogs[index]
 	sky_material.sky_top_color = fogs[index].darkened(0.78)
 
@@ -283,7 +295,6 @@ func next_sector() -> void:
 	clear_run()
 	campaign.enter_sector(campaign.sector+1)
 	show_weapon_draft()
-	if sound and sound.has_method("set_intensity"): sound.set_intensity(minf(1,0.4+campaign.sector*0.12))
 
 func show_weapon_draft() -> void:
 	weapon_choices=weapons.draft(rng)
@@ -376,7 +387,6 @@ func start_run(is_practice: bool = false) -> void:
 	else:
 		announce("WELCOME TO THE SKYFORGE", "Survive six minutes. Break the guardian.")
 		ui.show_hint("%s dashes through orange shots. %s spends stolen energy." % [key_name("dash"),key_name("pulse")],7)
-	if sound and sound.has_method("set_intensity"): sound.set_intensity(0.3)
 
 func clear_run() -> void:
 	for enemy in enemies:
@@ -386,6 +396,10 @@ func clear_run() -> void:
 	field.clear()
 	if is_instance_valid(weapons): weapons.clear_projectiles()
 	if is_instance_valid(weapon_fx): weapon_fx.clear()
+	pulse_light_time = 0.0
+	if is_instance_valid(pulse_light):
+		pulse_light.light_energy = 0.0
+		pulse_light.visible = false
 	if is_instance_valid(core_node): core_node.queue_free()
 	core_node = null
 	core_time = 0
@@ -470,6 +484,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	display_time += delta
+	update_battle_audio()
 	if state not in ["run","boss"]:
 		if state == "title":
 			player_node.rotation.y += delta * 0.25
@@ -535,6 +550,9 @@ func _physics_process(delta: float) -> void:
 	field.update(step)
 	weapons.update(step)
 	weapon_fx.update(step)
+	pulse_light_time = maxf(0.0,pulse_light_time-step)
+	pulse_light.visible = pulse_light_time > 0.0 and not settings.get("low_effects",false)
+	pulse_light.light_energy = pulse_light_strength*pow(pulse_light_time/0.26,2)
 	for i in range(enemies.size()-1,-1,-1):
 		if enemies[i].dead:
 			enemies[i].queue_free(); enemies.remove_at(i)
@@ -606,8 +624,11 @@ func pulse_at(at: Vector3, power: float, echo: bool = false) -> void:
 	var radius := (4.0+power*0.044)*(1.35 if rules.upgrades.has("radius") else 1.0)
 	var damage := (27.0+power*0.82)*(1.2 if rules.upgrades.has("ignite") else 1.0)
 	if echo: damage *= 0.45
-	add_effect(at,Color("76f7df"),radius)
-	add_effect(at,Color(0.85,1,0.98,0.85),radius*0.65)
+	weapon_fx.pulse(at,power,radius,echo)
+	pulse_light.position = at+Vector3(0,1.8,0)
+	pulse_light.omni_range = radius+1.0
+	pulse_light_time = 0.26
+	pulse_light_strength = (0.5 if echo else 1.5)*lerpf(0.6,1.0,clampf(power/100.0,0.0,1.0))
 	cue("pulse",0.45 if echo else lerpf(0.65,1.0,power/100.0))
 	shake = 0.32 if not echo else 0.12
 	var hit: Array = []
@@ -627,6 +648,22 @@ func pulse_at(at: Vector3, power: float, echo: bool = false) -> void:
 				weapon_fx.arc_link(at+Vector3(0,0.8,0),enemy.position+Vector3(0,0.8,0),3)
 				enemy.take_hit(damage*0.7,true)
 				jumps += 1
+
+func update_battle_audio() -> void:
+	if not sound or not sound.has_method("set_battle_state"): return
+	if state not in ["run","boss"]:
+		sound.set_battle_state(0.0,0.0,0.0,false,false)
+		return
+	var nearby := 0.0
+	for enemy in enemies:
+		if is_instance_valid(enemy) and not enemy.dead:
+			nearby += clampf(1.0-enemy.position.distance_to(player_position)/18.0,0.0,1.0)
+	var incoming := 0.0
+	for bullet in field.bullets:
+		var offset: Vector3 = player_position-bullet.node.position
+		if offset.length_squared() < 100.0 and offset.dot(bullet.velocity) > 0.0:
+			incoming += 1.0
+	sound.set_battle_state(nearby/6.0,incoming/12.0,rules.energy/100.0,state=="boss",true)
 
 func auto_shoot() -> void:
 	if weapons.cooldown>0: return
@@ -694,8 +731,6 @@ func update_director(delta: float) -> void:
 		if run_time>=next_core:
 			next_core+=60
 			spawn_core()
-	if sound and sound.has_method("set_intensity"):
-		sound.set_intensity(clampf(run_time/360,0.25,1.0))
 
 func update_practice(delta: float) -> void:
 	practice_timer += delta

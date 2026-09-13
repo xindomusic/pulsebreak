@@ -1,10 +1,10 @@
 # Pulsebreak
 
-**Current feature branch: [Overdrive](docs/OVERDRIVE.md)** — endless generated sectors, four evolving weapons, a rebuilt courier and held guns, animated hits and enemy breakup, original stereo combat cues, and visible Quit controls. Double-click **Play Pulsebreak.command**, then choose **Begin Skybound**. **F** jumps/holds to glide; **Q** switches unlocked weapons; **Esc** opens pause and Quit.
+**Current feature branch: [Resonance](docs/RESONANCE.md)** — original adaptive **174 BPM drum and bass**, richer navy/cobalt/coral colors, and a layered reactor blast with a new stereo discharge. Endless generated sectors, evolving weapons, flight, animated enemy breakup and Quit controls carry forward. Double-click **Play Pulsebreak.command**, then choose **Begin Skybound**. **F** jumps/holds to glide; **Q** switches unlocked weapons; **Esc** opens pause and Quit.
 
-![Staged native Overdrive title and courier](docs/images/overdrive-title.png)
+![Staged native Resonance title and courier](docs/images/resonance-title.png)
 
-*[What changed](docs/OVERDRIVE.md), [research](docs/OVERDRIVE_RESEARCH.md), and [independent review](qa/overdrive-review.md). The [prior Skybound update](docs/SKYBOUND.md) and original experiment below remain historical.*
+*[What changed](docs/RESONANCE.md), [hear the DnB track](docs/audio/resonance-dnb.mp3), [research](docs/RESONANCE_RESEARCH.md), and [independent review](qa/resonance-review.md). [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
 
 ### A game-making experiment with GPT-6 Astra inside Codex
 

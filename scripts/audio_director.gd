@@ -1,5 +1,10 @@
 extends Node
-## Original audio with two synchronized stems and twelve reusable cue voices.
+## Original 174 BPM drum and bass: one sample-synchronized, three-stem score.
+## Music gains follow threats, with bounded priority cues and event ducking.
+
+const MUSIC_BPM := 174.0
+const MUSIC_BEATS := 256
+const MUSIC_STEMS := ["foundation", "drive", "lead"]
 
 const CUE_NAMES: Array[String] = ["dash", "absorb", "pulse", "shoot", "hit", "kill", "warning", "upgrade", "boss", "core", "victory", "defeat", "ready", "kinetic_fire", "scatter_fire", "arc_fire", "plasma_fire", "armor_impact", "machine_break", "guardian_break", "weapon_install"]
 const COOLDOWNS: Dictionary = {"shoot": 0.105, "absorb": 0.045, "kill": 0.080, "hit": 0.14, "warning": 0.42, "ready": 0.15, "kinetic_fire":0.09, "scatter_fire":0.15, "arc_fire":0.15, "plasma_fire":0.18, "armor_impact":0.055, "machine_break":0.10, "guardian_break":1.0}
@@ -11,7 +16,7 @@ var _streams: Dictionary = {}
 var _last_cue: Dictionary = {}
 var _voices: Array[AudioStreamPlayer] = []
 var _music: AudioStreamPlayer
-var _pressure: AudioStreamPlayer
+var _mix: AudioStreamSynchronized
 var _volume: float = 0.8
 var _muted: bool = false
 var _intensity: float = 0.0
@@ -26,6 +31,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for cue: String in CUE_NAMES:
 		var path: String = "res://assets/audio/%s.wav" % cue
+		if cue == "pulse": path = "res://assets/audio/pulse_resonance.wav"
 		if ResourceLoader.exists(path):
 			_streams[cue] = load(path)
 	for index: int in range(12):
@@ -36,33 +42,31 @@ func _ready() -> void:
 		voice.set_meta("level", -12.0)
 		add_child(voice)
 		_voices.append(voice)
-	_music = _make_music("music_foundry")
-	_pressure = _make_music("music_pressure")
+	_music = AudioStreamPlayer.new()
+	_music.name = "ResonanceMusic"
+	_mix = AudioStreamSynchronized.new()
+	_mix.stream_count = MUSIC_STEMS.size()
+	for index in range(MUSIC_STEMS.size()):
+		var path := "res://assets/audio/music_resonance_%s.ogg" % MUSIC_STEMS[index]
+		if ResourceLoader.exists(path):
+			var stream := load(path).duplicate() as AudioStreamOggVorbis
+			stream.loop = true
+			stream.loop_offset = 0.0
+			stream.bpm = MUSIC_BPM
+			stream.beat_count = MUSIC_BEATS
+			stream.bar_beats = 4
+			_mix.set_sync_stream(index, stream)
+	_music.stream = _mix
+	add_child(_music)
 	_apply_music_levels()
-	# Both play requests enter the audio server during this frame.
+	# One audio playback starts all three streams at the exact same sample.
 	_music.play()
-	_pressure.play()
-
-
-func _make_music(asset_name: String) -> AudioStreamPlayer:
-	var player := AudioStreamPlayer.new()
-	player.name = asset_name
-	var path: String = "res://assets/audio/%s.wav" % asset_name
-	if ResourceLoader.exists(path):
-		var stream: AudioStreamWAV = load(path) as AudioStreamWAV
-		if stream != null:
-			stream = stream.duplicate() as AudioStreamWAV
-			stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-			stream.loop_begin = 0
-			stream.loop_end = roundi(stream.get_length() * stream.mix_rate)
-			player.stream = stream
-	add_child(player)
-	return player
 
 
 func _process(delta: float) -> void:
 	_duck = move_toward(_duck,0.0,delta*1.1)
-	_smooth_intensity = lerpf(_smooth_intensity, _intensity, 1.0 - exp(-delta * 1.8))
+	var response := 3.5 if _intensity > _smooth_intensity else 0.75
+	_smooth_intensity = lerpf(_smooth_intensity, _intensity, 1.0 - exp(-delta * response))
 	_apply_music_levels()
 
 
@@ -73,9 +77,31 @@ func _gain_db() -> float:
 func _apply_music_levels() -> void:
 	if not is_instance_valid(_music):
 		return
-	var gain: float = _gain_db()-_duck*8.0
-	_music.volume_db = clampf(-15.0 + _smooth_intensity * 2.0 + gain, -80.0, 0.0)
-	_pressure.volume_db = clampf(lerpf(-34.0, -14.0, _smooth_intensity) + gain, -80.0, 0.0)
+	_music.volume_db = clampf(_gain_db()-_duck*8.0, -80.0, 0.0)
+	var levels := mix_levels()
+	for index in range(levels.size()):
+		_mix.set_sync_stream_volume(index, levels[index])
+
+
+func mix_levels() -> PackedFloat32Array:
+	# The backbeat and sub remain audible between encounters. The drive and
+	# lead add detail rather than carrying the entire groove as in the old score.
+	return PackedFloat32Array([
+		lerpf(-8.5, -4.0, _smooth_intensity),
+		lerpf(-18.0, -5.0, _smooth_intensity),
+		lerpf(-30.0, -12.0, _smooth_intensity)])
+
+
+func get_intensity() -> float:
+	return _smooth_intensity
+
+
+func set_battle_state(enemy_pressure: float, incoming_pressure: float, charge: float, boss: bool, active: bool) -> void:
+	set_intensity(0.28 + _unit(enemy_pressure)*0.35 + _unit(incoming_pressure)*0.22 + _unit(charge)*0.10 + (0.20 if boss else 0.0) if active else 0.0)
+
+
+func _unit(value: float) -> float:
+	return clampf(value,0.0,1.0) if is_finite(value) else 0.0
 
 
 func play_cue(cue_name: String, strength: float = 1.0) -> void:
@@ -127,11 +153,11 @@ func play_cue(cue_name: String, strength: float = 1.0) -> void:
 
 
 func set_intensity(amount: float) -> void:
-	_intensity = clampf(amount, 0.0, 1.0)
+	_intensity = _unit(amount)
 
 
 func set_volume(amount: float) -> void:
-	_volume = clampf(amount, 0.0, 1.0)
+	_volume = _unit(amount)
 	_refresh_volume()
 
 
@@ -152,10 +178,9 @@ func _exit_tree() -> void:
 	for voice: AudioStreamPlayer in _voices:
 		voice.stop()
 		voice.stream = null
-	for player: AudioStreamPlayer in [_music, _pressure]:
-		if is_instance_valid(player):
-			player.stop()
-			player.stream = null
+	if is_instance_valid(_music):
+		_music.stop()
+		_music.stream = null
 	# Godot queues stop as FADE_OUT_TO_DELETION; the audio thread releases
 	# its playback references on the following mix. Immediate engine exit
 	# otherwise shuts the driver down before that mix can complete.
@@ -163,4 +188,4 @@ func _exit_tree() -> void:
 	_streams.clear()
 	_voices.clear()
 	_music = null
-	_pressure = null
+	_mix = null

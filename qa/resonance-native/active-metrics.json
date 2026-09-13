@@ -1,0 +1,175 @@
+{
+  "absorbed": 37,
+  "accelerated": false,
+  "active_objects": {
+    "checkpoint_history": 6,
+    "enemies": 0,
+    "fx": {
+      "active": 0,
+      "active_limit": 160,
+      "allocated": 100,
+      "cap": 160,
+      "emitted": 5594,
+      "pooled": 100,
+      "recycled": 0
+    },
+    "gates": 2,
+    "hazards": 0,
+    "projectiles": 0
+  },
+  "air_relays": 18,
+  "boss_entry": {
+    "health": 100.0,
+    "position": "(5.280308, 2.743208, -7.812532)",
+    "time": 170.250000000028
+  },
+  "boss_health_remaining": 0.0,
+  "boss_started": true,
+  "cpu": "Apple M4",
+  "damage_events": [
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 88.0,
+      "position": "(10.1769, 0.0, -3.533047)",
+      "time": 76.8666666666636
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 76.0,
+      "position": "(-6.011468, 0.0, 5.061939)",
+      "time": 83.9999999999965
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 64.0,
+      "position": "(-6.774405, 0.0, -1.4198)",
+      "time": 86.816666666663
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 88.0,
+      "position": "(-8.470838, 0.0, -4.08812)",
+      "time": 191.116666666711
+    },
+    {
+      "damage": 12.0,
+      "ground": false,
+      "health": 76.0,
+      "position": "(-2.650841, 0.0, -10.89313)",
+      "time": 207.766666666724
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "gpu": "Apple M4 (Apple9)",
+  "guardians_defeated": 2,
+  "health": 76.0,
+  "kills": 31,
+  "memory": {
+    "available": 6013370368,
+    "free": 4692033536,
+    "physical": 17179869184,
+    "stack": 8372224
+  },
+  "mode": "skybound",
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 18,
+  "render_frame_median_ms": 16.332,
+  "render_frame_p95_ms": 18.25,
+  "render_frame_p99_ms": 18.979,
+  "render_samples": 15856,
+  "renderer": "mobile",
+  "route": "TWIN SPURS",
+  "run_seed": 42,
+  "score": 11710,
+  "sector": 6,
+  "sector_checkpoints": [
+    20.1166666666668,
+    51.8999999999983,
+    97.1333333333291,
+    125.733333333327,
+    163.783333333356,
+    223.816666666737
+  ],
+  "segments": {
+    "boss": {
+      "median_ms": 16.015,
+      "p95_ms": 18.313,
+      "p99_ms": 19.047,
+      "samples": 6999
+    },
+    "sector_1": {
+      "median_ms": 16.548,
+      "p95_ms": 18.154,
+      "p99_ms": 18.833,
+      "samples": 1173
+    },
+    "sector_2": {
+      "median_ms": 16.385,
+      "p95_ms": 18.233,
+      "p99_ms": 18.961,
+      "samples": 2238
+    },
+    "sector_3": {
+      "median_ms": 16.624,
+      "p95_ms": 18.272,
+      "p99_ms": 18.919,
+      "samples": 257
+    },
+    "sector_4": {
+      "median_ms": 16.508,
+      "p95_ms": 18.164,
+      "p99_ms": 18.873,
+      "samples": 1969
+    },
+    "sector_5": {
+      "median_ms": 16.279,
+      "p95_ms": 18.3,
+      "p99_ms": 18.938,
+      "samples": 2772
+    },
+    "sector_6": {
+      "median_ms": 16.538,
+      "p95_ms": 17.895,
+      "p99_ms": 18.84,
+      "samples": 448
+    }
+  },
+  "settings": {
+    "assist": false,
+    "low_effects": false,
+    "overdrive": false,
+    "shake": 0.45,
+    "volume": 0.65
+  },
+  "simulation": false,
+  "time": 223.816666666737,
+  "upgrades": [
+    "ignite",
+    "frost",
+    "wake",
+    "radius",
+    "collector"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "warmup_excluded_seconds": 3,
+  "weapons": {
+    "equipped": "scatter",
+    "hits": 427,
+    "kills": 24,
+    "overclocks": 0,
+    "ranks": {
+      "arc": 0,
+      "kinetic": 3,
+      "plasma": 1,
+      "scatter": 2
+    },
+    "shots": 266
+  },
+  "win": true,
+  "window_pixels": "(1280, 800)"
+}

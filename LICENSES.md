@@ -2,7 +2,7 @@
 
 ## Project code and assets
 
-The game code, interface, icon, procedural 3D geometry, music, and sound effects were created for this project with Codex assistance. Models and environment geometry are constructed in `scripts/art.gd`; music and cues are synthesized by `tools/generate_audio.py`. No external artwork, models, textures, sample packs, or third-party music were imported.
+The game code, interface, icon, procedural 3D geometry, music, and sound effects were created for this project with Codex assistance. Models and environment geometry are constructed in `scripts/art.gd` and `scripts/showcase_art.gd`; music and cues are synthesized by `tools/generate_audio.py`, `tools/generate_weapon_audio.py` and `tools/generate_resonance_audio.py`. The Resonance score uses original notes and synthesized drums, with NumPy/SoundFile/ffmpeg as development tools for generation and encoding. No external artwork, models, textures, sample packs, or third-party music were imported.
 
 This notice records provenance; it does not assign an open-source license to the original game code or assets. Godot's license below applies to the engine, not automatically to the game's original content.
 

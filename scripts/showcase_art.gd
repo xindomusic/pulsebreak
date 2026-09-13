@@ -5,7 +5,12 @@ extends RefCounted
 const Art = preload("res://scripts/art.gd")
 const SECTOR_ACCENTS: Array[String] = ["cyan", "solar", "storm"]
 const SECTOR_NAMES: Array[String] = ["SKYPORT", "SOLAR FOUNDRY", "STORM CORE"]
+const SECTOR_INLAYS: Array[String] = ["sky_inlay", "solar_inlay", "storm_inlay"]
+const SECTOR_LAMPS: Array[String] = ["sky_lamp", "solar_lamp", "storm_lamp"]
 const MAX_GENERATED_PAINT := 160
+static var _light_wash_shader: Shader
+static var _light_wash_mesh: QuadMesh
+static var _light_wash_materials: Dictionary = {}
 
 
 static func hero_display() -> Node3D:
@@ -38,6 +43,7 @@ static func build_stage(parent: Node3D, sector_index: int) -> Node3D:
 		original_backdrop.visible = sector == 0
 	_build_sector_deck(stage, sector)
 	_build_navigation(stage, sector, accent)
+	_build_light_frame(stage, sector)
 	match sector:
 		0:
 			_build_skyport(stage)
@@ -52,12 +58,13 @@ static func _build_sector_deck(stage: Node3D, sector: int) -> void:
 	# All graphics are flush paint/insets below actors and combat warnings. Large
 	# shapes carry each sector's identity without creating implied collision.
 	var deck: Node3D = Art._group(stage, "SectorDeckGraphics")
+	var inlay: String = SECTOR_INLAYS[sector]
 	var hatching: Array[Transform3D] = []
 	var panels: Array[Transform3D] = []
 	match sector:
 		0:
-			Art._part(deck, "box", Vector3(0, 0.022, 0), Vector3(7.6, 0.012, 28.0), "deck_deep")
-			Art._part(deck, "octagon", Vector3(0, 0.030, 0), Vector3(7.8, 0.012, 7.8), "deck_deep", Vector3(0, PI * 0.125, 0))
+			Art._part(deck, "box", Vector3(0, 0.022, 0), Vector3(7.6, 0.012, 28.0), inlay)
+			Art._part(deck, "octagon", Vector3(0, 0.030, 0), Vector3(7.8, 0.012, 7.8), inlay, Vector3(0, PI * 0.125, 0))
 			var landing: Node3D = Art._group(deck, "LaunchPad", Vector3(0, 0.043, 0))
 			Art._ring(landing, 7.55, 0.052, 0.012, "deck_mark", 48, 0.10)
 			Art._ring(landing, 6.85, 0.11, 0.012, "teal_dim", 12, 0.62)
@@ -68,18 +75,18 @@ static func _build_sector_deck(stage: Node3D, sector: int) -> void:
 					var x: float = side * (8.6 + float(index) * 0.32)
 					hatching.append(Art._transform(Vector3(x, 0.032, 6.8), Vector3(0.16, 0.012, 2.1), side * 0.34))
 				panels.append(Art._transform(Vector3(side * 11.3, 0.023, -6.0), Vector3(4.8, 0.01, 9.8)))
-			Art._batch(deck, "ServiceIslands", "armor", "deck_deep", panels, false)
+			Art._batch(deck, "ServiceIslands", "armor", inlay, panels, false)
 			Art._batch(deck, "RunwayMarkings", "box", "deck_mark", hatching, false)
 			Art._label(deck, "VECTOR / 01", Vector3(-10.8, 0.055, -8.5), 58, "deck_mark")
 			Art._label(deck, "LANDING ZONE", Vector3(0, 0.058, 6.0), 34, "deck_mark")
 		1:
-			Art._part(deck, "box", Vector3(0, 0.022, 0), Vector3(28.0, 0.012, 6.2), "deck_deep")
-			Art._part(deck, "box", Vector3(0, 0.024, 0), Vector3(5.7, 0.012, 28.0), "deck_deep")
+			Art._part(deck, "box", Vector3(0, 0.022, 0), Vector3(28.0, 0.012, 6.2), inlay)
+			Art._part(deck, "box", Vector3(0, 0.024, 0), Vector3(5.7, 0.012, 28.0), inlay)
 			for side: float in [-1.0, 1.0]:
 				for z: float in [-8.2, 8.2]:
 					var grille: Node3D = Art._group(deck, "HeatExchangerGrille", Vector3(side * 9.6, 0.036, z))
 					Art._part(grille, "armor", Vector3.ZERO, Vector3(6.0, 0.012, 5.2), "titanium")
-					Art._part(grille, "box", Vector3(0, 0.012, 0), Vector3(5.7, 0.012, 4.9), "deck_deep")
+					Art._part(grille, "box", Vector3(0, 0.012, 0), Vector3(5.7, 0.012, 4.9), inlay)
 					var slots: Array[Transform3D] = []
 					for index: int in range(12):
 						slots.append(Art._transform(Vector3(-2.5 + float(index) * 0.45, 0.026, 0), Vector3(0.065, 0.012, 4.4)))
@@ -93,7 +100,7 @@ static func _build_sector_deck(stage: Node3D, sector: int) -> void:
 			Art._label(deck, "SOLAR / 02", Vector3(0, 0.058, 10.5), 66, "solar_dim")
 			Art._label(deck, "HEAT TRANSFER", Vector3(0, 0.058, -9.5), 36, "solar_dim")
 		2:
-			Art._part(deck, "octagon", Vector3(0, 0.027, 0), Vector3(11.8, 0.013, 11.8), "deck_deep", Vector3(0, PI * 0.125, 0))
+			Art._part(deck, "octagon", Vector3(0, 0.027, 0), Vector3(11.8, 0.013, 11.8), inlay, Vector3(0, PI * 0.125, 0))
 			for radius: float in [4.8, 8.2, 11.3]:
 				var containment: Node3D = Art._group(deck, "ContainmentTrack", Vector3(0, 0.042, 0))
 				Art._ring(containment, radius, 0.075, 0.012, "storm_dim", 64, 0.06)
@@ -133,6 +140,63 @@ static func _build_navigation(stage: Node3D, sector: int, accent: String) -> voi
 	stage.get_child(-1).name = "FlightSystemsLabel"
 
 
+static func _build_light_frame(stage: Node3D, sector: int) -> void:
+	# Recessed power rails are below and outside the entire playable deck. Their
+	# saturated silhouette frames the fight without adding floor-level warnings.
+	var frame: Node3D = Art._group(stage, "StageLightFrame")
+	var housings: Array[Transform3D] = []
+	var primary: Array[Transform3D] = []
+	var secondary: Array[Transform3D] = []
+	for side: float in [-1.0, 1.0]:
+		for z: float in [-12.0, -4.0, 4.0, 12.0]:
+			housings.append(Art._transform(Vector3(side * 16.65, -0.50, z), Vector3(0.64, 0.56, 6.8)))
+			primary.append(Art._transform(Vector3(side * 16.66, -0.20, z), Vector3(0.14, 0.06, 6.2)))
+			secondary.append(Art._transform(Vector3(side * 16.97, -0.46, z), Vector3(0.05, 0.17, 5.4)))
+	for x: float in [-12.0, -4.0, 4.0, 12.0]:
+		housings.append(Art._transform(Vector3(x, -0.50, 16.65), Vector3(6.8, 0.56, 0.64)))
+		primary.append(Art._transform(Vector3(x, -0.20, 16.66), Vector3(6.2, 0.06, 0.14)))
+		secondary.append(Art._transform(Vector3(x, -0.46, 16.97), Vector3(5.4, 0.17, 0.05)))
+	Art._batch(frame, "PowerRailHousing", "armor", "dark", housings, false)
+	Art._batch(frame, "SectorPowerRail", "box", SECTOR_LAMPS[sector], primary, false)
+	Art._batch(frame, "ReturnPowerRail", "box", "storm_lamp" if sector == 0 else "sky_lamp", secondary, false)
+	for side: float in [-1.0, 1.0]:
+		var wash := MeshInstance3D.new()
+		wash.name = "ApronLightWash"
+		if not _light_wash_mesh:
+			_light_wash_mesh = QuadMesh.new()
+			_light_wash_mesh.size = Vector2.ONE
+		wash.mesh = _light_wash_mesh
+		wash.material_override = _light_wash_material(SECTOR_LAMPS[sector] if side < 0 else "storm_lamp" if sector == 0 else "sky_lamp")
+		wash.position = Vector3(side * 21.4, -2.1, 2.0)
+		wash.rotation.x = -PI * 0.5
+		wash.scale = Vector3(11.0, 24.0, 1.0)
+		wash.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		frame.add_child(wash)
+
+
+static func _light_wash_material(key: String) -> ShaderMaterial:
+	if _light_wash_materials.has(key): return _light_wash_materials[key]
+	if not _light_wash_shader:
+		_light_wash_shader = Shader.new()
+		# A pair of soft, depth-tested exterior washes supplies local atmosphere
+		# without post-processing, texture assets, extra lights or a TIME clock.
+		_light_wash_shader.code = """shader_type spatial;
+render_mode unshaded, blend_add, depth_draw_never, cull_disabled, shadows_disabled;
+uniform vec4 tint : source_color;
+void fragment() {
+	float r = length((UV - vec2(0.5)) * 2.0);
+	float falloff = 1.0 - smoothstep(0.0, 1.0, r);
+	ALBEDO = tint.rgb;
+	ALPHA = falloff * falloff * 0.34;
+}
+"""
+	var material := ShaderMaterial.new()
+	material.shader = _light_wash_shader
+	material.set_shader_parameter("tint", Art.PALETTE[key])
+	_light_wash_materials[key] = material
+	return material
+
+
 static func apply_generated_dressing(stage: Node3D, current_stage: Dictionary) -> void:
 	if not is_instance_valid(stage) or not current_stage.get("generated",false): return
 	var old_deck: Node = stage.get_node_or_null("SectorDeckGraphics")
@@ -145,6 +209,7 @@ static func apply_generated_dressing(stage: Node3D, current_stage: Dictionary) -
 	var cosmetic_rng := RandomNumberGenerator.new()
 	cosmetic_rng.seed = cosmetic_seed
 	var muted: String = ["deck_mark","solar_dim","storm_dim"][int(current_stage.theme)]
+	var inlay: String = SECTOR_INLAYS[int(current_stage.theme)]
 	var inlays: Array[Transform3D] = []
 	var islands: Array[Transform3D] = []
 	var dashes: Array[Transform3D] = []
@@ -203,7 +268,7 @@ static func apply_generated_dressing(stage: Node3D, current_stage: Dictionary) -
 			if not clear: continue
 			at.y = 0.041
 			dashes.append(Art._transform(at,Vector3(0.075,0.008,0.62),atan2(direction.x,direction.z)))
-	for batch: Array in [["RouteInlays","box","deck_deep",inlays],["RelayIslands","octagon","deck_deep",islands],["RouteDashes","box",muted,dashes],["IslandTicks","box",muted,edge_ticks]]:
+	for batch: Array in [["RouteInlays","box",inlay,inlays],["RelayIslands","octagon",inlay,islands],["RouteDashes","box",muted,dashes],["IslandTicks","box",muted,edge_ticks]]:
 		if batch[3].is_empty(): continue
 		Art._batch(deck,batch[0],batch[1],batch[2],batch[3],false)
 		# Retain the bounded input transforms for headless geometry validation;

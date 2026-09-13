@@ -5,11 +5,16 @@ const Art = preload("res://scripts/art.gd")
 const MAX_EFFECTS := 160
 const LOW_EFFECTS_LIMIT := 72
 const DECORATIVE_RESERVE := 20
+const PULSE_GATHER_TIME := 0.075
+const PULSE_FRONT_TIME := 0.22
+const PULSE_MAX_LIFE := 0.82
 const COLORS: Dictionary = {
 	"kinetic": Color("70e5ff"), "scatter": Color("ffd078"),
 	"arc": Color("bb97ff"), "plasma": Color("67ffc5"),
 	"white": Color("f3ffff"), "ember": Color("ff8c4b"),
-	"smoke": Color("263545"), "dark": Color("111e2b")
+	"smoke": Color("263545"), "dark": Color("111e2b"),
+	"pulse_cyan": Color("24dcff"), "pulse_violet": Color("9670ff"),
+	"pulse_hot": Color("ffe8bb")
 }
 var low_effects := false:
 	set(value):
@@ -43,6 +48,7 @@ static func _material(key: String) -> StandardMaterial3D:
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.vertex_color_use_as_albedo = key.begins_with("pulse_")
 	if key == "smoke":
 		material.albedo_color.a = 0.48
 	elif key == "dark":
@@ -68,6 +74,8 @@ static func _mesh(key: String) -> Mesh:
 		mesh = ring
 	elif key in ["arc_core", "arc_glow"]:
 		mesh = _lightning_mesh(0.018 if key == "arc_core" else 0.065)
+	elif key.begins_with("pulse_"):
+		mesh = _pulse_mesh(key)
 	else:
 		mesh = Art._mesh(key)
 	_meshes[key] = mesh
@@ -85,6 +93,64 @@ static func _lightning_mesh(width: float) -> ArrayMesh:
 			for vertex: Vector3 in [a-offset,a+offset,b+offset,a-offset,b+offset,b-offset]:
 				builder.set_normal(Vector3.UP)
 				builder.add_vertex(vertex)
+	return builder.commit()
+
+
+static func _pulse_mesh(shape: String) -> ArrayMesh:
+	# Shared, open silhouettes: the damage area stays readable between spokes.
+	# Every vertex is inside the unit sphere, including the lifted shard spines.
+	var builder := SurfaceTool.new()
+	builder.begin(Mesh.PRIMITIVE_TRIANGLES)
+	if shape=="pulse_front":
+		for index in range(64):
+			var a := TAU*float(index)/64.0
+			var b := TAU*float(index+1)/64.0
+			var inner_a := Vector3(sin(a)*0.945,0,cos(a)*0.945)
+			var outer_a := Vector3(sin(a),0,cos(a))
+			var inner_b := Vector3(sin(b)*0.945,0,cos(b)*0.945)
+			var outer_b := Vector3(sin(b),0,cos(b))
+			for vertex: Vector3 in [inner_a,outer_a,outer_b,inner_a,outer_b,inner_b]:
+				builder.set_color(Color(1,1,1,0.94 if vertex.length()>0.97 else 0.0))
+				builder.set_normal(Vector3.UP)
+				builder.add_vertex(vertex)
+		return builder.commit()
+	var count := 6 if shape=="pulse_sparse" else 12
+	for index in range(count):
+		var angle := TAU*float(index)/float(count)
+		var vertices: Array[Vector3] = []
+		if shape=="pulse_arcs":
+			for segment in range(5):
+				var a := angle+float(segment)*0.055
+				var b := a+0.055
+				var inner_a := Vector3(sin(a)*0.966,0,cos(a)*0.966)
+				var outer_a := Vector3(sin(a),0,cos(a))
+				var inner_b := Vector3(sin(b)*0.966,0,cos(b)*0.966)
+				var outer_b := Vector3(sin(b),0,cos(b))
+				vertices.append_array([inner_a,outer_a,outer_b,inner_a,outer_b,inner_b])
+		else:
+			var direction := Vector3(sin(angle),0,cos(angle))
+			var tangent := Vector3(direction.z,0,-direction.x)
+			if shape in ["pulse_gather","pulse_sparse"]:
+				var tip := direction*0.985
+				var tail := direction*0.51
+				vertices.append_array([tail-tangent*0.004,tail+tangent*0.004,tip,tail-Vector3.UP*0.004,tail+Vector3.UP*0.004,tip])
+			else:
+				var reach := 0.99 if index%3==0 else 0.77
+				var heel := direction*0.19
+				var left := direction*0.53-tangent*0.037
+				var right := direction*0.53+tangent*0.037
+				var spine := direction*0.55+Vector3.UP*0.13
+				var tip := direction*reach
+				vertices.append_array([heel,left,spine,heel,spine,right,left,tip,spine,spine,tip,right])
+		for vertex: Vector3 in vertices:
+			var alpha := 1.0
+			if shape=="pulse_shards":
+				alpha=0.90 if vertex.y>0.0 else 0.06 if vertex.length()<0.25 else 0.10 if vertex.length()>0.70 else 0.42
+			elif shape in ["pulse_gather","pulse_sparse"]:
+				alpha=0.96 if vertex.length()>0.70 else 0.10
+			builder.set_color(Color(1,1,1,alpha))
+			builder.set_normal(Vector3.UP)
+			builder.add_vertex(vertex)
 	return builder.commit()
 
 
@@ -219,6 +285,118 @@ func arc_link(from: Vector3, to: Vector3, tier: int = 1) -> void:
 			braid.node.quaternion=Quaternion(Vector3.BACK,direction.normalized())*Quaternion(Vector3.BACK,2.3)
 
 
+func _pulse_layer(shape: String, color: String, at: Vector3, size: Vector3, duration: float, style: String, delay: float = 0.0, essential: bool = false) -> Dictionary:
+	var entry := _emit(shape,_material(color),at,size,duration+delay,style,essential)
+	if entry.is_empty(): return entry
+	entry.delay=delay
+	entry.duration=duration
+	entry.origin=at
+	entry.opacity=1.0
+	entry.rotation=0.0
+	return entry
+
+
+func pulse(at: Vector3, power: float, radius: float, echo: bool = false) -> void:
+	if power<=0.0 or radius<=0.0 or not is_finite(radius) or not is_finite(power) or not at.is_finite(): return
+	var strength := clampf((power-30.0)/70.0,0.0,1.0)
+	var weight := lerpf(0.60,1.0,strength)*(0.48 if echo else 1.0)
+	var speed := 0.72 if echo else 1.0
+	var lifetime := lerpf(0.62,PULSE_MAX_LIFE,strength)*speed
+	var ground_y := 0.075
+	var ground_offset := ground_y-at.y
+	var ground_clearance := absf(ground_offset)+minf(0.01,radius*0.1)
+	var touches_ground := ground_clearance<radius
+	# An airborne pulse intersects the floor in a smaller circle. If it cannot
+	# reach the floor, show its boundary in the origin plane instead.
+	var ground_radius := sqrt(maxf(0.0,radius*radius-ground_clearance*ground_clearance)) if touches_ground else radius
+	var ground := Vector3(at.x,ground_y if touches_ground else at.y,at.z)
+	# Keep filaments above the flush deck inlays rather than coincident with
+	# the feet plane. Their radial extents leave room within the damage sphere.
+	var energy_origin := at+Vector3.UP*minf(0.16,radius*0.02)
+	var first_emitted := emitted
+	var core_size := minf(radius*0.17,lerpf(0.40,0.69,strength))*(0.68 if echo else 1.0)
+	var core := _pulse_layer("sphere","pulse_hot" if strength>=0.78 and not echo else "white",energy_origin,Vector3.ONE*core_size,0.17*speed,"pulse_core",0.0,true)
+	core.opacity=0.90 if not echo else 0.52
+	var front := _pulse_layer("pulse_front","pulse_cyan",ground,Vector3(ground_radius,minf(0.16,radius),ground_radius),0.37*speed,"pulse_front",0.0,true)
+	front.opacity=lerpf(0.62,0.94,strength)*(0.54 if echo else 1.0)
+	front.arrival=PULSE_FRONT_TIME*speed
+	var boundary := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(ground_radius,0.08,ground_radius),0.30*speed,"pulse_boundary",0.0,true)
+	boundary.opacity=0.10 if echo else lerpf(0.18,0.28,strength)
+	var gather := _pulse_layer("pulse_sparse" if low_effects or echo else "pulse_gather","pulse_cyan",energy_origin,Vector3.ONE*radius*0.60,PULSE_GATHER_TIME*speed,"pulse_gather")
+	if not gather.is_empty(): gather.opacity=0.90*weight
+	var shards := _pulse_layer("pulse_shards","pulse_cyan",energy_origin,Vector3(radius*0.94,radius*0.5,radius*0.94),0.34*speed,"pulse_shards",0.035*speed)
+	if not shards.is_empty():
+		shards.opacity=0.88*weight
+		shards.rotation=rng.randf_range(-0.18,0.18)
+	var aftermath := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(ground_radius*0.87,0.08,ground_radius*0.87),lifetime-0.16*speed,"pulse_after",0.16*speed)
+	if not aftermath.is_empty(): aftermath.opacity=0.26*weight
+	if not low_effects and not echo:
+		var halo := _pulse_layer("ring","pulse_cyan",energy_origin,Vector3(radius*0.26,minf(0.28,radius),radius*0.26),0.23,"pulse_halo",0.015)
+		if not halo.is_empty(): halo.opacity=0.52*weight
+		var arcs := _pulse_layer("pulse_arcs","pulse_violet",energy_origin,Vector3(radius*0.91,0.08,radius*0.91),0.39,"pulse_arcs",0.055)
+		if not arcs.is_empty():
+			arcs.opacity=0.62*weight
+			arcs.rotation=0.16
+		if strength>=0.78:
+			var peak := _pulse_layer("pulse_shards","pulse_hot",energy_origin,Vector3(radius*0.64,radius*0.25,radius*0.64),0.19,"pulse_shards",0.025)
+			if not peak.is_empty():
+				peak.opacity=0.68
+				peak.rotation=PI/12.0
+	# Initialize delayed layers immediately, avoiding a single-frame full-size
+	# flash at emission. Pulse owns no timers outside the existing bounded pool.
+	for entry: Dictionary in active:
+		if int(entry.get("pulse_serial",-1))>=0 or not entry.style.begins_with("pulse_"): continue
+		entry.pulse_serial=first_emitted
+		entry.radius=radius
+		entry.power=power
+		entry.echo=echo
+		_update_pulse(entry,0.0)
+
+
+func _update_pulse(entry: Dictionary, age: float) -> void:
+	var node: MeshInstance3D = entry.node
+	var local_time := age-float(entry.delay)
+	node.visible=local_time>=0.0
+	if not node.visible: return
+	var progress := clampf(local_time/float(entry.duration),0.0,1.0)
+	var opacity: float = entry.opacity
+	node.global_position=entry.origin
+	node.rotation=Vector3(0,float(entry.rotation),0)
+	match entry.style:
+		"pulse_core":
+			var peak := clampf(local_time/0.045,0.0,1.0)
+			node.scale=entry.base*lerpf(0.38,1.0,peak)*(1.0-progress*0.42)
+			opacity*=1.0-progress*progress
+		"pulse_gather":
+			node.scale=entry.base*lerpf(1.0,0.06,progress*progress)
+			node.rotation.y+=progress*0.14
+			opacity*=1.0-progress*0.65
+		"pulse_front":
+			var travel := clampf(local_time/float(entry.arrival),0.0,1.0)
+			var size := lerpf(0.07,1.0,1.0-pow(1.0-travel,2.0))
+			node.scale=Vector3(entry.base.x*size,entry.base.y,entry.base.z*size)
+			opacity*=1.0-pow(progress,1.7)
+		"pulse_boundary":
+			node.scale=entry.base
+			opacity*=1.0-progress
+		"pulse_shards":
+			var travel := 1.0-pow(1.0-progress,3.0)
+			node.scale=entry.base*lerpf(0.17,1.0,travel)
+			opacity*=pow(1.0-progress,1.3)
+		"pulse_halo":
+			node.scale=entry.base*lerpf(0.18,1.0,1.0-pow(1.0-progress,3.0))
+			opacity*=1.0-progress
+		"pulse_arcs":
+			node.scale=entry.base*lerpf(0.35,1.0,1.0-pow(1.0-progress,2.0))
+			node.rotation.y+=progress*0.28
+			opacity*=1.0-progress
+		"pulse_after":
+			node.scale=entry.base*lerpf(0.90,1.0,progress)
+			node.rotation.y-=progress*0.07
+			opacity*=pow(1.0-progress,2.0)
+	node.transparency=1.0-clampf(opacity,0.0,1.0)
+
+
 func _collect_parts(node: Node, results: Array[MeshInstance3D]) -> void:
 	for child: Node in node.get_children():
 		if child is MeshInstance3D and child.visible:
@@ -255,6 +433,7 @@ func destroy_enemy(model: Node3D, at: Vector3, kind: String, direction: Vector3)
 
 
 func update(delta: float) -> void:
+	if delta<=0.0: return
 	elapsed += delta
 	for index: int in range(active.size()-1,-1,-1):
 		var entry: Dictionary = active[index]
@@ -264,6 +443,9 @@ func update(delta: float) -> void:
 			continue
 		var node: MeshInstance3D = entry.node
 		var progress: float = 1.0-entry.life/entry.total
+		if entry.style.begins_with("pulse_"):
+			_update_pulse(entry,entry.total-entry.life)
+			continue
 		match entry.style:
 			"flash":
 				node.scale=entry.base*(1.0+progress*0.7)

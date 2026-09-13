@@ -1,0 +1,165 @@
+{
+  "kind": "Resonance validation inventory",
+  "initial_full_regression": {
+    "source_aggregate": "b86539e13f269291baf0811d237350b2b83ab1a9fa5322ca3465942cd9af6236",
+    "suites": [
+      {
+        "suite": "altitude_integration",
+        "checks": 34,
+        "result": "passed",
+        "summary": "Altitude integration: 34 checks, 0 failures"
+      },
+      {
+        "suite": "audio",
+        "checks": 44,
+        "result": "passed",
+        "summary": "Audio: 44 checks, 0 failures; source PCM peak 0.7260; numeric/runtime checks only, no audition"
+      },
+      {
+        "suite": "campaign",
+        "checks": 31,
+        "result": "passed",
+        "summary": "Campaign: 31 checks, 0 failures"
+      },
+      {
+        "suite": "combat_fx",
+        "checks": 22,
+        "result": "passed",
+        "summary": "Combat FX: 22 checks, 0 failures"
+      },
+      {
+        "suite": "endless",
+        "checks": 45,
+        "result": "passed",
+        "summary": "Endless handoffs: 45 checks, 0 failures"
+      },
+      {
+        "suite": "generation",
+        "checks": 47,
+        "result": "passed",
+        "summary": "Generation: 768 layouts, 47 checks, 0 failures"
+      },
+      {
+        "suite": "integration",
+        "checks": 39,
+        "result": "passed",
+        "summary": "Integration: 39 checks, 0 failures"
+      },
+      {
+        "suite": "native_controls_check",
+        "checks": 36,
+        "result": "passed",
+        "summary": "Native keyboard controls: 36 checks, 0 failures; 0 native captures"
+      },
+      {
+        "suite": "pulse_fx",
+        "checks": 53,
+        "result": "passed",
+        "summary": "Pulse FX: 53 checks, 0 failures"
+      },
+      {
+        "suite": "resonance_audio",
+        "checks": 48,
+        "result": "passed",
+        "summary": "Resonance audio: 48 checks, 0 failures; container and runtime state checks, no audition"
+      },
+      {
+        "suite": "rules",
+        "checks": 25,
+        "result": "passed",
+        "summary": "Combat rules: 25 checks, 0 failures"
+      },
+      {
+        "suite": "traversal",
+        "checks": 34,
+        "result": "passed",
+        "summary": "Traversal: 34 checks, 0 failures"
+      },
+      {
+        "suite": "weapons",
+        "checks": 50,
+        "result": "passed",
+        "summary": "Weapons: 50 checks, 0 failures"
+      },
+      {
+        "suite": "save",
+        "checks": 84,
+        "result": "passed",
+        "summary": "PASS: 84 save checks, 0 failures"
+      }
+    ],
+    "checks": 592,
+    "note": "Final aggressive-audio revision repeats affected audio suites; unaffected gameplay/visual assertions remain applicable."
+  },
+  "native_controls": {
+    "checks": 36,
+    "failures": 0,
+    "captures": 11,
+    "log": "qa/resonance-controls/native-controls.log",
+    "kind": "synthetic keyboard inputs through native window, not human play"
+  },
+  "visuals": {
+    "captures": 20,
+    "kind": "staged native fixed-step visual review",
+    "manifest": "qa/resonance-visual/visual-evidence.json"
+  },
+  "audio_feedback": "User auditioned first preview and requested more aggressive bass and drums; revised mix acceptance remains unverified.",
+  "final_audio_revision": {
+    "source_aggregate": "c08ceb78fc101c6c3ce857d27bade937e9562ccc04075b5dc6e0a7b665b2eaea",
+    "audio_checks": 44,
+    "resonance_audio_checks": 48,
+    "failures": 0,
+    "independent_decode": "qa/resonance-audio-decoded.json"
+  },
+  "current_runtime_source": "qa/resonance-source.json",
+  "current_runtime_aggregate": "c08ceb78fc101c6c3ce857d27bade937e9562ccc04075b5dc6e0a7b665b2eaea",
+  "engine_audio": {
+    "method": "scripted_native_engine_master_audio",
+    "success": true,
+    "driver": "CoreAudio",
+    "pcm": {
+      "analyzed_samples": 3457024,
+      "audio_seconds": 36.0106666666667,
+      "channels": 2,
+      "clipped_samples": 0,
+      "pcm_bits": 16,
+      "pcm_bytes": 6914048,
+      "peak": 0.4365234375,
+      "rms": 0.0640301182581014,
+      "sample_rate": 48000
+    },
+    "maximum_sampled_intensity": 0.638654313163186,
+    "maximum_sampled_hostile_shots": 10,
+    "scripted": true,
+    "metadata": "qa/resonance-engine-audio.json",
+    "raw_wav": "qa/resonance-engine-audio.wav",
+    "listening_acceptance": "not yet received for revised audio"
+  },
+  "previews": [
+    {
+      "path": "docs/audio/resonance-battle.mp3",
+      "sha256": "478c064ce1ddd23aa821fce3b65a1804aa3e181d7e9aff654a1cb91a156225f0"
+    },
+    {
+      "path": "docs/audio/resonance-dnb.mp3",
+      "sha256": "db3c1c3a9770648145447a3b16ae287c18744536bbe63b0cda11ab241a93dec4"
+    },
+    {
+      "path": "docs/audio/resonance-engine.mp3",
+      "sha256": "6c7de6121ec280df578b813edf13c7d0290f6a643cbad8d6a885e43153c6cb6a"
+    }
+  ],
+  "native_run": {
+    "result": "banked six sectors",
+    "sectors": 6,
+    "guardians": 2,
+    "relays": 18,
+    "game_seconds": 223.816666666737,
+    "health": 76.0,
+    "render_samples": 15856,
+    "median_ms": 16.332,
+    "p95_ms": 18.25,
+    "p99_ms": 18.979,
+    "context": "qa/resonance-native/run-context.json"
+  }
+}

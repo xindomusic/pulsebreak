@@ -1,0 +1,116 @@
+{
+  "bpm": 174,
+  "bars": 64,
+  "beats": 256,
+  "sample_rate": 44100,
+  "frames": 3892966,
+  "seconds": 88.27587301587302,
+  "channels": 2,
+  "seed": 913174,
+  "revision": "Aggressive bass/drums after user audition",
+  "method": "Original additive/subtractive procedural synthesis; no third-party samples. Numeric analysis is not listening.",
+  "sections": [
+    {
+      "start_bar": 0,
+      "end_bar": 8,
+      "name": "Ignition / rolling introduction"
+    },
+    {
+      "start_bar": 8,
+      "end_bar": 24,
+      "name": "First drop / bass call and response"
+    },
+    {
+      "start_bar": 24,
+      "end_bar": 32,
+      "name": "Pressure / melodic development"
+    },
+    {
+      "start_bar": 32,
+      "end_bar": 40,
+      "name": "Suspension / half-time break and rebuild"
+    },
+    {
+      "start_bar": 40,
+      "end_bar": 56,
+      "name": "Second drop / doubled upper-bass answers"
+    },
+    {
+      "start_bar": 56,
+      "end_bar": 64,
+      "name": "Afterburn / return to the loop"
+    }
+  ],
+  "stems": {
+    "foundation": {
+      "peak": 0.8600000143051147,
+      "rms": 0.18363863714111306,
+      "dc": 0.0005417282809503376,
+      "boundary_step": 0.0,
+      "bytes": 2816675,
+      "sha256": "701322e686d62ae9405a9451c1573cec5bc8a18e7b94ddbf5f8750e63b9f33b4",
+      "section_rms": [
+        0.1778832972049713,
+        0.18903832137584686,
+        0.1870006024837494,
+        0.16168123483657837,
+        0.1890358328819275,
+        0.18464195728302002
+      ]
+    },
+    "drive": {
+      "peak": 0.8199999928474426,
+      "rms": 0.07117296698969726,
+      "dc": -2.4161477995221503e-05,
+      "boundary_step": 0.0,
+      "bytes": 2026442,
+      "sha256": "caf95fa77ebcb0d7cdc3df9a4de0accc69caeb6e251e3ba2a4b5905cf7ac7d90",
+      "section_rms": [
+        0.06867723166942596,
+        0.06755948811769485,
+        0.0691433772444725,
+        0.0681329295039177,
+        0.07887844741344452,
+        0.06937635689973831
+      ]
+    },
+    "lead": {
+      "peak": 0.75,
+      "rms": 0.13779013387227795,
+      "dc": 2.2685986778014922e-07,
+      "boundary_step": 0.0,
+      "bytes": 2282813,
+      "sha256": "a4b3ad92bfc5a10be188b5dfbb40199010eecd60ea41d63b22ff92a0e95b60e9",
+      "section_rms": [
+        0.08802521973848343,
+        0.13509425520896912,
+        0.1344951093196869,
+        0.121067576110363,
+        0.1719280481338501,
+        0.12559780478477478
+      ]
+    }
+  },
+  "pulse": {
+    "peak": 0.88,
+    "rms": 0.08096834889774901,
+    "dc": -6.7761367190046966e-18,
+    "boundary_step": 0.0,
+    "seconds": 1.25
+  },
+  "music_mix": {
+    "peak": 0.8936656713485718,
+    "rms": 0.13323111074943086,
+    "dc": 0.0003282772668171674,
+    "boundary_step": 0.0
+  },
+  "battle_preview": {
+    "peak": 0.610990047454834,
+    "rms": 0.08274503456796081,
+    "dc": 0.00023764118668623269,
+    "boundary_step": 0.00327801494859159,
+    "seconds": 36,
+    "kind": "offline reconstruction, not engine capture",
+    "volume": 0.65
+  }
+}

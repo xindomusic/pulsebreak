@@ -1,0 +1,17 @@
+[gd_resource type="AudioBusLayout" load_steps=2 format=3]
+
+[sub_resource type="AudioEffectHardLimiter" id="MixLimiter"]
+resource_name = "Combat peak ceiling"
+ceiling_db = -1.0
+pre_gain_db = 0.0
+release = 0.08
+
+[resource]
+bus/0/name = &"Master"
+bus/0/solo = false
+bus/0/mute = false
+bus/0/bypass_fx = false
+bus/0/volume_db = 0.0
+bus/0/send = &""
+bus/0/effect/0/effect = SubResource("MixLimiter")
+bus/0/effect/0/enabled = true

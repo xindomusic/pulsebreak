@@ -1,5 +1,17 @@
 # Pulsebreak verification evidence
 
+## Resonance follow-up
+
+The current update is documented in [Resonance](../docs/RESONANCE.md), [research](../docs/RESONANCE_RESEARCH.md), [independent review](resonance-review.md), and [runtime source manifest](resonance-source.json). **592 checks in fourteen suites** pass, including 53 pulse and 48 new adaptive-audio checks. The [validation inventory](resonance-validation.json) separates numeric checks, native automation, staged visual captures, recorded engine audio and unverified human listening/play.
+
+- `resonance-visual/visual-evidence.json`: 20 staged native images, with selected examples in `docs/images/resonance-*`.
+- `resonance-audio.json`: source synthesis statistics; `docs/audio/resonance-dnb.mp3` is the full arrangement and `resonance-battle.mp3` is an offline representative combat mix.
+- `resonance-audio-decoded.json`: independent decoding of the heavier revision requested after the player's first audition.
+- `resonance-engine-audio.json` and `.wav`: actual native Master output, with scripted weapons/pulses and a staged Guardian encounter; an audition MP3 is in `docs/audio/resonance-engine.mp3`. The first candidate's engine recording is archived under `resonance-initial-audio`.
+- `resonance-native/active-metrics.json`: target M4 six-sector native automation at 1280×800; consult the current review for exact results and interval limits.
+
+Earlier reports below remain historical and do not describe the current source.
+
 ## Overdrive follow-up
 
 The current update is documented in [the Overdrive guide](../docs/OVERDRIVE.md), [research](../docs/OVERDRIVE_RESEARCH.md), [independent review](overdrive-review.md), and [runtime source manifest](overdrive-source.json). Earlier evidence remains historical. Current audited total: **491 checks in twelve suites**, with 768 generated layouts. See [the validation inventory](overdrive-validation.json).
