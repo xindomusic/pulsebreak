@@ -1,18 +1,16 @@
 # Art, audio, and asset provenance
 
-**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
-
-**Current release: [Pulsebreak 1.1](RELEASE_1_1.md).** The release retains the procedural art and richer Resonance palette and uses the player-selected first ElevenLabs DnB track and combat effects. [Overdrive](OVERDRIVE.md) and [Resonance](RESONANCE.md) describe earlier visual/audio iterations; their audio inventories are historical.
+**Current release: [Pulsebreak 1.2](RELEASE_1_2.md).** The release retains the procedural art and richer Resonance palette and uses original ElevenLabs-generated Prism Drive dubstep and combat effects. [Overdrive](OVERDRIVE.md) and [Resonance](RESONANCE.md) describe earlier visual/audio iterations; their audio inventories are historical.
 
 Pulsebreak's visuals are constructed in source with Codex assistance; no external model or texture pack was imported. Release audio includes ElevenLabs-generated recordings as described below. Earlier procedural audio remains in the checkout as development history.
 
 ## Release audio
 
-`assets/audio/elevenlabs/music_reactor_rush.ogg` is the accepted first `music_v2` audition, preserving its full 44.199-second arrangement. Five main effects from `eleven_text_to_sound_v2` are copied exactly from their approved prepared WAVs: kinetic fire, plasma fire, armor impact, machine destruction and reactor pulse. Scatter, arc, Guardian destruction and weapon-install cues are local edits/layers of those recordings. Ten retained interface cues remain from the earlier synthesized set.
+`assets/audio/elevenlabs/music_prism_drive.ogg` is the original `music_v2_5` instrumental, preserving its full 102.426-second arrangement with local loudness preparation and short boundary fades. The previous 1.1 track remains in source history. Five main effects from `eleven_text_to_sound_v2` are copied exactly from their approved prepared WAVs: kinetic fire, plasma fire, armor impact, machine destruction and reactor pulse. Scatter, arc, Guardian destruction and weapon-install cues are local edits/layers of those recordings. Ten retained interface cues remain from the earlier synthesized set.
 
-[install_release_audio.py](../tools/install_release_audio.py) documents the offline preparation; [release-audio.json](../qa/release-audio.json) records sources, processing and hashes. [LICENSES.md](../LICENSES.md) records provenance. The game loads bundled files and has no generation-service dependency or credential. Rebuilding the game uses checked-in assets, without regenerating audio.
+[prepare_prism_music.py](../tools/prepare_prism_music.py) and [prism-music.json](../qa/prism-music.json) document the current music. [install_release_audio.py](../tools/install_release_audio.py) and [release-audio.json](../qa/release-audio.json) document the retained combat effects. [LICENSES.md](../LICENSES.md) records provenance. The game loads bundled files and has no generation-service dependency or credential. Rebuilding the game uses checked-in assets, without regenerating audio.
 
-[audio_director.gd](../scripts/audio_director.gd) plays one looping track with smoothed threat-driven gain, major-event ducking and twelve reusable cue voices. See the [independent release review](../qa/release-review.md) for import, priority, loop, mute/volume and native capture checks. The player selected this music; numerical validation does not assign a new overall game rating.
+[audio_director.gd](../scripts/audio_director.gd) plays one looping track with smoothed threat-driven gain, major-event ducking and twelve reusable cue voices. See the [independent audio review](../qa/prism-review.md) for import, priority, loop, mute/volume and native capture checks. Numerical checks establish playback behavior; the separate [game review](../qa/release-1.2-review.md) records an observational grade.
 
 ## Geometry and environment
 

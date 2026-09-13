@@ -1,8 +1,5 @@
 {
-  "brief": "Original 150 BPM half-time festival dubstep, responding to the user's high-level reference direction.",
-  "reference": "https://soundcloud.com/rayvolpemusic/laserbeam",
-  "reference_audio_used": false,
-  "musical_similarity_reviewed_by_listening": false,
+  "brief": "Original 150 BPM half-time festival dubstep for Pulsebreak.",
   "tempo": "150 BPM requested; no exact tempo/beat-grid certification.",
   "provider_receipt": "qa/elevenlabs-audition/prism_drive.json",
   "provider_original_sha256": "376cf8f6308e332abe1e9e31180068acde02537dfe50eef474e6010c58f22b12",
@@ -488,5 +485,6 @@
     "assets/audio/elevenlabs/pulse.wav": "4e622de7c1eae2ab9c143f326d0fc7ec48847108492c213ea07c81112a03de5e",
     "assets/audio/elevenlabs/scatter_fire.wav": "b31898c53058ee56868e850524e5d6c3cd9007a52d728d5b434f89f4d652ce8c",
     "assets/audio/elevenlabs/kinetic_fire.wav": "2b1c821e97ad13e70b4ebf06f067d2134537b16934b90bc28b5c1e8c165b99b8"
-  }
+  },
+  "reviewed_by_listening": false
 }

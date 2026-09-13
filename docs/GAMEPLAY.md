@@ -1,8 +1,6 @@
 # Player guide
 
-**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
-
-**Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md).** **Begin Skybound** starts continuous generated sectors: clear enemies, reach airborne relays, cross moving gates, upgrade at checkpoints and fight recurring Guardians. At checkpoints you can continue or bank the score. See [Overdrive](OVERDRIVE.md) for the four weapons, five ranks and endless progression.
+**Current release: [Pulsebreak 1.2.0](RELEASE_1_2.md).** **Begin Skybound** starts continuous generated sectors: clear enemies, reach airborne relays, cross moving gates, upgrade at checkpoints and fight recurring Guardians. At checkpoints you can continue or bank the score. See [Overdrive](OVERDRIVE.md) for the four weapons, five ranks and endless progression.
 
 **F** jumps; hold through the apex to glide. **Q** cycles unlocked weapons. Flight is available in Classic too. [Skybound](SKYBOUND.md) records the earlier authored three-sector campaign and explains relays, moving shutters and wing fuel. The six-minute survival and timed-upgrade sections below describe **Classic**.
 

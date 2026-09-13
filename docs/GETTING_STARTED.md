@@ -1,14 +1,23 @@
 # Getting started on a Mac
 
-**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
+**Current release: [Pulsebreak 1.2.0](RELEASE_1_2.md).** Choose **Begin Skybound** for continuous generated levels, evolving weapons, jump/glide and moving gates. Prism Drive and all game effects are bundled for offline play.
 
-**Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md) on `main`.** Choose **Begin Skybound** for continuous generated levels, four evolving weapons, jump/glide and moving gates. The selected first ElevenLabs soundtrack and prepared effects are included in the source. A local standalone app can be opened at `build/Pulsebreak.app`; a fresh clone needs the editor or a local export.
+## Play the download
+
+1. Download **Pulsebreak-1.2.0-macOS-universal.zip** from the [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0).
+2. Unzip it and move **Pulsebreak.app** to Applications.
+3. Open the app and choose **Begin Skybound** or **Practice the Heist**.
+
+The app is ad-hoc signed, without Apple notarization. If macOS blocks a trusted download from this repository, follow [Apple's instructions for opening an app from an unknown developer](https://support.apple.com/en-ca/guide/mac-help/mh40616/mac), including the per-app option in System Settings → Privacy & Security. The release also supplies **Pulsebreak-1.2.0-SHA256SUMS.txt**; with both files in the same folder, verify the ZIP using `shasum -a 256 -c Pulsebreak-1.2.0-SHA256SUMS.txt`.
+
+The editor and Git instructions below are for working from source. The downloadable app requires neither.
+
 
 ## Requirements
 
 - A Mac capable of running the standard Godot 4.7.2 editor. Release 1.1 was tested on Mac mini M4 / 16 GB / macOS 26.6.2. Earlier M1 Max / 32 GB results are historical; Intel execution and other configurations have not been certified by this project.
 - Keyboard input for gameplay. Mouse input is supported in menus, but aiming is automatic and controller support is not implemented.
-- Git to clone the source. Python 3 is optional and only needed to regenerate audio.
+- Git is needed only to clone the source. Python 3 is optional and only needed to regenerate audio.
 
 There is no runtime service, package registry, account, API key or model download. The checked-in WAV and Ogg files are ready to use. Python/audio tools and an ElevenLabs credential are unnecessary for playing or exporting the checked-in game.
 

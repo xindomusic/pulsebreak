@@ -1,8 +1,8 @@
 # Documentation
 
-**New on this branch: [Prism Drive 1.2](PRISM_DRIVE.md)** — an original half-time dubstep soundtrack. [Listen](audio/prism/prism_drive.mp3) · [Independent review](../qa/prism-review.md). The current source uses this track; the prior release is recorded below.
+**Current release: [Pulsebreak 1.2.0](RELEASE_1_2.md).** Download the universal Mac app from the [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0). The release includes original Prism Drive dubstep, combat effects, endless sectors, evolving weapons, flight and Quit controls.
 
-**Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md), merged to `main`.** The release uses the player-selected first ElevenLabs DnB track and combat effects, with endless sectors, evolving weapons, flight and Quit controls. [Release notes](RELEASE_1_1.md) · [Changelog](../CHANGELOG.md) · [Release verification](../qa/README.md).
+[Game grade and review](../qa/release-1.2-review.md) · [Changelog](../CHANGELOG.md) · [Verification index](../qa/README.md). The source is on `main`, tagged `v1.2.0`; `v1.1.0` marks the previous verified release revision.
 
 [Resonance](RESONANCE.md) records the earlier visual and procedural-music iteration. [Overdrive](OVERDRIVE.md) records evolving weapons and continuous levels. Those reports retain their original measurements and audio versions.
 
@@ -14,8 +14,8 @@ Pulsebreak has two stories: a playable native Mac game, and an experiment in bui
 
 | You want to… | Read in this order |
 |---|---|
-| Play on your Mac | [Release 1.1](RELEASE_1_1.md) → [Getting started](GETTING_STARTED.md) → [Gameplay](GAMEPLAY.md) |
-| See what shipped and what passed | [Release notes](RELEASE_1_1.md) → [QA index](../qa/README.md) → [Package evidence](../qa/release-package.json) |
+| Play on your Mac | [Release 1.2](RELEASE_1_2.md) → [Getting started](GETTING_STARTED.md) → [Gameplay](GAMEPLAY.md) |
+| See what shipped and what passed | [Release notes](RELEASE_1_2.md) → [QA index](../qa/README.md) → [Package evidence](../qa/release-1.2-package.json) |
 | Understand the AI development experiment | [Experiment](EXPERIMENT.md) → [Lessons learned](LESSONS_LEARNED.md) → [Final review](../qa/review-round-3.md) |
 | Modify the game | [Architecture](ARCHITECTURE.md) → [Testing](TESTING.md) → [Contributing](../CONTRIBUTING.md) |
 | Build a standalone app | [Getting started](GETTING_STARTED.md) → [Mac export](MACOS_EXPORT.md) |
@@ -25,7 +25,7 @@ Pulsebreak has two stories: a playable native Mac game, and an experiment in bui
 
 ## Current guides and historical records
 
-The Prism Drive notes describe the 1.2 feature build; release 1.1 notes preserve the previous shipped version. The original [design](../DESIGN.md), [research notes](../findings.md), [implementation plan](superpowers/plans/2026-09-07-pulsebreak.md), and [progress log](../progress.md) preserve the development record. Some historical targets and early measurements were superseded. Use the release validation and QA index for the current outcome.
+Release 1.2 and Prism Drive notes describe the current build; release 1.1 notes preserve the preceding version. The original [design](../DESIGN.md), [research notes](../findings.md), [implementation plan](superpowers/plans/2026-09-07-pulsebreak.md), and [progress log](../progress.md) preserve the development record. Some historical targets and early measurements were superseded. Use the release validation and QA index for the current outcome.
 
 The implementation was first committed as `a992452`. Public documentation was added afterward without changing gameplay. Native resource-pack hashes in QA reports identify evaluated packages independently of later documentation commits.
 
@@ -37,4 +37,4 @@ The implementation was first committed as `a992452`. Public documentation was ad
 - **Staged capture:** a constructed screen or scene used to inspect layout and cues.
 - **Observational rating:** a sub-agent's judgment with documented limits, including missing extended human feel and audio audition.
 
-The original experiment's final rating was **8.2/10** after three review/fix cycles. Release 1.1 has 591 passing checks, packaged M4 progression evidence and a player-selected soundtrack; it has no new overall enjoyment rating. Neither result is a 9+ certification, player survey or comparison against another model.
+The [current independent grade is **8.4/10 as a small indie arcade demo**](../qa/release-1.2-review.md). It uses a whole-game indie-demo rubric and states its evidence limits. The original experiment's 8.2/10 rating and the later component-only scores remain historical. Test counts and automation establish technical behavior; they are separate from uncoached play and listening feedback.

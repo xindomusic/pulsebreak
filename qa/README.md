@@ -1,12 +1,20 @@
 # Pulsebreak verification evidence
 
-## Prism Drive 1.2 — feature branch
+## Release 1.2.0 — current
 
-[Music update notes](../docs/PRISM_DRIVE.md) · [Independent review](prism-review.md) · [Audio manifest](prism-music.json) · [Native audio capture](prism-native-audio/release-engine-audio.json) · [Regression log](prism-tests.log) · [Package report](prism-package.json). These describe the new half-time dubstep soundtrack; the 1.1 performance and release evidence below remain specific to the earlier build.
+[Release notes](../docs/RELEASE_1_2.md) · [Independent game grade](release-1.2-review.md) · [Final distribution package](release-1.2-package.json) · [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0).
 
-## Release 1.1.0 — current main
+- [Regression log](prism-tests.log): 591 checks in fourteen suites, including 91 audio checks and 768 generated layouts. [Generator safety log](prism-generator-tests.log): nine offline tests.
+- [Audio review](prism-review.md) and [manifest](prism-music.json): 102.426-second original Prism Drive track; existing combat effects retained, no decoded clipping.
+- [Native audio capture](prism-native-audio/release-engine-audio.json): 36 seconds of CoreAudio output and a verified live loop wrap. This is a staged audio demonstration.
+- [Final package report](release-1.2-package.json): the release ZIP and checksum, updated asset notices, signatures and unchanged runtime PCK. [Feature-build package report](prism-package.json) preserves the previous local archive and exact resource/launch checks.
+- [Overall game review](release-1.2-review.md): **8.4/10**, a weighted observational grade for the indie arcade demo, with human feel, current soundtrack taste and AAA readiness explicitly limited.
 
-[Release notes](../docs/RELEASE_1_1.md) document the selected first ElevenLabs music candidate and packaged Mac game. Current release evidence:
+The 1.1 campaign/frame measurements below remain specific to that earlier package; a music-only update does not turn them into new performance evidence.
+
+## Release 1.1.0 — historical
+
+[Release notes](../docs/RELEASE_1_1.md) document the selected first ElevenLabs music candidate and packaged Mac game. Version-specific evidence:
 
 - [Validation inventory](release-validation.json): **591 checks in fourteen suites**, all passed; the generation suite exercises 768 layouts. The 91 focused audio checks cover selected resources, looping, mixing, voice priority and mute/volume behavior.
 - [Independent audio review](release-review.md) and [asset manifest](release-audio.json): accepted first-track provenance, five byte-identical prepared effects, four derived cues and all installed asset hashes.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Prepare the original Prism Drive music request for offline game playback.
 
-No API calls or reference-song audio. Preserve the downloaded provider original,
+No API calls. Preserve the downloaded provider original,
 all prior auditions, the release1.1 soundtrack and every combat effect.
 """
 import hashlib
@@ -102,9 +102,8 @@ def main():
         if digest(ROOT / name) != value:
             raise ValueError("Existing release audio was modified: " + name)
     report = {
-        "brief": "Original 150 BPM half-time festival dubstep, responding to the user's high-level reference direction.",
-        "reference": "https://soundcloud.com/rayvolpemusic/laserbeam",
-        "reference_audio_used": False, "musical_similarity_reviewed_by_listening": False,
+        "brief": "Original 150 BPM half-time festival dubstep for Pulsebreak.",
+        "reviewed_by_listening": False,
         "tempo": "150 BPM requested; no exact tempo/beat-grid certification.",
         "provider_receipt": str(RECEIPT.relative_to(ROOT)), "provider_original_sha256": digest(RAW),
         "original_loudness": before,

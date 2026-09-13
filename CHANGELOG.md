@@ -1,11 +1,13 @@
 # Changelog
 
-## 1.2.0 — Prism Drive music update (feature branch)
+## 1.2.0 — 2026-09-13 — Prism Drive Mac release
 
-- Replaced the background track with original ElevenLabs half-time festival dubstep, following the user’s new reference direction.
+- Replaced the background track with original ElevenLabs half-time festival dubstep, with growling bass, heavy drums and sharp synth stabs.
 - Bundled the full 102.426-second arrangement for offline looping playback, retaining combat-driven gain and blast ducking.
 - Added full-track and battle previews, provenance and independent playback checks; retained previous music and release evidence.
-- See [update notes](docs/PRISM_DRIVE.md) for the local Mac build and validation.
+- Published the universal Mac ZIP, SHA-256 checksum and release notes under `v1.2.0`; tagged the preceding verified revision as `v1.1.0`.
+- Updated every project README and current setup/player/audio/export guide, with an independent whole-game grade and version-specific evidence.
+- See [release notes](docs/RELEASE_1_2.md), [music details](docs/PRISM_DRIVE.md) and [game review](qa/release-1.2-review.md).
 
 ## 1.1.0 — 2026-09-13 — Mac release
 

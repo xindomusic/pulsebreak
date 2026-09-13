@@ -1,8 +1,6 @@
 # Architecture
 
-**Music update on this branch:** [Prism Drive 1.2](PRISM_DRIVE.md) replaces the previous DnB track with original half-time dubstep. The 1.1 release descriptions and measurements below remain historical; gameplay is unchanged.
-
-**Release 1.1 audio:** that revision’s `audio_director.gd` plays the selected first ElevenLabs track as one looping Ogg stream. `set_battle_state` drives a smoothed gain target; major events duck the music, and twelve pooled cue voices preserve priority feedback. Assets are bundled for offline use. See [release notes](RELEASE_1_1.md), [asset provenance](ASSETS.md) and [audio review](../qa/release-review.md).
+**Release 1.2 audio:** `audio_director.gd` plays original Prism Drive as one looping Ogg stream. `set_battle_state` drives a smoothed gain target; major events duck the music, and twelve pooled cue voices preserve priority feedback. Assets are bundled for offline use. See [release notes](RELEASE_1_2.md), [asset provenance](ASSETS.md) and [audio review](../qa/prism-review.md).
 
 **Overdrive runtime update:** `weapons.gd` owns weapon progression and travelling projectiles; `combat_fx.gd` owns pooled contact/destruction animation; `level_generator.gd` produces seeded route data; `campaign.gd` loads successive routes. `game.gd` coordinates weapon → reactor upgrade → continued play and bank/quit states. See [Overdrive](OVERDRIVE.md) for the current flow. The earlier architecture below remains historical.
 

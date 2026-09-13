@@ -130,8 +130,7 @@ ASSETS.append({
 })
 
 
-# Original music brief for the user's next battle-music direction. The provider
-# receives musical traits only, with no reference recording or artist/song name.
+# Original instrumental music brief for Pulsebreak's battle soundtrack.
 ASSETS.append({
     "name": "prism_drive", "kind": "music", "title": "Prism Drive — half-time festival dubstep",
     "body": {

@@ -1,24 +1,29 @@
 # Pulsebreak
 
-**New on this branch: [Prism Drive 1.2](docs/PRISM_DRIVE.md)** — original half-time dubstep with a 150 BPM brief, growling bass and sharp synth stabs. [Listen](docs/audio/prism/prism_drive.mp3) or open **build/Pulsebreak.app** after building. Endless sectors, weapons, flight and Quit controls continue from 1.1. **F** jumps/holds to glide; **Q** switches weapons; **Esc** opens pause and Quit. The game runs offline without an API key.
+**Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-The latest release on `main` remains [Pulsebreak 1.1](docs/RELEASE_1_1.md). This music update is on `feat/prism-drive-music`; see its [notes and verification](docs/PRISM_DRIVE.md).
+**[Download Pulsebreak 1.2.0 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.2.0/Pulsebreak-1.2.0-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_2.md)** · **[Game review](qa/release-1.2-review.md)**
 
-![Staged native Resonance title and courier](docs/images/resonance-title.png)
+Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
-*[Prism Drive notes](docs/PRISM_DRIVE.md), [hear the new soundtrack](docs/audio/prism/prism_drive.mp3), and [music review](qa/prism-review.md). [Release 1.1](docs/RELEASE_1_1.md), [Resonance](docs/RESONANCE.md), [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
+![Staged native title and courier](docs/images/resonance-title.png)
 
-## Release 1.1.0 on main
+*Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
 
-| Check | Release 1.1 result |
+## Release 1.2.0
+
+Prism Drive adds a full 102-second half-time dubstep arrangement with growling bass and sharp synth stabs. Music volume responds to battle intensity and briefly drops around major blasts. The game includes four weapon families with five ranks, jump/glide traversal, moving gates, three environment styles, recurring Guardians, animated hit/destruction effects and Quit controls.
+
+| Evidence | Result and scope |
 |---|---|
-| Regression suites | **591 checks in 14 suites**, all passed; includes 768 generated layouts |
-| Packaged Mac campaign | Three sectors, nine airborne relays and one Guardian completed; 64 hull at 97.13 game seconds |
-| Mac mini M4 / 16 GB | 1280×800, Full Effects; median **16.654 ms**, p95 **18.459 ms**, p99 **18.992 ms** across 5,622 active render intervals |
-| Native audio | 36.01-second CoreAudio capture; zero near-full-scale samples and verified loop transport |
-| Package | Universal arm64/x86_64 app; original and ZIP-extracted signatures and all 78 resource-pack members verified |
+| Regression checks | **591 checks in 14 suites**, all passed; includes 768 generated layouts |
+| Audio generation tooling | Nine offline safety tests passed |
+| Native audio | 36-second CoreAudio capture, no clipping, verified loop transport |
+| Mac package | Universal app; signatures, ZIP and all 78 resource-pack members verified |
+| Independent game grade | **8.4/10 as an indie arcade demo**, provisional; [weighted review and play/listening limits](qa/release-1.2-review.md) |
+| Prior M4 performance | Release 1.1: 1280×800 Full Effects, median 16.654 ms / p95 18.459 ms; retained historical evidence |
 
-The source and release notes are published on `main`. The app and **build/Pulsebreak-1.1.0-macOS-universal.zip** were built locally and are excluded from Git; they have not been attached to a GitHub Release. A fresh clone contains prepared assets and can be built using the guides below.
+The release is published from `main` under the annotated tag **v1.2.0**. The [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0) includes the app ZIP, SHA-256 checksum file and notes. **v1.1.0** identifies the preceding verified release revision. Source archives contain prepared game assets; application bundles are distributed separately through GitHub Releases.
 
 ### A game-making experiment with GPT-6 Astra inside Codex
 
@@ -30,11 +35,11 @@ This repository documents an experiment by [xindomusic](https://github.com/xindo
 
 *Historical title render from the original packaged Mac app. The current visual style is shown at the top of this README; other illustrated scenes are explicitly staged source captures.*
 
-**[Read the experiment](docs/EXPERIMENT.md)** · **[Play from source](docs/GETTING_STARTED.md)** · **[Browse the documentation](docs/README.md)** · **[Release review](qa/release-review.md)**
+**[Read the experiment](docs/EXPERIMENT.md)** · **[Play from source](docs/GETTING_STARTED.md)** · **[Browse the documentation](docs/README.md)** · **[Release review](qa/release-1.2-review.md)**
 
 ## Original experiment results — September 7
 
-These results describe the original Classic prototype. Current release results are above; the historical 8.2 rating is not a fresh assessment of version 1.1.
+These results describe the original Classic prototype. Current release results are above; the historical 8.2 rating is separate from the current [1.2 review](qa/release-1.2-review.md).
 
 | Question | Recorded result |
 |---|---|
@@ -65,7 +70,7 @@ The Vector Carbine, Shatter Cannon, Arc Relay and Nova Lance offer different com
 
 ## Run it on a Mac
 
-The repository contains source and assets. The editor, export templates, and `build/Pulsebreak.app` are deliberately excluded from Git; a fresh clone does not contain a prebuilt application.
+For the ready-to-play app, use the download above. Developers can run from source as follows; the editor, templates and generated app are excluded from Git.
 
 1. Install the standard **Godot 4.7.2** editor from the [official release](https://github.com/godotengine/godot-builds/releases/tag/4.7.2-stable).
 2. Clone this repository and import `project.godot` in Godot.
@@ -108,7 +113,7 @@ The original above-9 target was not reached. Read the [experiment protocol](docs
 | Guide | What it covers |
 |---|---|
 | [Documentation index](docs/README.md) | Reading paths for players, developers, and experiment readers |
-| [Release 1.1](docs/RELEASE_1_1.md) | Selected soundtrack, current features, native M4 validation, package and rebuild instructions |
+| [Release 1.2](docs/RELEASE_1_2.md) | Mac download, original soundtrack, verification, grade and known limits |
 | [Experiment](docs/EXPERIMENT.md) | GPT-6 Astra inside Codex, user involvement, delegation, review cap, evidence limits |
 | [Getting started](docs/GETTING_STARTED.md) | Fresh clone, editor setup, running, local saves, troubleshooting |
 | [Gameplay](docs/GAMEPLAY.md) | Controls, combat rules, enemies, all nine upgrades, practice, difficulty |
@@ -119,13 +124,13 @@ The original above-9 target was not reached. Read the [experiment protocol](docs
 | [Lessons learned](docs/LESSONS_LEARNED.md) | Concrete defects, fixes, and the limits of the measurements |
 | [Roadmap](docs/ROADMAP.md) | Remaining work and evidence needed to call it an improvement |
 | [Contributing](CONTRIBUTING.md) | Reporting bugs, proposing changes, validation expectations |
-| [Changelog](CHANGELOG.md) | Release 1.1 and earlier feature/experiment changes |
+| [Changelog](CHANGELOG.md) | Current release and earlier feature/experiment changes |
 
 ## Project facts and provenance
 
 The implementation is GDScript with Godot's Mobile renderer and Metal on the tested Mac. Start with [game.gd](scripts/game.gd), [rules.gd](scripts/rules.gd), and [the architecture guide](docs/ARCHITECTURE.md).
 
-The current release was tested on **Mac mini M4 / 16 GB**; the [release notes](docs/RELEASE_1_1.md) and [native run context](qa/release-native/run-context.json) identify the packaged game and settings. Historical M1 Max measurements remain in the [QA index](qa/README.md). These are recorded results on specific hardware, not a performance guarantee for every Mac.
+Native 1.2 audio and launch checks ran on **Mac mini M4 / 16 GB**. Full campaign and frame measurements come from release 1.1; the [current notes](docs/RELEASE_1_2.md) and [prior native run context](qa/release-native/run-context.json) distinguish those builds. Historical M1 Max measurements remain in the [QA index](qa/README.md). These are recorded results on specific hardware, not a performance guarantee for every Mac.
 
 The original game code and assets were created for this experiment with Codex assistance. See [LICENSES.md](LICENSES.md) for provenance and Godot notices. Public source visibility does not by itself assign an open-source license to the original game content; no additional license grant has been selected.
 

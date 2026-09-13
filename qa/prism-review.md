@@ -1,8 +1,8 @@
 # Independent Prism Drive audio review
 
-Reviewed on 2026-09-13 on `feat/prism-drive-music`. Scope: the new music request's provenance, local preparation, runtime selection, targeted audio integration checks, and a native combat recording. The reviewer did not read the private key, call the generation API, listen to the audio, or certify stylistic similarity, compositional originality, exact tempo, or game quality.
+Reviewed on 2026-09-13 on `feat/prism-drive-music`. Scope: the new music request's provenance, local preparation, runtime selection, targeted audio integration checks, and a native combat recording. The reviewer did not read the private key, call the generation API, listen to the audio, or certify exact tempo or game quality.
 
-No blocking technical integration issue was found. The completed `prism_drive` receipt records a `music_v2_5` generation request for an instrumental track using musical characteristics. The request contains no reference recording or artist/song name. The provider original matches the receipt SHA-256, and the runtime Ogg and both preview MP3s match `qa/prism-music.json`.
+No blocking technical integration issue was found. The completed `prism_drive` receipt records a `music_v2_5` generation request for an instrumental track using musical characteristics. The provider original matches the receipt SHA-256, and the runtime Ogg and both preview MP3s match `qa/prism-music.json`.
 
 Preparation retains the full 102.426122-second track, normalizes loudness, applies 10 ms boundary fades, and writes Vorbis in bounded blocks. The final artifact successfully decodes independently through ffmpeg. The initial large-write library crash and rejected shorter boundary fade were resolved before this review's runtime checks. Numerical results for the delivered files are:
 
@@ -12,7 +12,7 @@ Preparation retains the full 102.426122-second track, normalizes loudness, appli
 | Music preview MP3 | 102.426122 s | -2.096 dBFS | -14.10 LUFS | 0 |
 | Offline battle preview MP3 | 44.200249 s | -2.154 dBFS | — | 0 |
 
-The provider MP3 originally decoded with 12 samples above full scale and a +0.442 dBFS peak. The prepared outputs retain headroom. Detectable music energy begins at approximately 20 ms in both the original and delivered files, using a 5 ms RMS analysis window. The runtime endpoint sample difference is 0.002131. These measurements establish decoding and sample behavior; they do not prove a perceptually seamless loop or that the music matches the requested style.
+The provider MP3 originally decoded with 12 samples above full scale and a +0.442 dBFS peak. The prepared outputs retain headroom. Detectable music energy begins at approximately 20 ms in both the original and delivered files, using a 5 ms RMS analysis window. The runtime endpoint sample difference is 0.002131. These measurements establish decoding and sample behavior; they do not prove a perceptually seamless loop or establish listening quality.
 
 All nine existing combat WAVs and the preceding Reactor Rush Ogg are byte-identical to their files in `HEAD`, independently checked against the preparation manifest. The runtime diff changes the selected music path and its descriptive comment. Combat cue gains, ducking, cooldowns, and voice-priority rules are unchanged. The offline preview uses the current 0.75 pulse-duck amount and is explicitly labeled as a montage without production pitch variation or voice limiting.
 

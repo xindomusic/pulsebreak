@@ -1,6 +1,6 @@
 # Building a standalone Mac app
 
-The **1.2.0 feature build** exports a universal `.app` containing arm64 and x86_64 code, a versioned ZIP and checksums. Release 1.1 was tested on Mac mini M4 / 16 GB; those performance measurements describe that build. Intel hardware was not tested. Use **Godot 4.7.2 and matching 4.7.2 templates** to reproduce the recorded environment. See [Prism Drive notes](PRISM_DRIVE.md) and [package evidence](../qa/prism-package.json).
+The **1.2.0 release** exports a universal `.app` containing arm64 and x86_64 code, a versioned ZIP and checksums. Release 1.1 was tested on Mac mini M4 / 16 GB; those performance measurements describe that build. Intel hardware was not tested. Use **Godot 4.7.2 and matching 4.7.2 templates** to reproduce the recorded environment. See [Prism Drive notes](PRISM_DRIVE.md) and [package evidence](../qa/release-1.2-package.json).
 
 ## Install the local prerequisites
 
@@ -40,7 +40,7 @@ open build/Pulsebreak.app
 
 The script checks editor/template versions and archive integrity, refreshes asset imports, exports the `macOS` preset, copies `LICENSES.md` into Resources, applies a local ad-hoc signature, and verifies it with `codesign --verify --deep --strict`. It checks both architectures, creates **build/Pulsebreak-1.2.0-macOS-universal.zip**, verifies the ZIP and writes **build/SHA256SUMS.txt** for the archive and PCK.
 
-The built app runs without Godot installed elsewhere or any API key. Re-exporting replaces the local build; commit source changes rather than the generated bundle. Exact 1.2.0 sizes and checksums are in the [package report](../qa/prism-package.json). The previous 1.1.0 archive is preserved separately, with its [original evidence](../qa/release-package.json). Most uncompressed app size is the universal engine binary.
+The built app runs without Godot installed elsewhere or any API key. Re-exporting replaces the local build; commit source changes rather than the generated bundle. Exact 1.2.0 sizes and checksums are in the [package report](../qa/release-1.2-package.json). The previous 1.1.0 archive is preserved separately, with its [original evidence](../qa/release-package.json). Most uncompressed app size is the universal engine binary.
 
 ## Configuration map
 
@@ -49,7 +49,7 @@ The built app runs without Godot installed elsewhere or any API key. Re-exportin
 | Export preset | `macOS` in [export_presets.cfg](../export_presets.cfg) |
 | Output | `build/Pulsebreak.app` |
 | Bundle identifier | `games.pulsebreak.local` |
-| Current feature build version | `1.2.0` |
+| Current game version | `1.2.0` |
 | Archive / checksums | `build/Pulsebreak-1.2.0-macOS-universal.zip` / `build/SHA256SUMS.txt` |
 | Templates | Local `.tools/export/templates/macos.zip` for both debug/release |
 | Renderer | Mobile, Metal on the tested Mac |
@@ -71,6 +71,6 @@ For a packaged headless playthrough and a graphical timing run, use the commands
 
 ## Public distribution
 
-This repository publishes source, assets, release notes and selected screenshots. The 1.1.0 app and ZIP were built locally and have not been attached to a GitHub Release. They are ad-hoc signed, without Apple notarization. Cloning the repository and building locally is the supported reproduction path.
+The [v1.2.0 GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0) distributes the universal Mac ZIP, SHA-256 checksum file and release notes. The annotated tag identifies the source revision. The app is ad-hoc signed, without Apple notarization; see [first-launch guidance](GETTING_STARTED.md#play-the-download).
 
-If a future maintainer distributes a downloadable Mac app, follow the current official [Godot macOS export guidance](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_macos.html) for Developer ID signing and notarization. Those credentials and service steps are not part of this experiment. Preserve engine and asset notices in any package you are authorized to distribute.
+Developer ID signing and notarization require the publisher's Apple credentials and are not configured for this build. Preserve engine and asset notices when redistributing the package. The [final package report](../qa/release-1.2-package.json) records the distributed archive; earlier package reports identify earlier local artifacts.
