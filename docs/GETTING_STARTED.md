@@ -1,5 +1,7 @@
 # Getting started on a Mac
 
+**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+
 ## Requirements
 
 - A Mac capable of running the standard Godot 4.7.2 editor. This experiment was tested on Apple M1 Max / 32 GB / macOS 26.6.2; other Macs have not been certified by this project.

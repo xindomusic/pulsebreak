@@ -5,6 +5,7 @@ extends RefCounted
 const Art = preload("res://scripts/art.gd")
 const SECTOR_ACCENTS: Array[String] = ["cyan", "solar", "storm"]
 const SECTOR_NAMES: Array[String] = ["SKYPORT", "SOLAR FOUNDRY", "STORM CORE"]
+const MAX_GENERATED_PAINT := 160
 
 
 static func hero_display() -> Node3D:
@@ -127,7 +128,114 @@ static func _build_navigation(stage: Node3D, sector: int, accent: String) -> voi
 	Art._batch(stage, "SectorNavigation", "box", accent, marks, false)
 	Art._batch(stage, "LandingHatching", "box", "titanium", stripes, false)
 	Art._label(stage, "%02d" % (sector + 1), Vector3(12.4, 0.065, 12.8), 136, accent)
+	stage.get_child(-1).name = "SectorNumber"
 	Art._label(stage, "FLIGHT SYSTEMS / " + SECTOR_NAMES[sector], Vector3(0, 0.065, 13.85), 26, accent)
+	stage.get_child(-1).name = "FlightSystemsLabel"
+
+
+static func apply_generated_dressing(stage: Node3D, current_stage: Dictionary) -> void:
+	if not is_instance_valid(stage) or not current_stage.get("generated",false): return
+	var old_deck: Node = stage.get_node_or_null("SectorDeckGraphics")
+	if old_deck:
+		stage.remove_child(old_deck)
+		old_deck.queue_free()
+	var deck: Node3D = Art._group(stage,"SectorDeckGraphics")
+	deck.set_meta("generated",true)
+	var cosmetic_seed: int = ("deck-dressing-v1:%d" % int(current_stage.layout_seed)).hash()
+	var cosmetic_rng := RandomNumberGenerator.new()
+	cosmetic_rng.seed = cosmetic_seed
+	var muted: String = ["deck_mark","solar_dim","storm_dim"][int(current_stage.theme)]
+	var inlays: Array[Transform3D] = []
+	var islands: Array[Transform3D] = []
+	var dashes: Array[Transform3D] = []
+	var edge_ticks: Array[Transform3D] = []
+	var route: String = current_stage.route
+	var targets: Array = current_stage.targets
+	var path: Array[Vector3] = [Vector3(0,0,10)]
+	for at: Vector3 in targets: path.append(Vector3(at.x,0,at.z))
+	path.append(Vector3(0,0,-11.4))
+	# Broad flat paint carries route identity at the gameplay camera's scale.
+	# These shapes have no edge height, collision or shadows: they are deck inlays.
+	match route:
+		"OUTER CIRCUIT":
+			var side: float = signf(targets[0].x)
+			inlays.append(Art._transform(Vector3(side*7.4,0.020,-1),Vector3(5.5,0.010,23)))
+			inlays.append(Art._transform(Vector3(-side*2,0.020,-8.0),Vector3(14,0.010,4.2)))
+			inlays.append(Art._transform(Vector3(0,0.020,7.6),Vector3(17,0.010,3.2)))
+		"CENTER WEAVE":
+			inlays.append(Art._transform(Vector3(0,0.020,0),Vector3(4.6,0.010,23)))
+			for at: Vector3 in targets:
+				inlays.append(Art._transform(Vector3(at.x*0.5,0.020,at.z),Vector3(absf(at.x)+5.0,0.010,3.4)))
+		"TWIN SPURS":
+			for side: float in [-1,1]:
+				inlays.append(Art._transform(Vector3(side*6.0,0.020,-1),Vector3(4.3,0.010,23)))
+			inlays.append(Art._transform(Vector3(0,0.020,targets[1].z),Vector3(16,0.010,2.8)))
+		"DIRECT APPROACH":
+			inlays.append(Art._transform(Vector3(0,0.020,0),Vector3(6.4,0.010,23)))
+			for side: float in [-1,1]:
+				inlays.append(Art._transform(Vector3(side*7.0,0.020,side*cosmetic_rng.randf_range(3.8,6.0)),Vector3(5.6,0.010,5.0)))
+		_:
+			# Switchback and Cross Current follow their visibly different
+			# traversals with stepped or wider diagonal painted service lanes.
+			for index in range(path.size()-1):
+				var direction: Vector3 = path[index+1]-path[index]
+				var middle: Vector3 = (path[index]+path[index+1])*0.5
+				middle.y = 0.020
+				inlays.append(Art._transform(middle,Vector3(4.4 if route=="CROSS CURRENT" else 2.8,0.010,direction.length()),atan2(direction.x,direction.z)))
+	for index in range(targets.size()):
+		var at: Vector3 = targets[index]
+		var width := 5.7 if route=="SWITCHBACK" else 4.4
+		islands.append(Art._transform(Vector3(at.x,0.027,at.z),Vector3(width,0.008,3.2),PI*0.25 if route=="CROSS CURRENT" else 0.0))
+		# Tiny edge marks read as floor maintenance paint, not hazard warnings.
+		for side: float in [-1,1]:
+			for tick in range(3):
+				edge_ticks.append(Art._transform(Vector3(at.x+side*(width*0.5+0.18),0.041,at.z-0.7+float(tick)*0.7),Vector3(0.34,0.008,0.06)))
+	for index in range(path.size()-1):
+		var direction: Vector3 = path[index+1]-path[index]
+		var count := int(direction.length()/1.55)
+		for dash in range(1,count):
+			var at: Vector3 = path[index].lerp(path[index+1],float(dash)/float(count))
+			var clear := true
+			for gate in current_stage.gates:
+				if absf(at.z-float(gate.position.z))<1.2: clear=false
+			for target: Vector3 in targets:
+				if Vector2(at.x-target.x,at.z-target.z).length()<1.2: clear=false
+			if not clear: continue
+			at.y = 0.041
+			dashes.append(Art._transform(at,Vector3(0.075,0.008,0.62),atan2(direction.x,direction.z)))
+	for batch: Array in [["RouteInlays","box","deck_deep",inlays],["RelayIslands","octagon","deck_deep",islands],["RouteDashes","box",muted,dashes],["IslandTicks","box",muted,edge_ticks]]:
+		if batch[3].is_empty(): continue
+		Art._batch(deck,batch[0],batch[1],batch[2],batch[3],false)
+		# Retain the bounded input transforms for headless geometry validation;
+		# Godot's dummy renderer cannot read MultiMesh instance transforms back.
+		deck.get_child(-1).set_meta("paint_transforms",batch[3].duplicate())
+	Art._label(deck,"%s / %02d" % [route,int(current_stage.index)+1],Vector3(0,0.051,11.8),35,muted)
+	deck.get_child(-1).name = "GeneratedRouteLabel"
+	var number: Label3D = stage.get_node("SectorNumber")
+	number.text = "%02d" % (int(current_stage.index)+1)
+	number.font_size = maxi(40,136-maxi(0,number.text.length()-2)*18)
+	var systems: Label3D = stage.get_node("FlightSystemsLabel")
+	systems.text = "FLIGHT SYSTEMS / %s / DECK %02d" % [current_stage.name,int(current_stage.index)+1]
+	stage.set_meta("cosmetic_seed",cosmetic_seed)
+	stage.set_meta("generated_paint_instances",inlays.size()+islands.size()+dashes.size()+edge_ticks.size())
+	# The existing apron landmarks remain outside the arena. Retain authored
+	# transforms so reapplying a seed never accumulates drift or consumes game RNG.
+	for child in stage.get_children():
+		if not child is Node3D: continue
+		var family := ""
+		if child.has_node("Rotor") and absf(child.position.x)>19.0 and absf(child.position.z)<14.0: family="turbine"
+		elif child.has_node("SolarPanel"): family="panel"
+		elif child.has_node("ContainmentCrown"): family="conductor"
+		elif child.has_node("LightCrown"): family="beacon"
+		elif child.name in ["SolarCollector","StormLandmark"]: family="landmark"
+		if family.is_empty(): continue
+		if not child.has_meta("dressing_origin"): child.set_meta("dressing_origin",child.transform)
+		var original: Transform3D = child.get_meta("dressing_origin")
+		child.transform = original
+		child.position.x += signf(original.origin.x)*cosmetic_rng.randf_range(0.25,0.55)
+		child.position.z += cosmetic_rng.randf_range(-1.2,1.2) if family!="beacon" else cosmetic_rng.randf_range(-0.5,0.5)
+		child.rotation.y += cosmetic_rng.randf_range(-0.06,0.06) if family=="landmark" else cosmetic_rng.randf_range(-0.14,0.14)
+		child.set_meta("generated_landmark",true)
 
 
 static func _rotor(stage: Node3D, at: Vector3, radius: float, accent: String, vertical: bool = false) -> Node3D:

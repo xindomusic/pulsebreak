@@ -1,0 +1,74 @@
+{
+  "generator_seed": 91326,
+  "rate": 44100,
+  "channels": 2,
+  "assets": [
+    {
+      "name": "kinetic_fire",
+      "seconds": 0.24,
+      "peak": 0.7020000000000001,
+      "rms": 0.1022891371777092,
+      "bytes": 42380
+    },
+    {
+      "name": "scatter_fire",
+      "seconds": 0.46,
+      "peak": 0.7020000000000001,
+      "rms": 0.09082766412726978,
+      "bytes": 81188
+    },
+    {
+      "name": "arc_fire",
+      "seconds": 0.39,
+      "peak": 0.7020000000000001,
+      "rms": 0.09931074281333055,
+      "bytes": 68840
+    },
+    {
+      "name": "plasma_fire",
+      "seconds": 0.68,
+      "peak": 0.7186749726900231,
+      "rms": 0.1309311040178698,
+      "bytes": 119996
+    },
+    {
+      "name": "armor_impact",
+      "seconds": 0.2,
+      "peak": 0.6288897581684348,
+      "rms": 0.09207176787562678,
+      "bytes": 35324
+    },
+    {
+      "name": "machine_break",
+      "seconds": 0.78,
+      "peak": 0.726075397704776,
+      "rms": 0.11339203745105939,
+      "bytes": 137636
+    },
+    {
+      "name": "guardian_break",
+      "seconds": 1.8,
+      "peak": 0.7148578572488884,
+      "rms": 0.11546170342927249,
+      "bytes": 317564
+    },
+    {
+      "name": "weapon_install",
+      "seconds": 0.95,
+      "peak": 0.7020000000000001,
+      "rms": 0.157253574769141,
+      "bytes": 167624
+    }
+  ],
+  "preview_order": [
+    "carbine x3",
+    "scatter x2",
+    "arc x2",
+    "plasma",
+    "armor impact",
+    "machine break",
+    "guardian break",
+    "weapon install"
+  ],
+  "audition": "Numeric validation only; listen to preview and full gameplay separately."
+}

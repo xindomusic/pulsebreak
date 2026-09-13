@@ -1,5 +1,7 @@
 # Architecture
 
+**Overdrive runtime update:** `weapons.gd` owns weapon progression and travelling projectiles; `combat_fx.gd` owns pooled contact/destruction animation; `level_generator.gd` produces seeded route data; `campaign.gd` loads successive routes. `game.gd` coordinates weapon → reactor upgrade → continued play and bank/quit states. See [Overdrive](OVERDRIVE.md) for the current flow. The earlier architecture below remains historical.
+
 **Skybound follow-up:** [the new module map](SKYBOUND.md#implementation-map) describes traversal, campaign and sector art. The director now selects Skybound or Classic; airborne collision uses simultaneous swept XZ/Y overlap, and campaign gates share collision/visibility with machines and shots. `sector_complete` pauses at travel checkpoints before the next sector's upgrade choice. The remainder of this page describes the original flat-arena architecture retained by Classic.
 
 Pulsebreak is a small Godot project with a deliberately explicit game director. Most runtime objects are constructed in GDScript. The editable scene is [main.tscn](../main.tscn), whose root `Node3D` attaches [game.gd](../scripts/game.gd).

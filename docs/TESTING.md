@@ -1,6 +1,10 @@
 # Testing and reproducing the evidence
 
-**Skybound follow-up:** run `./tools/test.sh` for all seven suites (**261 checks**). Add `--qa-campaign` to the driver commands below to exercise the new three-sector route. Use `tests/skybound_visuals.gd` for its staged screens and `tests/native_controls_check.gd` for injected-keyboard/animation checks. See [Skybound](SKYBOUND.md), [native controls evidence](../qa/skybound-controls.md), and [independent review](../qa/skybound-review.md). Counts and results in the original experiment sections below are historical.
+**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+
+**Current checks:** run `./tools/test.sh` for twelve suites (**491 checks**). Add `--qa-campaign --qa-sectors=6` to exercise a finite six-sector slice of continuous play.
+
+**Historical Skybound follow-up:** seven suites recorded **261 passing checks** at that revision. Use `tests/skybound_visuals.gd` for its historical staged screens; the current `tests/native_controls_check.gd` includes weapon switching and records new captures under `qa/overdrive-controls`. See [Skybound](SKYBOUND.md), [native controls evidence](../qa/skybound-controls.md), and [independent review](../qa/skybound-review.md). Counts and results in the original experiment sections below are historical.
 
 Run commands from the repository root after the import step in [Getting started](GETTING_STARTED.md). This guide distinguishes correctness, simulated completion, visual inspection, and real rendering performance.
 

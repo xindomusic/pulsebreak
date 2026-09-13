@@ -34,6 +34,8 @@ const PALETTE: Dictionary = {
 	"deck_mark": Color("6e929e"),
 	"solar_dim": Color("847259"),
 	"storm_dim": Color("655780"),
+	"gunmetal": Color("182c38"),
+	"mint": Color("70ffc5"),
 }
 
 
@@ -58,10 +60,10 @@ static func _material(key: String) -> StandardMaterial3D:
 	if key == "ceramic":
 		result.roughness = 0.32
 		result.metallic = 0.18
-	if key in ["titanium", "visor"]:
+	if key in ["titanium", "visor", "gunmetal"]:
 		result.roughness = 0.26
 		result.metallic = 0.72
-	if key in ["solar", "storm"]:
+	if key in ["solar", "storm", "mint"]:
 		result.emission_enabled = true
 		result.emission = result.albedo_color
 		result.emission_energy_multiplier = 1.4
@@ -74,6 +76,10 @@ static func _mesh(key: String) -> Mesh:
 		return _meshes[key] as Mesh
 	var result: Mesh
 	match key:
+		"helmet":
+			result = _profile_mesh([Vector3(-0.5,0.64,0.69),Vector3(-0.20,0.94,0.95),Vector3(0.17,1.0,1.0),Vector3(0.39,0.76,0.80),Vector3(0.50,0.34,0.43)])
+		"cuirass":
+			result = _profile_mesh([Vector3(-0.5,0.65,0.68),Vector3(-0.25,0.81,0.90),Vector3(0.27,1.0,1.0),Vector3(0.5,0.85,0.84)])
 		"armor":
 			result = _chamfered_box()
 		"wing":
@@ -103,6 +109,31 @@ static func _mesh(key: String) -> Mesh:
 			result = box
 	_meshes[key] = result
 	return result
+
+
+static func _profile_mesh(profiles: Array[Vector3]) -> ArrayMesh:
+	var builder := SurfaceTool.new()
+	builder.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var shape: Array[Vector2] = [Vector2(-0.32,0.5),Vector2(0.32,0.5),Vector2(0.5,0.26),Vector2(0.5,-0.28),Vector2(0.30,-0.5),Vector2(-0.30,-0.5),Vector2(-0.5,-0.28),Vector2(-0.5,0.26)]
+	var rings: Array = []
+	for profile: Vector3 in profiles:
+		var ring: Array[Vector3] = []
+		for point: Vector2 in shape: ring.append(Vector3(point.x*profile.y,profile.x,point.y*profile.z))
+		rings.append(ring)
+	_mesh_face(builder,rings[0],Vector3.DOWN)
+	_mesh_face(builder,rings[-1],Vector3.UP)
+	for index: int in range(rings.size()-1):
+		for side: int in range(shape.size()):
+			var next: int = (side+1)%shape.size()
+			var a: Vector3 = rings[index][side]
+			var b: Vector3 = rings[index][next]
+			var c: Vector3 = rings[index+1][next]
+			var d: Vector3 = rings[index+1][side]
+			var normal: Vector3 = (b-a).cross(d-a).normalized()
+			var center: Vector3 = (a+b+c+d)*0.25
+			if normal.dot(Vector3(center.x,0,center.z))<0: normal=-normal
+			_mesh_face(builder,[a,b,c,d],normal)
+	return builder.commit()
 
 
 static func _mesh_face(builder: SurfaceTool, points: Array[Vector3], normal: Vector3) -> void:
@@ -409,7 +440,7 @@ static func player() -> Node3D:
 	var torso: Node3D = _group(body, "Torso", Vector3(0, 0.97, 0))
 	rig["torso"] = torso
 	_part(torso, "armor", Vector3(0, 0.21, 0), Vector3(0.50, 0.47, 0.32), "dark", Vector3(-0.06, 0, 0))
-	_part(torso, "armor", Vector3(0, 0.31, 0.085), Vector3(0.59, 0.32, 0.30), "ceramic", Vector3(-0.10, 0, 0))
+	_part(torso, "cuirass", Vector3(0, 0.28, 0.07), Vector3(0.65, 0.43, 0.36), "ceramic", Vector3(-0.08, 0, 0))
 	_part(torso, "armor", Vector3(0, 0.08, 0.16), Vector3(0.35, 0.20, 0.13), "titanium", Vector3(-0.16, 0, 0))
 	for side: float in [-1.0, 1.0]:
 		_part(torso, "armor", Vector3(side * 0.155, 0.32, 0.246), Vector3(0.15, 0.19, 0.042), "white")
@@ -419,6 +450,10 @@ static func player() -> Node3D:
 	_part(torso, "box", Vector3(0, 0.35, 0.289), Vector3(0.045, 0.11, 0.025), "cyan")
 	# Off-center orange mission stripe gives the silhouette a recognizable accent.
 	_part(torso, "box", Vector3(-0.19, 0.31, 0.272), Vector3(0.047, 0.16, 0.016), "amber")
+	for side: float in [-1.0,1.0]:
+		_part(torso,"armor",Vector3(side*0.20,0.48,-0.015),Vector3(0.15,0.085,0.28),"titanium",Vector3(0,0,-side*0.22))
+		_part(torso,"armor",Vector3(side*0.22,-0.04,-0.07),Vector3(0.13,0.27,0.22),"gunmetal",Vector3(-0.16,0,side*0.10))
+		_part(torso,"box",Vector3(side*0.15,0.015,0.22),Vector3(0.11,0.025,0.025),"cyan")
 	for side: float in [-1.0, 1.0]:
 		var suffix: String = "Left" if side < 0 else "Right"
 		var hip: Node3D = _group(body, "Hip" + suffix, Vector3(side * 0.165, 0.85, 0))
@@ -455,11 +490,15 @@ static func player() -> Node3D:
 	var head: Node3D = _group(torso, "Head", Vector3(0, 0.63, 0.015))
 	rig["head"] = head
 	_part(head, "cylinder", Vector3(0, -0.09, 0), Vector3(0.086, 0.12, 0.086), "dark")
-	_part(head, "armor", Vector3(0, 0.09, -0.005), Vector3(0.40, 0.40, 0.36), "ceramic", Vector3(-0.06, 0, 0))
-	_part(head, "armor", Vector3(0, 0.088, 0.163), Vector3(0.37, 0.17, 0.13), "visor", Vector3(-0.12, 0, 0))
-	_part(head, "armor", Vector3(0, 0.107, 0.231), Vector3(0.30, 0.055, 0.023), "cyan")
-	_part(head, "armor", Vector3(0, -0.027, 0.168), Vector3(0.20, 0.10, 0.14), "titanium", Vector3(-0.20, 0, 0))
-	_part(head, "box", Vector3(-0.075, 0.279, -0.015), Vector3(0.06, 0.021, 0.19), "amber")
+	_part(head, "helmet", Vector3(0, 0.085, -0.005), Vector3(0.46, 0.45, 0.41), "ceramic", Vector3(-0.06, 0, 0))
+	_part(head, "armor", Vector3(0, 0.088, 0.168), Vector3(0.38, 0.16, 0.13), "visor", Vector3(-0.15, 0, 0))
+	_part(head, "armor", Vector3(0, 0.154, 0.175), Vector3(0.415, 0.065, 0.14), "titanium", Vector3(-0.12, 0, 0))
+	_part(head, "armor", Vector3(0, 0.108, 0.238), Vector3(0.28, 0.031, 0.023), "cyan")
+	_part(head, "armor", Vector3(0, -0.024, 0.151), Vector3(0.21, 0.12, 0.16), "titanium", Vector3(-0.29, 0, 0))
+	_part(head, "box", Vector3(-0.07, 0.299, -0.015), Vector3(0.060, 0.019, 0.15), "amber")
+	for side: float in [-1.0,1.0]:
+		_part(head,"armor",Vector3(side*0.166,-0.025,0.102),Vector3(0.074,0.17,0.23),"ceramic",Vector3(-0.25,0,-side*0.16))
+		_part(head,"box",Vector3(side*0.073,-0.023,0.244),Vector3(0.033,0.021,0.02),"dark")
 	for side: float in [-1.0, 1.0]:
 		_part(head, "cylinder", Vector3(side * 0.211, 0.08, -0.008), Vector3(0.083, 0.055, 0.083), "titanium", Vector3(0, 0, PI * 0.5))
 		_part(head, "cylinder", Vector3(side * 0.243, 0.08, -0.008), Vector3(0.042, 0.016, 0.042), "teal", Vector3(0, 0, PI * 0.5))
@@ -492,11 +531,114 @@ static func player() -> Node3D:
 	var ring: Node3D = _group(root, "Ring", Vector3(0, 1.02, 0))
 	_ring(ring, 0.49, 0.025, 0.032, "cyan", 12, 0.62)
 	rig["ring"] = ring
+	var weapon: Node3D = _build_player_weapon(root)
+	rig["weapon"] = weapon
+	rig["rifle"] = weapon.get_node("Rifle")
 	root.set_meta("rig", rig)
 	root.set_meta("gait_phase", 0.0)
 	root.set_meta("wing_deployment", 0.0)
+	root.set_meta("weapon_recoil",0.0)
+	root.set_meta("weapon_aim",0.0)
+	set_weapon(root,"kinetic",1)
 	animate_player(root, 1.0, 0.0, false, false, false, 0.0)
 	return root
+
+
+static func _build_player_weapon(parent: Node3D) -> Node3D:
+	var pivot := _group(parent,"WeaponPivot",Vector3(0.31,1.04,0.18))
+	var rifle := _group(pivot,"Rifle")
+	_part(rifle,"armor",Vector3(0,0,0.06),Vector3(0.26,0.22,0.46),"gunmetal")
+	_part(rifle,"armor",Vector3(0,0.075,-0.19),Vector3(0.19,0.14,0.23),"titanium")
+	_part(rifle,"armor",Vector3(0,-0.11,0.18),Vector3(0.13,0.21,0.16),"dark",Vector3(0.18,0,0))
+	_part(rifle,"armor",Vector3(0,-0.145,0.39),Vector3(0.16,0.20,0.19),"titanium",Vector3(-0.15,0,0))
+	_part(rifle,"armor",Vector3(0,0.15,0.08),Vector3(0.11,0.09,0.22),"ceramic")
+	_part(rifle,"box",Vector3(0,0.198,0.16),Vector3(0.05,0.025,0.035),"cyan")
+	_part(rifle,"box",Vector3(0.136,0.028,0.045),Vector3(0.025,0.085,0.15),"amber")
+	var kinetic := _group(rifle,"kinetic")
+	_part(kinetic,"cylinder",Vector3(0,0,0.53),Vector3(0.085,0.70,0.085),"gunmetal",Vector3(PI*0.5,0,0))
+	_part(kinetic,"armor",Vector3(0,0.018,0.39),Vector3(0.23,0.22,0.37),"ceramic")
+	for side: float in [-1.0,1.0]:
+		_part(kinetic,"box",Vector3(side*0.115,0.02,0.48),Vector3(0.035,0.06,0.55),"teal")
+	_part(kinetic,"octagon",Vector3(0,0,0.89),Vector3(0.11,0.13,0.11),"titanium",Vector3(PI*0.5,0,0))
+	_part(kinetic,"octagon",Vector3(0,0,0.962),Vector3(0.062,0.018,0.062),"cyan",Vector3(PI*0.5,0,0))
+	var scatter := _group(rifle,"scatter")
+	_part(scatter,"armor",Vector3(0,0,0.39),Vector3(0.41,0.30,0.53),"titanium")
+	_part(scatter,"armor",Vector3(0,0.095,0.39),Vector3(0.34,0.16,0.36),"ceramic")
+	for side: float in [-1.0,1.0]:
+		_part(scatter,"cylinder",Vector3(side*0.095,0,0.66),Vector3(0.092,0.50,0.092),"gunmetal",Vector3(PI*0.5,0,0))
+		_part(scatter,"octagon",Vector3(side*0.095,0,0.93),Vector3(0.058,0.026,0.058),"solar",Vector3(PI*0.5,0,0))
+	_part(scatter,"box",Vector3(0,0.195,0.40),Vector3(0.17,0.025,0.14),"amber")
+	var arc := _group(rifle,"arc")
+	_part(arc,"sphere",Vector3(0,0,0.43),Vector3.ONE*0.13,"storm")
+	for side: float in [-1.0,1.0]:
+		_part(arc,"armor",Vector3(side*0.155,0,0.54),Vector3(0.075,0.18,0.75),"titanium")
+		_part(arc,"box",Vector3(side*0.155,0.10,0.60),Vector3(0.045,0.025,0.45),"storm")
+		_part(arc,"octagon",Vector3(side*0.155,0,0.94),Vector3(0.065,0.026,0.065),"storm",Vector3(PI*0.5,0,0))
+	var plasma := _group(rifle,"plasma")
+	_part(plasma,"cylinder",Vector3(0,0,0.42),Vector3(0.15,0.52,0.15),"gunmetal",Vector3(PI*0.5,0,0))
+	_part(plasma,"cylinder",Vector3(0,0,0.70),Vector3(0.098,0.42,0.098),"titanium",Vector3(PI*0.5,0,0))
+	for z: float in [0.25,0.39,0.53]:
+		_part(plasma,"octagon",Vector3(0,0,z),Vector3(0.169,0.035,0.169),"mint",Vector3(PI*0.5,0,0))
+	for side: float in [-1.0,1.0]:
+		_part(plasma,"armor",Vector3(side*0.185,0.02,0.51),Vector3(0.06,0.24,0.64),"ceramic")
+	_part(plasma,"octagon",Vector3(0,0,0.935),Vector3(0.09,0.04,0.09),"mint",Vector3(PI*0.5,0,0))
+	for mode: String in ["kinetic","scatter","arc","plasma"]:
+		var variant: Node3D = rifle.get_node(mode)
+		var accent: String = {"kinetic":"cyan","scatter":"solar","arc":"storm","plasma":"mint"}[mode]
+		var evolved := _group(variant,"Evolved")
+		for side: float in [-1.0,1.0]:
+			_part(evolved,"armor",Vector3(side*0.25,0.01,0.38),Vector3(0.10,0.15,0.43),"gunmetal",Vector3(0,side*0.13,0))
+			_part(evolved,"box",Vector3(side*0.254,0.09,0.42),Vector3(0.053,0.025,0.28),accent)
+		var masterwork := _group(variant,"Masterwork")
+		_part(masterwork,"armor",Vector3(0,0.24,0.27),Vector3(0.25,0.11,0.41),"titanium")
+		_part(masterwork,"box",Vector3(0,0.307,0.29),Vector3(0.17,0.025,0.25),accent)
+	var marker := Marker3D.new()
+	marker.name="Muzzle"
+	marker.position=Vector3(0,0,1.02)
+	rifle.add_child(marker)
+	parent.set_meta("muzzle",marker)
+	return pivot
+
+
+static func set_weapon(model: Node3D, mode: String, tier: int) -> void:
+	if not model.has_meta("rig"): return
+	var rig: Dictionary = model.get_meta("rig")
+	var rifle: Node3D = rig.rifle
+	var selected: String = mode if mode in ["kinetic","scatter","arc","plasma"] else "kinetic"
+	for id: String in ["kinetic","scatter","arc","plasma"]:
+		var variant: Node3D = rifle.get_node(id)
+		variant.visible=id==selected
+		variant.get_node("Evolved").visible=tier>=3
+		variant.get_node("Masterwork").visible=tier>=5
+	model.set_meta("weapon_mode",selected)
+	model.set_meta("weapon_tier",clampi(tier,1,5))
+
+
+static func muzzle_position(model: Node3D) -> Vector3:
+	if model.has_meta("muzzle"):
+		var muzzle: Node3D = model.get_meta("muzzle")
+		return muzzle.global_position
+	return model.global_position+Vector3.UP
+
+
+static func aim_weapon(model: Node3D, world_direction: Vector3) -> void:
+	if not model.has_meta("rig") or world_direction.length_squared()<0.001: return
+	var rig: Dictionary = model.get_meta("rig")
+	var weapon: Node3D = rig.weapon
+	var direction: Vector3 = model.global_basis.inverse()*world_direction.normalized()
+	var aim_yaw: float = atan2(direction.x,direction.z)
+	weapon.rotation=Vector3(-atan2(direction.y,Vector2(direction.x,direction.z).length()),aim_yaw,0)
+	var torso: Node3D = rig.torso
+	torso.rotation.y=aim_yaw
+	var body: Node3D = rig.body
+	weapon.position=body.transform*torso.transform*Vector3(0.31,0.07,0.18)
+	model.set_meta("weapon_aim_yaw",aim_yaw)
+	model.set_meta("weapon_aim",1.0)
+
+
+static func recoil_weapon(model: Node3D, strength: float = 1.0) -> void:
+	model.set_meta("weapon_recoil",clampf(strength,0.3,1.8))
+	model.set_meta("weapon_aim",1.0)
 
 
 static func animate_player(model: Node3D, delta: float, speed_fraction: float, airborne: bool, gliding: bool, dashing: bool, time: float) -> void:
@@ -510,6 +652,10 @@ static func animate_player(model: Node3D, delta: float, speed_fraction: float, a
 	var deployment: float = lerpf(float(model.get_meta("wing_deployment", 0.0)), 1.0 if gliding else (0.38 if airborne or dashing else 0.0), blend)
 	model.set_meta("wing_deployment", deployment)
 	var landing: float = float(model.get_meta("landing_impact", 0.0))
+	var recoil: float = float(model.get_meta("weapon_recoil",0.0))
+	model.set_meta("weapon_recoil",recoil*exp(-delta*20.0))
+	var aim: float = float(model.get_meta("weapon_aim",0.0))
+	model.set_meta("weapon_aim",maxf(0.0,aim-delta*2.8))
 	model.set_meta("landing_impact", maxf(0.0, landing - delta * 3.8))
 	var body: Node3D = rig.body
 	var bob: float = (absf(sin(phase)) * 0.048 * speed) if not airborne else 0.035
@@ -517,7 +663,8 @@ static func animate_player(model: Node3D, delta: float, speed_fraction: float, a
 	body.rotation.x = lerpf(body.rotation.x, 0.60 if gliding else (0.36 if dashing else (0.10 if airborne else speed * 0.12)), blend)
 	body.rotation.z = lerpf(body.rotation.z, cos(phase) * speed * 0.028 if not airborne else sin(time * 2.4) * 0.035, blend)
 	var torso: Node3D = rig.torso
-	torso.rotation.y = sin(phase) * speed * 0.07 if not airborne and not dashing else 0.0
+	var gait_yaw: float = sin(phase)*speed*0.07 if not airborne and not dashing else 0.0
+	torso.rotation.y=lerp_angle(torso.rotation.y,float(model.get_meta("weapon_aim_yaw",0.0)) if aim>0.1 else gait_yaw,blend)
 	var head: Node3D = rig.head
 	head.rotation.x = -body.rotation.x * 0.5
 	for index: int in range(2):
@@ -545,27 +692,83 @@ static func animate_player(model: Node3D, delta: float, speed_fraction: float, a
 			knee_target -= landing * 1.0
 		hip.rotation.x = lerpf(hip.rotation.x, hip_target, blend)
 		knee.rotation.x = lerpf(knee.rotation.x, knee_target, blend)
+		var brace: float = 1.0 if index==1 else maxf(aim,0.0 if gliding else 0.7)
+		shoulder_target=lerpf(shoulder_target,-0.28-recoil*0.12,brace)
 		shoulder.rotation.x = lerpf(shoulder.rotation.x, shoulder_target, blend)
-		shoulder.rotation.z = lerpf(shoulder.rotation.z, side * (0.70 if gliding else 0.10), blend)
-		elbow.rotation.x = lerpf(elbow.rotation.x, -0.36 if airborne else (-0.25 - speed * 0.40), blend)
-		wing.rotation = Vector3(0.0, side * lerpf(0.66, 0.04, deployment), -side * lerpf(1.30, -0.08, deployment))
+		shoulder.rotation.z = lerpf(shoulder.rotation.z, lerpf(side*(0.70 if gliding else 0.10),0.45 if index==0 else -0.10,brace),blend)
+		var elbow_target: float = -0.36 if airborne else (-0.25 - speed * 0.40)
+		elbow.rotation.x = lerpf(elbow.rotation.x,lerpf(elbow_target,-1.12,brace),blend)
+		wing.rotation = Vector3(0.0, side * lerpf(1.35, 0.04, deployment), -side * lerpf(0.55, -0.08, deployment))
+		wing.scale=Vector3.ONE*lerpf(0.82,1.0,deployment)
 		plume.visible = airborne or dashing
 		plume.scale = Vector3(1.0, (0.85 if gliding else 1.25) + sin(time * 45.0 + float(index)) * 0.15, 1.0)
 	var reactor: Node3D = rig.reactor
-	reactor.position = body.position + Basis(Vector3.RIGHT, body.rotation.x) * Vector3(0, 1.22, -0.28)
-	reactor.rotation = body.rotation
+	reactor.transform=body.transform*torso.transform*Transform3D(Basis.IDENTITY,Vector3(0,0.25,-0.28))
 	var ring: Node3D = rig.ring
 	ring.position.y = 1.02 + body.position.y
+	var weapon: Node3D = rig.weapon
+	weapon.position=body.transform*torso.transform*Vector3(0.31,0.07,0.18)
+	if aim<0.01: weapon.rotation=weapon.rotation.lerp(Vector3.ZERO,blend)
+	var rifle: Node3D = rig.rifle
+	rifle.position.z=-recoil*0.12
+	rifle.rotation.x=-recoil*0.10
 
 
 static func enemy(kind: String) -> Node3D:
+	var root: Node3D
 	match kind:
 		"charger":
-			return _charger()
+			root = _charger()
 		"bruiser":
-			return _bruiser()
+			root = _bruiser()
 		_:
-			return _gunner()
+			root = _gunner()
+	_rig_enemy(root,kind)
+	return root
+
+
+static func _rig_enemy(model: Node3D, kind: String) -> void:
+	var body: Node3D = model.get_node("Body")
+	var pieces: Array[Node] = body.get_children()
+	var tall: bool = kind=="boss"
+	var head := _group(body,"HitHead",Vector3(0,2.30 if tall else 1.18,0))
+	var left := _group(body,"HitArmLeft",Vector3(-1.0 if tall else -0.39,1.93 if tall else 1.075,0))
+	var right := _group(body,"HitArmRight",Vector3(1.0 if tall else 0.39,1.93 if tall else 1.075,0))
+	for node: Node in pieces:
+		if not node is MeshInstance3D: continue
+		var piece: Node3D = node as Node3D
+		var pivot: Node3D
+		if piece.position.y>(2.28 if tall else 1.22):
+			pivot=head
+		elif kind in ["bruiser","boss"] and absf(piece.position.x)>(0.8 if tall else 0.32) and piece.position.y>(1.1 if tall else 0.66):
+			pivot=left if piece.position.x<0 else right
+		if pivot:
+			var local: Transform3D = piece.transform
+			piece.reparent(pivot,false)
+			piece.transform=Transform3D(local.basis,local.origin-pivot.position)
+	model.set_meta("enemy_rig",{"body":body,"head":head,"left":left,"right":right,"kind":kind})
+
+
+static func animate_enemy(model: Node3D, delta: float, speed_fraction: float, charging: bool, hit_direction: Vector3, hit_strength: float, time: float) -> void:
+	if not model.has_meta("enemy_rig"): return
+	var rig: Dictionary = model.get_meta("enemy_rig")
+	var body: Node3D = rig.body
+	var head: Node3D = rig.head
+	var left: Node3D = rig.left
+	var right: Node3D = rig.right
+	var local: Vector3 = model.global_basis.inverse()*hit_direction
+	var blend: float = 1.0-exp(-delta*20.0)
+	body.rotation.x=lerpf(body.rotation.x,(0.18 if charging else 0.0)+local.z*hit_strength*0.28,blend)
+	body.rotation.z=lerpf(body.rotation.z,-local.x*hit_strength*0.27,blend)
+	body.position.z=lerpf(body.position.z,local.z*hit_strength*0.075,blend)
+	body.position.x=lerpf(body.position.x,local.x*hit_strength*0.075,blend)
+	head.rotation.x=-body.rotation.x*0.5-hit_strength*0.14
+	head.rotation.z=body.rotation.z*0.55
+	var stride: float = sin(time*7.5)*speed_fraction*0.11
+	left.rotation.x=lerpf(left.rotation.x,stride-hit_strength*0.46,blend)
+	right.rotation.x=lerpf(right.rotation.x,-stride-hit_strength*0.34,blend)
+	left.rotation.z=hit_strength*0.16
+	right.rotation.z=-hit_strength*0.16
 
 
 static func _gunner() -> Node3D:
@@ -674,4 +877,5 @@ static func boss() -> Node3D:
 	_part(body, "octagon", Vector3(0, 1.65, -0.65), Vector3(0.53, 0.32, 0.53), "steel", Vector3(PI * 0.5, 0, 0))
 	var ring: Node3D = _group(root, "Ring", Vector3(0, 2.26, -0.08))
 	_ring(ring, 1.34, 0.12, 0.09, "orange", 16, 0.36)
+	_rig_enemy(root,"boss")
 	return root

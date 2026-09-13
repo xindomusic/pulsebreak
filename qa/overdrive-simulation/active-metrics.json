@@ -1,0 +1,110 @@
+{
+  "absorbed": 0,
+  "accelerated": true,
+  "air_relays": 4,
+  "boss_entry": {},
+  "boss_health_remaining": 0.0,
+  "boss_started": false,
+  "cpu": "Apple M4",
+  "damage_events": [
+    {
+      "damage": 18.0,
+      "ground": false,
+      "health": 82.0,
+      "position": "(6.059338, 1.377778, -1.01864)",
+      "time": 44.3333333333339
+    },
+    {
+      "damage": 20.0,
+      "ground": true,
+      "health": 62.0,
+      "position": "(6.059338, 0.164944, -1.01864)",
+      "time": 46.533333333334
+    },
+    {
+      "damage": 18.0,
+      "ground": false,
+      "health": 44.0,
+      "position": "(6.059338, 1.406, -1.01864)",
+      "time": 47.6000000000007
+    },
+    {
+      "damage": 20.0,
+      "ground": true,
+      "health": 24.0,
+      "position": "(6.059338, 0.0, -1.01864)",
+      "time": 50.2000000000008
+    },
+    {
+      "damage": 18.0,
+      "ground": false,
+      "health": 6.0,
+      "position": "(6.059338, 1.4965, -1.01864)",
+      "time": 53.600000000001
+    },
+    {
+      "damage": 20.0,
+      "ground": true,
+      "health": 0.0,
+      "position": "(6.059338, 0.042444, -1.01864)",
+      "time": 64.5333333333348
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "gpu": "",
+  "guardians_defeated": 0,
+  "health": 0.0,
+  "kills": 16,
+  "memory": {
+    "available": 9860939776,
+    "free": 8095989760,
+    "physical": 17179869184,
+    "stack": 8372224
+  },
+  "mode": "skybound",
+  "os": "macOS 26.6.2",
+  "passive": false,
+  "pulses": 3,
+  "render_frame_median_ms": null,
+  "render_frame_p95_ms": null,
+  "render_frame_p99_ms": null,
+  "render_samples": 0,
+  "renderer": "mobile",
+  "route": "FOUNDRY CROSSING",
+  "run_seed": 271828,
+  "score": 1870,
+  "sector": 2,
+  "sector_checkpoints": [
+    20.5333333333333
+  ],
+  "segments": {},
+  "settings": {
+    "assist": false,
+    "low_effects": false,
+    "overdrive": false,
+    "shake": 0.45,
+    "volume": 0.65
+  },
+  "simulation": true,
+  "time": 64.6000000000015,
+  "upgrades": [
+    "chain"
+  ],
+  "viewport": "(1440.0, 900.0)",
+  "warmup_excluded_seconds": 3,
+  "weapons": {
+    "equipped": "kinetic",
+    "hits": 78,
+    "kills": 16,
+    "overclocks": 0,
+    "ranks": {
+      "arc": 0,
+      "kinetic": 2,
+      "plasma": 0,
+      "scatter": 0
+    },
+    "shots": 87
+  },
+  "win": false,
+  "window_pixels": "(64, 64)"
+}

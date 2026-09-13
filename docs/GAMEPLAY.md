@@ -1,5 +1,7 @@
 # Player guide
 
+**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+
 **Skybound follow-up:** choose **Begin Skybound** for the three-sector route. **F** jumps; hold through the apex to glide. Flight is available in Classic too. See [Skybound](SKYBOUND.md) for relay objectives, moving shutters, wing fuel and the new campaign. The six-minute survival guide below remains applicable to Classic.
 
 ## Objective and controls

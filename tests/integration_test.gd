@@ -36,7 +36,9 @@ func run_checks() -> void:
 	game.state="run"
 	game.run_time=59.99
 	game.update_director(0.02)
-	check(game.state=="upgrade" and game.upgrade_choices.size()==3,"minute checkpoint pauses for three upgrades")
+	check(game.state=="weapon_upgrade" and game.weapon_choices.size()==3,"minute checkpoint pauses for three weapon choices")
+	game.choose_weapon(game.weapon_choices[0])
+	check(game.state=="upgrade" and game.upgrade_choices.size()==3,"weapon installation advances to three reactor choices")
 	var choice: String=game.upgrade_choices[0]
 	game.rules.health=50
 	game.choose_upgrade(choice)

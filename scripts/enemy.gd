@@ -23,6 +23,14 @@ var phase := 1
 var attack_index := 0
 var spawning := 0.85
 var warning_lane: Node3D
+var hit_reaction := 0.0
+var hit_direction := Vector3.BACK
+var impact_cooldown := 0.0
+var flash_time := 0.0
+var flash_parts: Array[Dictionary] = []
+var flash_active := false
+static var flash_material: StandardMaterial3D
+static var shield_flash_material: StandardMaterial3D
 
 func setup(owner_game: Node3D, enemy_kind: String, at: Vector3) -> void:
 	game = owner_game
@@ -43,6 +51,7 @@ func setup(owner_game: Node3D, enemy_kind: String, at: Vector3) -> void:
 	max_hp = hp
 	if game.hard_mode: hp*=1.2; max_hp=hp; speed*=1.1
 	add_child(model)
+	_cache_flash_parts(model)
 	model.scale = Vector3.ONE * 0.01
 	cooldown += game.rng.randf_range(0, 1.1)
 	telegraph = game.make_ring(radius + 0.5, Color(1, 0.53, 0.25, 0.8))
@@ -66,6 +75,10 @@ func setup(owner_game: Node3D, enemy_kind: String, at: Vector3) -> void:
 func update(delta: float) -> void:
 	if dead: return
 	age += delta
+	impact_cooldown=maxf(0.0,impact_cooldown-delta)
+	flash_time=maxf(0.0,flash_time-delta)
+	if flash_active and flash_time<=0.0: _restore_flash()
+	hit_reaction=move_toward(hit_reaction,0.0,delta*5.5)
 	if spawning > 0:
 		spawning -= delta
 		model.scale = Vector3.ONE * clampf(1.0 - spawning / 0.85, 0.01, 1)
@@ -78,7 +91,7 @@ func update(delta: float) -> void:
 	shield_broken = maxf(0, shield_broken - delta)
 	slow = maxf(0, slow - delta)
 	hurt = maxf(0, hurt - delta)
-	model.position.y = sin(age * 3.0) * 0.06 + hurt * 0.7
+	model.position.y = sin(age * 3.0) * 0.035
 	var shield: Node3D = model.get_node_or_null("Shield")
 	if shield: shield.visible = shield_broken <= 0
 	var to_player: Vector3 = game.player_position - position
@@ -144,6 +157,8 @@ func update(delta: float) -> void:
 		phase = 2
 		game.announce("GUARDIAN // OVERDRIVE", "Offset volleys. Watch the marked ground.")
 		game.cue("boss", 1.0)
+	var visible_speed: float = clampf(position.distance_to(previous_position)/maxf(delta*speed,0.001),0.0,1.0)
+	Art.animate_enemy(model,delta,visible_speed,charge_time>0.0,hit_direction,hit_reaction,age)
 
 func distance_to_wall(direction: Vector3, maximum: float) -> float:
 	var distance:=maximum
@@ -202,8 +217,44 @@ func perform_attack(direction: Vector3) -> void:
 			if attack_index % 2 == 0:
 				game.add_hazard(position + direction * 3, 2.8, 1.15)
 
-func take_hit(amount: float, from_pulse: bool = false) -> void:
+func _cache_flash_parts(node: Node) -> void:
+	for child: Node in node.get_children():
+		if child is MeshInstance3D:
+			flash_parts.append({"node":child,"original":child.material_overlay})
+		_cache_flash_parts(child)
+
+
+static func _hit_material(shielded: bool) -> StandardMaterial3D:
+	if shielded and shield_flash_material: return shield_flash_material
+	if not shielded and flash_material: return flash_material
+	var material := StandardMaterial3D.new()
+	material.albedo_color=Color(0.40,0.85,1.0,0.72) if shielded else Color(1.0,0.91,0.65,0.78)
+	material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.emission_enabled=true
+	material.emission=material.albedo_color
+	material.emission_energy_multiplier=1.3
+	if shielded: shield_flash_material=material
+	else: flash_material=material
+	return material
+
+
+func _flash(shielded: bool) -> void:
+	for part: Dictionary in flash_parts:
+		if is_instance_valid(part.node): part.node.material_overlay=_hit_material(shielded)
+	flash_time=0.065
+	flash_active=true
+
+
+func _restore_flash() -> void:
+	for part: Dictionary in flash_parts:
+		if is_instance_valid(part.node): part.node.material_overlay=part.original
+	flash_active=false
+
+
+func take_hit(amount: float, from_pulse: bool = false, incoming: Vector3 = Vector3.ZERO, hit_mode: String = "") -> void:
 	if dead or spawning > 0: return
+	var shielded := false
 	if kind == "bruiser" and shield_broken <= 0:
 		if from_pulse:
 			shield_broken = 3.5
@@ -211,9 +262,27 @@ func take_hit(amount: float, from_pulse: bool = false) -> void:
 			var facing := Vector3(sin(rotation.y), 0, cos(rotation.y))
 			if facing.dot((game.player_position - position).normalized()) > 0.1:
 				amount *= 0.25
+				shielded=true
 	hp -= amount
 	hurt = 0.15
-	game.hit_spark(position + Vector3(0, 0.8, 0), Color(1, 0.8, 0.5))
+	hit_direction=incoming.normalized() if incoming.length_squared()>0.001 else (position-game.player_position).normalized()
+	if hit_direction.length_squared()<0.001: hit_direction=Vector3.BACK
+	var mode: String = hit_mode if not hit_mode.is_empty() else ("plasma" if from_pulse else "kinetic")
+	var fx: Node3D = game.get("weapon_fx") as Node3D
+	# Damage-over-time still changes health every tick. Visual impacts are gated
+	# so a burning field cannot create a permanent flash or exhaust the FX pool.
+	if amount>=1.0 and impact_cooldown<=0.0:
+		impact_cooldown=0.075
+		hit_reaction=maxf(hit_reaction,clampf(amount/24.0,0.45,1.0))
+		_flash(shielded)
+		var impact_at: Vector3 = global_position+Vector3.UP*(1.5 if kind=="boss" else 0.85)-hit_direction*(0.7 if kind=="boss" else 0.23)
+		if is_instance_valid(fx): fx.impact(impact_at,hit_direction,"kinetic" if shielded else mode,0.55 if shielded else clampf(amount/20.0,0.75,1.8))
+		else: game.hit_spark(impact_at,Color(1,0.8,0.5))
 	if hp <= 0:
 		dead = true
+		_restore_flash()
+		if is_instance_valid(fx): fx.destroy_enemy(model,global_position,kind,hit_direction)
+		model.visible=false
+		telegraph.visible=false
+		if warning_lane: warning_lane.visible=false
 		game.enemy_defeated(self)

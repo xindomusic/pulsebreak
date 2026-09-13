@@ -1,0 +1,45 @@
+{
+  "engine": "Godot 4.7.2 stable",
+  "total_checks": 491,
+  "suites": {
+    "rules": 25,
+    "save": 84,
+    "integration": 39,
+    "traversal": 34,
+    "altitude_integration": 34,
+    "campaign": 31,
+    "generation": 47,
+    "weapons": 50,
+    "endless": 45,
+    "combat_fx": 22,
+    "audio": 44,
+    "native_controls": 36
+  },
+  "generated_layouts": 768,
+  "native_input_captures": 11,
+  "staged_native_captures": 52,
+  "runtime_manifest": "overdrive-source.json",
+  "method": "Independent full twelve-suite pass (479 at that point), followed by focused reruns after the new cadence, FX priority, and generated-dressing fixes. Current audited total491. Native input suite separately passed36 on Metal Apple M4.",
+  "audio": "PCM/runtime validation only; actual audition and human feel unverified",
+  "native_input_log": "/tmp/pulsebreak-overdrive-native-controls.log",
+  "native_performance": {
+    "artifact": "overdrive-native/active-metrics.json",
+    "capture_pixels": [
+      1280,
+      800
+    ],
+    "design_viewport": [
+      1440,
+      900
+    ],
+    "render_samples": 15008,
+    "median_ms": 16.508,
+    "p95_ms": 18.143,
+    "p99_ms": 18.796,
+    "p95_target_ms": 16.7,
+    "target_met": false,
+    "single_engine": true,
+    "warmup_excluded_seconds": 3,
+    "notes": "Active run/boss states only; presented frame intervals, not isolated GPU timing."
+  }
+}

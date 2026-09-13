@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-13 — Overdrive follow-up
+
+- Added visible working Quit controls on title, pause, checkpoint and results screens.
+- Added four projectile weapons with distinct fire/impact audio, five ranks, model evolutions, and remappable Q switching.
+- Refined the courier, held weapons and recoil; added localized hit reactions and pooled enemy armor breakup with Low Effects support.
+- Added seeded continuous sector generation, route-specific floor dressing, recurring Guardians, bank/continue checkpoints and rewards after reactor upgrades are exhausted.
+- Added independent projectile, audio, generation, continuity, actual Quit-exit and weapon-keyboard regressions; fixed range/cover/cadence defects found during review.
+- See [Overdrive](docs/OVERDRIVE.md) and [its independent review](qa/overdrive-review.md) for evidence and remaining quality limits.
+
 ## 2026-09-13 — Skybound feature branch
 
 - Added the three-sector Skybound campaign, airborne relay objectives, upgrade transitions, timed gates and authored shock-pad patterns.

@@ -1,0 +1,264 @@
+{
+  "scope": "Final runtime source, original assets and asset import settings; excludes QA/docs/tools",
+  "baseline_commit": "c4fa60b",
+  "branch": "feat/skybound-showcase",
+  "files": [
+    {
+      "path": "main.tscn",
+      "sha256": "2cdc569559997d5e8cc62c3572131901c13dd6ab97392de3485478b238139e7c"
+    },
+    {
+      "path": "project.godot",
+      "sha256": "17c3a289ddecc5d6706c001763691c8220d8dc7db800a7237096521e482714e3"
+    },
+    {
+      "path": "scripts/art.gd",
+      "sha256": "d21f6705d780e471fb809aeac549f3e192f29dbd80517740825e3d44a73dcb4f"
+    },
+    {
+      "path": "scripts/audio_director.gd",
+      "sha256": "6f753c27a7fcf6b3af3238afae7d0e8274d3a083fc4c862e2b1a5ac540ce41b3"
+    },
+    {
+      "path": "scripts/campaign.gd",
+      "sha256": "20341c85383c7fbd8f2242db1ca98d172fb8a3140019b87611569119deec0e18"
+    },
+    {
+      "path": "scripts/combat_field.gd",
+      "sha256": "d18a38b458097a997ca4e2586babf7be9e3458bf929f5ec1498fa8348a3959d4"
+    },
+    {
+      "path": "scripts/combat_fx.gd",
+      "sha256": "1fc97ab9cd6ab9093bd98f1a6904da4641b1b273cea1c54ad4a7e975a3aac09b"
+    },
+    {
+      "path": "scripts/enemy.gd",
+      "sha256": "9aa6caaa7939692bfcefe0e1dc1159f823f4ca7cb066c16584d72be42be8e605"
+    },
+    {
+      "path": "scripts/game.gd",
+      "sha256": "c50be81bcbe87c37852ebdb64393e38bb6e726028c04fdb5210e18c15857e869"
+    },
+    {
+      "path": "scripts/hud.gd",
+      "sha256": "040273e47e123ecce903b59611298299c2d199cb4ed2f5dc1c0c31dc31842ffb"
+    },
+    {
+      "path": "scripts/level_generator.gd",
+      "sha256": "8ad3cba420c4325323a2344ef80951fe3d59d6b86520280638d2cfc72e5cb7a7"
+    },
+    {
+      "path": "scripts/rules.gd",
+      "sha256": "2aad33f667f3141984b75b545ee6d3b541d4ed408c59ee09f4a8884b056c2fa4"
+    },
+    {
+      "path": "scripts/save_store.gd",
+      "sha256": "483b64b40be4cf0d02b405013a55ee834c2aeb506e423574c1cbf0f384d47b81"
+    },
+    {
+      "path": "scripts/showcase_art.gd",
+      "sha256": "1ff53805f41a1df60c0999e8e13e57ae557ff143139ef678ea25d1910bff5b61"
+    },
+    {
+      "path": "scripts/traversal.gd",
+      "sha256": "45e9eb4de07c4a8bf9a7b8737b2d30efa60e3dd0955787e17ae307f5d6075a44"
+    },
+    {
+      "path": "scripts/weapons.gd",
+      "sha256": "623084784302f394bb622c3b61158901b3485017e80bd013cfe1bb678f2c5794"
+    },
+    {
+      "path": "assets/audio/absorb.wav",
+      "sha256": "f1bb1bbb2ae87f25a50ab275fa8096ac6e26145a93f6591ec64f00f4b45bcb9d"
+    },
+    {
+      "path": "assets/audio/absorb.wav.import",
+      "sha256": "2c5ce9d3a7d2c0dc92dcaf12f8eac412604e9062238a9f806a190683acfa68bf"
+    },
+    {
+      "path": "assets/audio/arc_fire.wav",
+      "sha256": "d24bd45bf30daea79705b2fbb471af7de6b62bde8e6b9204946d3b558d80765e"
+    },
+    {
+      "path": "assets/audio/arc_fire.wav.import",
+      "sha256": "9341bc8fd14ed9eb3b3f4dd581ae66098bed1403b18c29af7e92bd5ca395e8c5"
+    },
+    {
+      "path": "assets/audio/armor_impact.wav",
+      "sha256": "69efce4206d4c64741baf173b2b1307c3d6e6da9fd19377d89a4e812cc383029"
+    },
+    {
+      "path": "assets/audio/armor_impact.wav.import",
+      "sha256": "411a1e2842e0b961ab85fa5a3aeb5a411445fa3cc6989fe42aa9d95640530de9"
+    },
+    {
+      "path": "assets/audio/boss.wav",
+      "sha256": "7a37c17c8ab77071c687ab23939bbc15b4a1d92c72f0281b146dec170e8edbdb"
+    },
+    {
+      "path": "assets/audio/boss.wav.import",
+      "sha256": "79682d9f57cb1c396e73f8724bebb4dfbdf02c893240c7bda7ad3c7d5e1dc417"
+    },
+    {
+      "path": "assets/audio/core.wav",
+      "sha256": "3a9cc4cd02d157bb800b88a6178bfc8defad313f41cd70cda054a56ef9ed087d"
+    },
+    {
+      "path": "assets/audio/core.wav.import",
+      "sha256": "54700a1fd3f43a3960c500d6320f815458fde51d1a2420d8ea4c307efba75453"
+    },
+    {
+      "path": "assets/audio/dash.wav",
+      "sha256": "32565cffe413570e402ea78dde2e0e7b4ee1544c490c163010c58e56060b5920"
+    },
+    {
+      "path": "assets/audio/dash.wav.import",
+      "sha256": "b97b8f9f0f9a387b16747a390c03955fbe0e46b5e39a10a9a6bdd0797498474c"
+    },
+    {
+      "path": "assets/audio/defeat.wav",
+      "sha256": "7f327d7fbf03d5fcf310ccc203a13521ba3463dbf103336c09dd7ac103638300"
+    },
+    {
+      "path": "assets/audio/defeat.wav.import",
+      "sha256": "0dd907c6e55c86fbed59300dc1c4e03d7ac0d8474c09170d2249af2814131f4f"
+    },
+    {
+      "path": "assets/audio/guardian_break.wav",
+      "sha256": "ebcc3b1c76f6e4244b761f9d41927c29893f03ebe62f1112c2b6b7b0ee389dab"
+    },
+    {
+      "path": "assets/audio/guardian_break.wav.import",
+      "sha256": "f6cbc2cab20564cfecf3b24f6555225258152d13131b93d9293c9813aaa83b19"
+    },
+    {
+      "path": "assets/audio/hit.wav",
+      "sha256": "3f0685a8f3759a9072f46d8a95f6456ee4d85ca7d0ebed1054a3fdaf9513ef41"
+    },
+    {
+      "path": "assets/audio/hit.wav.import",
+      "sha256": "69541e8a8091b34c327639430ca30753e708d071391c2d0d4abec034e2893d5e"
+    },
+    {
+      "path": "assets/audio/kill.wav",
+      "sha256": "4c0cac4d6dbc15afde3d047fb35c3e9fcf3f50d6768731b525eacb7de6aaa431"
+    },
+    {
+      "path": "assets/audio/kill.wav.import",
+      "sha256": "a36b97a3797e0ea910b55fc335dec8f0325bfff7d3d023aab3b12e6217fba1d6"
+    },
+    {
+      "path": "assets/audio/kinetic_fire.wav",
+      "sha256": "07edea9b3a6c6267fb2b7297d3a4771c46321e6a7e3a417ddaa6614861179004"
+    },
+    {
+      "path": "assets/audio/kinetic_fire.wav.import",
+      "sha256": "c2751205b02b9dc1c0c8cddd4cc3562b12b6bba4f8cfbbf5cc20fa4871911206"
+    },
+    {
+      "path": "assets/audio/machine_break.wav",
+      "sha256": "6e2e948df9d9a22a2ea380a4820e7c19811706e00406d265cbf8ba5cda35e6df"
+    },
+    {
+      "path": "assets/audio/machine_break.wav.import",
+      "sha256": "782a0a96b124bc2577fe9e2591315d64bf95a6cd7baa8191a70ee83db47bf6b1"
+    },
+    {
+      "path": "assets/audio/music_foundry.wav",
+      "sha256": "d45b5fc5ec2e4c04388c62dc734c29e7159bf05434e52a22ed5f34cb0115ee1e"
+    },
+    {
+      "path": "assets/audio/music_foundry.wav.import",
+      "sha256": "bc60709900b0b8011df91010fabb3a3d066d15fb64db1dbd996d16a80ddae613"
+    },
+    {
+      "path": "assets/audio/music_pressure.wav",
+      "sha256": "f32a507663af3366bb95b61fd8f657dc0d33a03e653004f62c030a2b764e88b9"
+    },
+    {
+      "path": "assets/audio/music_pressure.wav.import",
+      "sha256": "d9a4ee80db6fee3f8d72e0bd3d52805884013af20a5baa2c20e59cfb6154134d"
+    },
+    {
+      "path": "assets/audio/plasma_fire.wav",
+      "sha256": "0510dde418bd30984c6ac49f7a96604351cc40957c38c66af74c080c6dedc584"
+    },
+    {
+      "path": "assets/audio/plasma_fire.wav.import",
+      "sha256": "0c9447f3e1ea1d2d5083d23fcca47ff57c286521c255a1e9456f29d15fd92f1e"
+    },
+    {
+      "path": "assets/audio/pulse.wav",
+      "sha256": "52eed146af4d17469847ac54bc119c855e10ca09025de5cbb0a3ea15ef7bf348"
+    },
+    {
+      "path": "assets/audio/pulse.wav.import",
+      "sha256": "bb484ddd3ad65a97714c3c6779a160ca785c68374cfa8368b60b9b9a87dac8aa"
+    },
+    {
+      "path": "assets/audio/ready.wav",
+      "sha256": "b9abdae04d9485e3e49b005a05d02f97977fcbf051a3a0edb35ebb9240c79df1"
+    },
+    {
+      "path": "assets/audio/ready.wav.import",
+      "sha256": "80bc35447c7d027deab621b9dd062d55036a52d26121ce85c4b242dada69816f"
+    },
+    {
+      "path": "assets/audio/scatter_fire.wav",
+      "sha256": "1deb91743700e446628df6707b39e327f3faf4f6152dbefccca253fb15913f62"
+    },
+    {
+      "path": "assets/audio/scatter_fire.wav.import",
+      "sha256": "06d7d92ea756d4e42b5089a9d42cb399af04513be7d765761127458b9cb4f7fa"
+    },
+    {
+      "path": "assets/audio/shoot.wav",
+      "sha256": "80d0cea86743929afd932f2bbdcdddaba418f67c06fdaef0cbe5db7e0ad35078"
+    },
+    {
+      "path": "assets/audio/shoot.wav.import",
+      "sha256": "7cb8cda45668ecf3cc104a80605f083ce1c1e47d0009c94a53cdbb4f12980376"
+    },
+    {
+      "path": "assets/audio/upgrade.wav",
+      "sha256": "0bbc1e0355224e649fd93fd8f6e15faa189db9bfa492265a5b3c5077ee19fbc7"
+    },
+    {
+      "path": "assets/audio/upgrade.wav.import",
+      "sha256": "c56390e10ace9fcebbb6f6356a2b6196d2ba8566351e1276cfd6a94426640585"
+    },
+    {
+      "path": "assets/audio/victory.wav",
+      "sha256": "00cd2f3d70817dc6504288361c45b3cfb10fee6e98f52032d6305f2cc6594155"
+    },
+    {
+      "path": "assets/audio/victory.wav.import",
+      "sha256": "ee4a7bc6d56202d24e8f3d7b5ed04faeeec5f02b855721c0c8e49295a0c73424"
+    },
+    {
+      "path": "assets/audio/warning.wav",
+      "sha256": "20ffb38c1437b18d470a111b3d3b0ed8bad7ef8ce43ec02ade2dcb50010a022a"
+    },
+    {
+      "path": "assets/audio/warning.wav.import",
+      "sha256": "331641c7c04fc82342c187e3f14d4576e2e12b148e420599c8684a54db207e84"
+    },
+    {
+      "path": "assets/audio/weapon_install.wav",
+      "sha256": "0c316560920450542810943d07ebd43002cb6cf3b5af005b9624965020f64bc9"
+    },
+    {
+      "path": "assets/audio/weapon_install.wav.import",
+      "sha256": "76d1ff6713efa4c2d13eadb610ed5b01c8839b2aa784e4b7605cb61e6008d225"
+    },
+    {
+      "path": "assets/icon.svg",
+      "sha256": "908fece669aaca5f64d2dee159ee2ef733a4b1304cd4c0284320a951476fccc5"
+    },
+    {
+      "path": "assets/icon.svg.import",
+      "sha256": "4d507b055735944d03bf18b844ccefdb63ad333cb49d2d86db1d7f4dac399328"
+    }
+  ],
+  "aggregate_sha256": "250ced67026099d57dae50e83037227c0954ed22557c2c943a94f2d91792ac80"
+}

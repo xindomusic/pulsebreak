@@ -24,7 +24,7 @@ func unique_bindings(data: Dictionary) -> bool:
 		if seen.has(key):
 			return false
 		seen[key] = true
-	return seen.size() == 7
+	return seen.size() == 8
 
 func _initialize() -> void:
 	if not ResourceLoader.exists("res://scripts/save_store.gd"):
@@ -37,6 +37,7 @@ func _initialize() -> void:
 	check(not FileAccess.file_exists(fixture), "isolated fixture starts absent")
 	var data: Dictionary = store.load_data()
 	check(data.best == 0 and data.volume == 0.65 and data.bindings.left == KEY_A, "missing save permits new run with defaults")
+	check(data.bindings.weapon == KEY_Q and unique_bindings(data), "new profiles expose eight unique actions with Q weapon switching")
 	data.bindings.left = KEY_J
 	check(store.default_data().bindings.left == KEY_A, "defaults are independent dictionaries")
 	data.volume = 0.3
@@ -80,7 +81,7 @@ func _initialize() -> void:
 	write_fixture(JSON.stringify({"bindings": {"left": KEY_D, "right": "broken", "pulse": KEY_Q, "unknown": KEY_M}}))
 	restored = store.load_data()
 	check(restored.bindings.left == KEY_A and restored.bindings.right == KEY_D and restored.bindings.pulse == KEY_Q, "partial binding collision restores defaults and preserves independent custom key")
-	check(restored.bindings.size() == 7 and unique_bindings(restored), "unknown bindings cannot add actions or duplicate keys")
+	check(restored.bindings.size() == 8 and unique_bindings(restored), "unknown bindings cannot add actions or duplicate keys")
 	write_fixture(JSON.stringify({"bindings": {"left": KEY_J, "right": KEY_J, "up": KEY_D}}))
 	restored = store.load_data()
 	check(unique_bindings(restored) and restored.bindings.left == KEY_A and restored.bindings.right == KEY_D and restored.bindings.up == KEY_W, "cascading duplicate fallback remains playable")
@@ -90,9 +91,27 @@ func _initialize() -> void:
 	write_fixture(JSON.stringify({"bindings": {"pulse": KEY_F}}))
 	restored = store.load_data()
 	check(unique_bindings(restored) and restored.bindings.jump == KEY_J and restored.bindings.pulse == KEY_F, "legacy F binding survives with an unused jump fallback")
+	write_fixture(JSON.stringify({"bindings": {"pulse": KEY_Q}}))
+	restored = store.load_data()
+	check(unique_bindings(restored) and restored.bindings.pulse == KEY_Q and restored.bindings.jump == KEY_F and restored.bindings.weapon == KEY_J, "legacy Q pulse binding survives while the new weapon action chooses an unused key")
+	write_fixture(JSON.stringify({"bindings": {"left":KEY_F,"right":KEY_Q,"up":KEY_J,"down":KEY_R,"dash":KEY_T,"pulse":KEY_G}}))
+	restored = store.load_data()
+	check(unique_bindings(restored) and restored.bindings.left==KEY_F and restored.bindings.right==KEY_Q and restored.bindings.up==KEY_J and restored.bindings.down==KEY_R and restored.bindings.dash==KEY_T and restored.bindings.pulse==KEY_G, "migration preserves an entirely remapped six-action profile")
+	check(restored.bindings.jump==KEY_H and restored.bindings.weapon==KEY_K, "jump and weapon migration reserve different unused fallback keys")
+	write_fixture(JSON.stringify({"bindings": {"jump":KEY_Q}}))
+	restored = store.load_data()
+	check(unique_bindings(restored) and restored.bindings.jump==KEY_Q and restored.bindings.weapon==KEY_J, "a seven-action profile retains Q jump when weapon switching is added")
+	check(store.save_data(restored) and store.load_data()==restored, "migrated bindings remain stable across disk roundtrip")
+	write_fixture(JSON.stringify({"bindings": {"jump":KEY_Q,"weapon":KEY_F}}))
+	restored = store.load_data()
+	check(unique_bindings(restored) and restored.bindings.jump==KEY_Q and restored.bindings.weapon==KEY_F, "a complete valid jump and weapon key swap survives validation")
+	write_fixture(JSON.stringify({"bindings": {"weapon":KEY_TAB}}))
+	restored = store.load_data()
+	check(unique_bindings(restored) and restored.bindings.weapon==KEY_Q, "a reserved weapon binding restores its usable default")
 	data = store.default_data()
 	data.bindings.jump = KEY_J
-	check(store.save_data(data) and store.load_data().bindings.jump == KEY_J, "new jump binding survives roundtrip")
+	data.bindings.weapon = KEY_R
+	check(store.save_data(data) and store.load_data().bindings.jump == KEY_J and store.load_data().bindings.weapon == KEY_R, "custom jump and weapon bindings survive roundtrip")
 	var bytes_before := FileAccess.get_file_as_bytes(fixture)
 	var blocked_temporary := ProjectSettings.globalize_path(fixture + ".tmp")
 	check(DirAccess.make_dir_absolute(blocked_temporary) == OK, "temporary output can be blocked by isolated test directory")

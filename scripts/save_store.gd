@@ -9,7 +9,7 @@ static func default_data() -> Dictionary:
 		"low_effects": false, "best": 0, "practiced": false,
 		"won": false, "overdrive": false,
 		"bindings": {"left": KEY_A, "right": KEY_D, "up": KEY_W,
-			"down": KEY_S, "dash": KEY_SPACE, "pulse": KEY_E, "jump": KEY_F}
+			"down": KEY_S, "dash": KEY_SPACE, "pulse": KEY_E, "jump": KEY_F, "weapon": KEY_Q}
 	}
 
 static func load_data() -> Dictionary:
@@ -87,18 +87,24 @@ static func _valid_key(value: Variant) -> bool:
 
 static func _bindings(raw: Dictionary, defaults: Dictionary) -> Dictionary:
 	var clean := defaults.duplicate()
-	# Old profiles had six actions. Preserve a player's F binding when adding jump.
-	if not raw.has("jump"):
-		var occupied: Array = []
-		for action in defaults:
-			if action != "jump": occupied.append(int(raw[action]) if _valid_key(raw.get(action)) else defaults[action])
-		for candidate in [KEY_F,KEY_J,KEY_K,KEY_L,KEY_Q,KEY_R,KEY_T,KEY_G]:
-			if candidate not in occupied:
-				clean.jump = candidate
-				break
 	for action in defaults:
 		if _valid_key(raw.get(action)):
 			clean[action] = int(raw[action])
+	# Six-action saves predate jump; seven-action saves predate weapon switching.
+	# Allocate only missing actions after reading the old keys. This preserves a
+	# valid F/Q assignment instead of treating a new default as a user collision.
+	var additions: Array[String] = []
+	for action in ["jump","weapon"]:
+		if not raw.has(action): additions.append(action)
+	var occupied: Array = []
+	for action in clean:
+		if action not in additions: occupied.append(clean[action])
+	for action in additions:
+		for candidate in [defaults[action],KEY_J,KEY_R,KEY_T,KEY_G,KEY_H,KEY_K,KEY_L]:
+			if candidate not in occupied:
+				clean[action] = candidate
+				occupied.append(candidate)
+				break
 	# Resolve collisions as a set, preserving complete swaps. Restoring a default
 	# can expose another collision, so repeat until no custom key needs repair.
 	var changed := true

@@ -1,10 +1,10 @@
 extends Node
 ## Original audio with two synchronized stems and twelve reusable cue voices.
 
-const CUE_NAMES: Array[String] = ["dash", "absorb", "pulse", "shoot", "hit", "kill", "warning", "upgrade", "boss", "core", "victory", "defeat", "ready"]
-const COOLDOWNS: Dictionary = {"shoot": 0.105, "absorb": 0.045, "kill": 0.080, "hit": 0.14, "warning": 0.42, "ready": 0.15}
-const PRIORITIES: Dictionary = {"shoot": 0, "kill": 1, "absorb": 2, "dash": 3, "ready": 3, "core": 4, "warning": 5, "pulse": 6, "hit": 7, "upgrade": 8, "boss": 9, "victory": 10, "defeat": 10}
-const CUE_LEVELS: Dictionary = {"shoot": -20.0, "kill": -14.0, "absorb": -12.0, "dash": -11.0, "ready": -15.0, "core": -10.0, "warning": -10.0, "pulse": -7.0, "hit": -8.0, "upgrade": -9.0, "boss": -8.0, "victory": -7.0, "defeat": -9.0}
+const CUE_NAMES: Array[String] = ["dash", "absorb", "pulse", "shoot", "hit", "kill", "warning", "upgrade", "boss", "core", "victory", "defeat", "ready", "kinetic_fire", "scatter_fire", "arc_fire", "plasma_fire", "armor_impact", "machine_break", "guardian_break", "weapon_install"]
+const COOLDOWNS: Dictionary = {"shoot": 0.105, "absorb": 0.045, "kill": 0.080, "hit": 0.14, "warning": 0.42, "ready": 0.15, "kinetic_fire":0.09, "scatter_fire":0.15, "arc_fire":0.15, "plasma_fire":0.18, "armor_impact":0.055, "machine_break":0.10, "guardian_break":1.0}
+const PRIORITIES: Dictionary = {"shoot": 0, "kill": 1, "absorb": 2, "dash": 3, "ready": 3, "core": 4, "warning": 5, "pulse": 6, "hit": 7, "upgrade": 8, "boss": 9, "victory": 10, "defeat": 10, "kinetic_fire":1, "scatter_fire":2, "arc_fire":2, "plasma_fire":3, "armor_impact":2, "machine_break":4, "guardian_break":9, "weapon_install":8}
+const CUE_LEVELS: Dictionary = {"shoot": -20.0, "kill": -14.0, "absorb": -12.0, "dash": -11.0, "ready": -15.0, "core": -10.0, "warning": -10.0, "pulse": -7.0, "hit": -8.0, "upgrade": -9.0, "boss": -8.0, "victory": -7.0, "defeat": -9.0, "kinetic_fire":-12.0, "scatter_fire":-9.5, "arc_fire":-11.0, "plasma_fire":-8.5, "armor_impact":-16.0, "machine_break":-10.5, "guardian_break":-7.0, "weapon_install":-8.0}
 const ABSORB_PITCHES: Array[float] = [1.0, 1.12246, 1.18921, 1.33484, 1.49831]
 
 var _streams: Dictionary = {}
@@ -18,6 +18,8 @@ var _intensity: float = 0.0
 var _smooth_intensity: float = 0.0
 var _absorb_step: int = 0
 var _last_absorb: float = -10.0
+var _duck: float = 0.0
+var _cue_sequence: int = 0
 
 
 func _ready() -> void:
@@ -59,6 +61,7 @@ func _make_music(asset_name: String) -> AudioStreamPlayer:
 
 
 func _process(delta: float) -> void:
+	_duck = move_toward(_duck,0.0,delta*1.1)
 	_smooth_intensity = lerpf(_smooth_intensity, _intensity, 1.0 - exp(-delta * 1.8))
 	_apply_music_levels()
 
@@ -70,7 +73,7 @@ func _gain_db() -> float:
 func _apply_music_levels() -> void:
 	if not is_instance_valid(_music):
 		return
-	var gain: float = _gain_db()
+	var gain: float = _gain_db()-_duck*8.0
 	_music.volume_db = clampf(-15.0 + _smooth_intensity * 2.0 + gain, -80.0, 0.0)
 	_pressure.volume_db = clampf(lerpf(-34.0, -14.0, _smooth_intensity) + gain, -80.0, 0.0)
 
@@ -103,6 +106,10 @@ func play_cue(cue_name: String, strength: float = 1.0) -> void:
 	chosen.stop()
 	chosen.stream = _streams[cue_name]
 	chosen.pitch_scale = 1.0
+	_cue_sequence += 1
+	if cue_name.ends_with("_fire") or cue_name in ["armor_impact","machine_break"]:
+		chosen.pitch_scale = 0.97+float(_cue_sequence%5)*0.015
+	if priority>=6: _duck=maxf(_duck,0.58)
 	if cue_name == "absorb":
 		if now - _last_absorb > 0.55:
 			_absorb_step = 0

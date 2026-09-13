@@ -1,5 +1,7 @@
 # Art, audio, and asset provenance
 
+**Overdrive additions:** [the current update](OVERDRIVE.md) adds four native procedural weapon models, courier refinements, pooled contact/debris effects in `scripts/combat_fx.gd`, seeded deck dressing, and eight original stereo cues from `tools/generate_weapon_audio.py`. No external model or sound pack was imported. The original asset inventory below remains historical.
+
 Pulsebreak's original visuals and audio were created for this experiment with Codex assistance. No external model pack, texture pack, sample library, or commercial soundtrack was imported. The assets are generated locally or represented directly in source.
 
 ## Geometry and environment

@@ -1,10 +1,10 @@
 # Pulsebreak
 
-**New on `feat/skybound-showcase`: [Skybound](docs/SKYBOUND.md)** — a three-sector aerial heist with an articulated winged courier, real jumping and gliding, timed shutters, aerial relays, and authored shock-pad encounters. Double-click **Play Pulsebreak.command** in this checkout, then choose **Begin Skybound**. Classic survival and practice remain available.
+**Current feature branch: [Overdrive](docs/OVERDRIVE.md)** — endless generated sectors, four evolving weapons, a rebuilt courier and held guns, animated hits and enemy breakup, original stereo combat cues, and visible Quit controls. Double-click **Play Pulsebreak.command**, then choose **Begin Skybound**. **F** jumps/holds to glide; **Q** switches unlocked weapons; **Esc** opens pause and Quit.
 
-![Staged native Skybound title and courier model](docs/images/skybound-title.png)
+![Staged native Overdrive title and courier](docs/images/overdrive-title.png)
 
-*Current source title rendered natively for visual review. [Research](docs/SKYBOUND_RESEARCH.md), [independent review](qa/skybound-review.md), and [controls evidence](qa/skybound-controls.md) document the follow-up. The original experiment below remains historical.*
+*[What changed](docs/OVERDRIVE.md), [research](docs/OVERDRIVE_RESEARCH.md), and [independent review](qa/overdrive-review.md). The [prior Skybound update](docs/SKYBOUND.md) and original experiment below remain historical.*
 
 ### A game-making experiment with GPT-6 Astra inside Codex
 

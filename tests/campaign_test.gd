@@ -47,9 +47,12 @@ func run_checks() -> void:
 	check(sheltered.position.y==0,"ground machines spawned from aerial positions still land on the deck")
 	var hp: float=sheltered.hp
 	game.auto_shoot()
-	check(sheltered.hp==hp,"closed shutters block the player's automatic beam")
+	game.weapons.update(0.3)
+	check(sheltered.hp==hp and game.weapons.projectiles.is_empty(),"closed shutters block the player's automatic weapon")
 	game.player_node.position.y=2.8
 	game.auto_shoot()
+	check(sheltered.hp==hp and not game.weapons.projectiles.is_empty(),"airborne weapon fire creates a travelling projectile before dealing damage")
+	game.weapons.update(0.3)
 	check(sheltered.hp<hp,"flying above the shutter opens a real line of fire")
 	game.clear_run()
 	for index in range(3):
@@ -66,8 +69,10 @@ func run_checks() -> void:
 	c.update(0.016)
 	check(game.state=="sector_complete" and c.completed,"player must enter gate to finish the sector")
 	game.next_sector()
-	check(c.sector==1 and game.state=="upgrade","travel enters second sector with an upgrade choice")
+	check(c.sector==1 and game.state=="weapon_upgrade","travel enters second sector with a weapon upgrade choice")
 	check(c.total_relays==3 and c.relays==0 and game.traversal.grounded,"travel preserves total progress and resets local flight")
+	game.choose_weapon(game.weapon_choices[0])
+	check(game.state=="upgrade" and game.upgrade_choices.size()==3,"installing a weapon advances to a reactor upgrade choice")
 	game.choose_upgrade(game.upgrade_choices[0])
 	check(game.state=="run" and game.rules.upgrades.size()==1,"installing upgrade resumes second-sector gameplay")
 	c.relays=1

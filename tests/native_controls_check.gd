@@ -69,10 +69,10 @@ func run_checks() -> void:
 	# production callback is reconnected and explicitly tested below.
 	game.get_window().focus_exited.disconnect(game.pause_on_focus_loss)
 	Input.use_accumulated_input = false
-	game.qa_output_dir = ProjectSettings.globalize_path("res://qa/skybound-controls")
+	game.qa_output_dir = ProjectSettings.globalize_path("res://qa/overdrive-controls")
 	# The fixture is deterministic and never writes the user's settings. Rebind
 	# input temporarily uses qa_mode only to suppress save_settings, not movement.
-	game.bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F}
+	game.bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F,"weapon":KEY_Q}
 	game.configure_input()
 	game.start_campaign()
 	game.rules.recovery = 0.0
@@ -143,6 +143,29 @@ func run_checks() -> void:
 	await key(KEY_A,false)
 	advance(14)
 
+	game.weapons.install("scatter")
+	var equipped_before: String = game.weapons.mode
+	game.weapons.cooldown = 0.61
+	await key(KEY_Q,true)
+	check(Input.is_action_pressed("weapon") and game.weapons.mode!=equipped_before, "Q keyboard input switches between unlocked weapons")
+	check(is_equal_approx(game.weapons.cooldown,0.61), "keyboard weapon switching preserves an in-progress reload")
+	await key(KEY_Q,false)
+	game.qa_mode = true
+	game.on_ui_action("rebind","weapon")
+	await key(KEY_R,true)
+	await key(KEY_R,false)
+	game.qa_mode = false
+	check(game.bindings.weapon==KEY_R and game.state=="settings", "the real rebind handler maps weapon switching to R")
+	game.state = "run"
+	game.ui.show_game()
+	equipped_before = game.weapons.mode
+	await key(KEY_Q,true)
+	check(game.weapons.mode==equipped_before, "the former Q key no longer switches weapons after rebinding")
+	await key(KEY_Q,false)
+	await key(KEY_R,true)
+	check(Input.is_action_pressed("weapon") and game.weapons.mode!=equipped_before and is_equal_approx(game.weapons.cooldown,0.61), "the new R binding switches weapons without bypassing reload")
+	await key(KEY_R,false)
+
 	# Rebind through the same capture screen and keyboard handler as the UI.
 	game.qa_mode = true
 	game.on_ui_action("rebind","jump")
@@ -183,6 +206,7 @@ func run_checks() -> void:
 	check(game.campaign_active and game.campaign.sector == 0 and game.campaign.total_relays == 0, "campaign restart resets sector objectives rather than entering survival")
 	check(game.traversal.grounded and game.traversal.fuel == 1.0 and game.player_position.y == 0.0 and game.rules.energy == 0.0, "campaign restart clears airborne position and combat resources")
 	check(game.bindings.jump == KEY_J, "campaign restart preserves the remapped control")
+	check(game.bindings.weapon == KEY_R, "campaign restart also preserves the remapped weapon key")
 
 	game.qa_mode = true
 	game.clear_run()

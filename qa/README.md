@@ -1,5 +1,20 @@
 # Pulsebreak verification evidence
 
+## Overdrive follow-up
+
+The current update is documented in [the Overdrive guide](../docs/OVERDRIVE.md), [research](../docs/OVERDRIVE_RESEARCH.md), [independent review](overdrive-review.md), and [runtime source manifest](overdrive-source.json). Earlier evidence remains historical. Current audited total: **491 checks in twelve suites**, with 768 generated layouts. See [the validation inventory](overdrive-validation.json).
+
+- `overdrive-final-normal/active-metrics.json`: corrected weapon cadence; continuous fixed-60 simulation through twelve sectors, four Guardians and 38 relays; banked at 391.20 seconds with 98 hull. All nine reactor upgrades installed; later service rewards exercised.
+- `overdrive-final-alternate/active-metrics.json`: second seed with different legal weapon choices; six sectors/two Guardians/18 relays, banked at 223.82 seconds with 76 hull.
+- `overdrive-native`: final single-instance native alternate run; all captures 1280×800, six-sector success. 15,008 render samples, median 16.508 ms / p95 18.143 ms / p99 18.796 ms. The strict 16.7 ms p95 target is unmet.
+- `overdrive-controls/native-controls.log`: native injected-keyboard run, 36 passing checks and 11 pose captures. These are synthetic inputs, not a human playtest.
+- `overdrive-normal` and `overdrive-alternate`: earlier six-sector successes before the firing-scheduler correction. Retained as development evidence.
+- `overdrive-simulation`: retained accelerated-driver loss at 64.60 seconds; the driver repeatedly attempted the glide lesson with depleted wing fuel. The later policy waits for enough fuel before a required glide. This is not a normal-frame-rate rendering or human-play result.
+- `overdrive-visual/visual-evidence.json`: staged native appearance/motion evidence; raw 52 captures are ignored. Four weapon models at ranks I/III/V, normal-camera firing, hit/death time series, matched busy/LowEffects scenes, generated routes, and the armory. Selected images are copied into `docs/images/overdrive-*`.
+- `overdrive-audio.json` and `overdrive-audio-preview.wav`: original stereo cue measurements and a 12-second audition reel. `tests/audio_test.gd` validates source PCM and runtime voice priority/ducking; no actual listening acceptance is claimed.
+
+The independent review separates mechanical verification, staged imagery, native performance, and human/audio acceptance. A numerical score cannot certify showcase selection or AAA production quality.
+
 ## Skybound follow-up
 
 The new work on `feat/skybound-showcase` is recorded in [the independent review](skybound-review.md), [native controls report](skybound-controls.md), and [runtime source manifest](skybound-source.json). Seven suites pass **261 checks**. The original evidence below remains unchanged.

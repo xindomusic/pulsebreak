@@ -28,12 +28,14 @@ var heavy: SystemFont
 var hint_time := 0.0
 var banner_time := 0.0
 var offers: Array = []
-var key_names: Dictionary = {"left":"A","right":"D","up":"W","down":"S","dash":"Space","pulse":"E","jump":"F"}
+var key_names: Dictionary = {"left":"A","right":"D","up":"W","down":"S","dash":"Space","pulse":"E","jump":"F","weapon":"Q"}
 var harvest_guide: Label
 var flight_bar: ProgressBar
 var flight_text: Label
 var altitude_text: Label
 var objective_text: Label
+var weapon_text: Label
+var weapon_detail: Label
 
 func set_bindings(bindings: Dictionary) -> void:
 	for id in bindings: key_names[id]=OS.get_keycode_string(int(bindings[id]))
@@ -164,8 +166,10 @@ func build_hud() -> void:
 	energy_bar = bar_at(reactor, Vector2(22, 44), Vector2(250, 9), CYAN)
 	dash_text = label_at(reactor, "SPACE  DASH\n●  ●", Vector2(302, 12), 16, WHITE)
 	harvest_guide=label_at(reactor, "DASH THROUGH ORANGE SHOTS TO CHARGE", Vector2(22, 62), 10, MUTED)
-	build_text = label_at(hud, "", Vector2(35, 792), 13, MUTED)
-	build_text.size = Vector2(390, 90)
+	weapon_text=label_at(hud,"VECTOR CARBINE / I",Vector2(35,766),18,CYAN)
+	weapon_detail=label_at(hud,"RAPID FIRE",Vector2(35,796),11,MUTED)
+	build_text = label_at(hud, "", Vector2(35, 826), 11, MUTED)
+	build_text.size = Vector2(400, 60)
 	build_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint = label_at(hud, "", Vector2(360, 712), 20)
 	hint.size = Vector2(720, 58)
@@ -229,12 +233,12 @@ func show_title(best: int, practiced: bool) -> void:
 	veil.texture = tex
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(veil)
-	label_at(modal, "S K Y B O U N D     /     A THREE-SECTOR HEIST", Vector2(65, 60), 13, CYAN)
+	label_at(modal, "O V E R D R I V E     /     THE ENDLESS SKY HEIST", Vector2(65, 60), 13, CYAN)
 	var title := label_at(modal, "PULSE\nBREAK", Vector2(58, 115), 104)
 	title.add_theme_font_override("font", heavy)
 	title.add_theme_constant_override("line_spacing", -25)
 	label_at(modal, "STEAL THE STORM.", Vector2(65, 394), 25, CYAN)
-	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nSteal enemy fire. Bring down the Guardian.", Vector2(65, 442), 19, MUTED)
+	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nBuild your arsenal. Break the next horizon.", Vector2(65, 442), 19, MUTED)
 	desc.size.x = 490
 	var box := column(Vector2(65, 515), 385)
 	box.add_theme_constant_override("separation",10)
@@ -242,12 +246,18 @@ func show_title(best: int, practiced: bool) -> void:
 	box.add_child(play)
 	box.add_child(button("PRACTICE THE HEIST", func(): action.emit("practice", true)))
 	box.add_child(button("CLASSIC  /  SIX-MINUTE SURVIVAL", func(): action.emit("start", false)))
-	box.add_child(button("SETTINGS", func(): action.emit("settings", null)))
+	var controls:=HBoxContainer.new()
+	controls.add_theme_constant_override("separation",10)
+	for item in [["SETTINGS","settings"],["QUIT GAME","quit"]]:
+		var control:=button(item[0],func(): action.emit(item[1],null))
+		control.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+		controls.add_child(control)
+	box.add_child(controls)
 	play.grab_focus()
 	label_at(modal, "PERSONAL BEST  /  %06d" % best, Vector2(65, 786), 14, AMBER)
 	label_at(modal, "%s  MOVE    %s  DASH    %s  PULSE    %s  JUMP / GLIDE" % [movement_keys(),key_names.dash.to_upper(),key_names.pulse.to_upper(),key_names.jump.to_upper()], Vector2(65, 846), 12, MUTED)
-	label_at(modal, "01 — 03\nSKYPORT / FOUNDRY / STORM", Vector2(971, 790), 16, CYAN)
-	label_at(modal,"COURIER / MK.II\nVECTOR WING SYSTEM",Vector2(1020,91),14,CYAN)
+	label_at(modal, "03 SECTORS. THEN THE UNKNOWN.\nNEW ROUTES / EVOLVING WEAPONS", Vector2(945, 790), 14, CYAN)
+	label_at(modal,"COURIER / MK.III\nVECTOR WING SYSTEM",Vector2(1020,91),14,CYAN)
 	if not practiced:
 		label_at(modal, "FIRST RUN? PRACTICE TEACHES HARVESTING. SKYBOUND TEACHES FLIGHT.", Vector2(65, 814), 10, MUTED)
 
@@ -265,13 +275,14 @@ func show_pause() -> void:
 	box.add_child(button("SETTINGS", func(): action.emit("settings", null)))
 	box.add_child(button("RESTART RUN", func(): action.emit("restart", null)))
 	box.add_child(button("RETURN TO TITLE", func(): action.emit("title", null)))
+	box.add_child(button("QUIT GAME", func(): action.emit("quit", null)))
 	resume_button.grab_focus()
 
 func show_practice_complete() -> void:
 	clear_modal(); shade(0.9)
 	var box := column(Vector2(455,240),530)
 	box.add_child(text_line("READY FOR THE HEIST",38,CYAN))
-	box.add_child(text_line("You have the core move: harvest, reposition, pulse.\nTake flight across three sectors in Skybound.",21,MUTED))
+	box.add_child(text_line("You have the core move: harvest, reposition, pulse.\nTake flight, build an arsenal, and dive into endless sectors.",21,MUTED))
 	var start := button("BEGIN SKYBOUND    →",func():action.emit("campaign",false),true)
 	box.add_child(start)
 	box.add_child(button("PRACTICE AGAIN",func():action.emit("practice",true)))
@@ -317,7 +328,7 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	keys.columns = 2
 	keys.add_theme_constant_override("h_separation", 12)
 	keys.add_theme_constant_override("v_separation", 8)
-	for id in ["left","right","up","down","dash","pulse","jump"]:
+	for id in ["left","right","up","down","dash","pulse","jump","weapon"]:
 		var key_name := OS.get_keycode_string(int(bindings[id]))
 		var key_button := button(id.to_upper() + "   [" + key_name + "]", func(): action.emit("rebind", id))
 		key_button.custom_minimum_size = Vector2(344,42)
@@ -361,39 +372,100 @@ func show_upgrades(ids: Array) -> void:
 		if i == 0: choose.grab_focus()
 	label_at(modal, "UPGRADES LAST FOR THIS RUN  /  EVERY CHOICE CHANGES YOUR PLAY", Vector2(403, 724), 12, MUTED)
 
+func show_weapon_upgrades(ids: Array, data: Array) -> void:
+	clear_modal(); shade(0.95)
+	label_at(modal,"THE ARMORY",Vector2(558,115),40,CYAN)
+	label_at(modal,"New hardware. New ways to break the storm.",Vector2(486,173),19,MUTED)
+	for i in range(ids.size()):
+		var id: String=ids[i]
+		var item: Dictionary=data[i]
+		var card:=PanelContainer.new()
+		card.position=Vector2(176+i*368,252)
+		card.size=Vector2(352,465)
+		card.add_theme_stylebox_override("panel",panel(Color("102431"),item.color.darkened(0.35)))
+		modal.add_child(card)
+		var box:=VBoxContainer.new()
+		box.add_theme_constant_override("separation",15)
+		card.add_child(box)
+		box.add_child(text_line("0%d  /  %s" % [i+1,item.family],12,item.color))
+		var preview:=Control.new()
+		preview.custom_minimum_size=Vector2(300,90)
+		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		box.add_child(preview)
+		weapon_blueprint(preview,id,item.color)
+		box.add_child(text_line(item.name,25,WHITE))
+		box.add_child(text_line(item.action,16,item.color))
+		box.add_child(text_line(item.benefit,12,WHITE))
+		var desc:=text_line(item.description,17,MUTED)
+		desc.size_flags_vertical=Control.SIZE_EXPAND_FILL
+		box.add_child(desc)
+		var choose:=button("[%d]  EQUIP & EVOLVE" % (i+1),func():action.emit("weapon_upgrade",id),true)
+		box.add_child(choose)
+		if i==0: choose.grab_focus()
+	label_at(modal,"KEEP EVERY UNLOCK  /  %s SWITCHES WEAPONS DURING COMBAT  /  RANKS III & V TRANSFORM YOUR GUN" % key_names.weapon.to_upper(),Vector2(265,768),12,MUTED)
+
+func weapon_blueprint(parent: Control, id: String, color: Color) -> void:
+	# Side elevation of each gun; four distinct silhouettes, matching the held mesh.
+	var pieces: Array=[]
+	match id:
+		"kinetic": pieces=[Rect2(34,28,159,25),Rect2(183,31,69,13),Rect2(95,47,23,29),Rect2(33,33,23,35),Rect2(142,20,45,7)]
+		"scatter": pieces=[Rect2(34,30,127,33),Rect2(150,29,93,12),Rect2(150,48,93,12),Rect2(46,56,26,22),Rect2(87,62,44,10)]
+		"arc": pieces=[Rect2(45,30,94,28),Rect2(78,55,21,22),Rect2(134,25,25,39),Rect2(168,25,25,39),Rect2(199,25,25,39),Rect2(224,38,31,13)]
+		"plasma": pieces=[Rect2(29,27,127,38),Rect2(152,16,87,14),Rect2(152,60,87,14),Rect2(150,37,112,15),Rect2(64,60,25,21)]
+	for i in range(pieces.size()):
+		var tile:=ColorRect.new()
+		tile.position=pieces[i].position; tile.size=pieces[i].size
+		tile.color=color if i>0 else color.darkened(0.5)
+		tile.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		parent.add_child(tile)
+
+func update_weapon(weapons) -> void:
+	var profile: Dictionary=weapons.PROFILES[weapons.mode]
+	weapon_text.text="%s  /  %s" % [profile.name,weapons.roman(weapons.tier())]
+	weapon_text.add_theme_color_override("font_color",profile.color)
+	weapon_detail.text="%s  ·  %s SWITCH  ·  +%d%% POWER" % [profile.role,key_names.weapon.to_upper(),roundi((weapons.damage_scale()-1)*100)]
+
 func show_result(won: bool, data: Dictionary) -> void:
-	clear_modal(); shade(0.90)
+	clear_modal(); shade(0.93)
 	hud.visible = false
-	var box := column(Vector2(446, 158), 548)
-	box.add_child(text_line("REACTOR SECURED" if won else "SIGNAL LOST", 44, CYAN if won else AMBER))
-	box.add_child(text_line("The storm is yours." if won else "One more run. One better decision.", 22, MUTED))
-	box.add_child(text_line("%06d" % data.score, 70, WHITE))
-	box.add_child(text_line("SCORE     /     BEST %06d" % data.best, 14, AMBER))
-	box.add_child(text_line("%d machines broken   ·   %d shots stolen   ·   %d pulses" % [data.kills,data.absorbed,data.pulses], 17))
-	box.add_child(text_line("TIME  %02d:%02d" % [int(data.time)/60,int(data.time)%60], 17, MUTED))
+	var box := column(Vector2(420,100),600)
+	box.add_theme_constant_override("separation",10)
+	box.add_child(text_line("RUN BANKED" if data.get("retired",false) else "REACTOR SECURED" if won else "SIGNAL LOST",42,CYAN if won or data.get("retired",false) else AMBER))
+	box.add_child(text_line("The storm keeps moving. So will you.",20,MUTED))
+	box.add_child(text_line("%06d" % data.score,64,WHITE))
+	box.add_child(text_line("SCORE  /  BEST %06d" % data.best,14,AMBER))
+	box.add_child(text_line("%d machines broken · %d shots stolen · %d pulses" % [data.kills,data.absorbed,data.pulses],17))
+	box.add_child(text_line("TIME  %02d:%02d" % [int(data.time)/60,int(data.time)%60],16,MUTED))
 	if data.get("campaign",false):
-		box.add_child(text_line("SKYBOUND  /  SECTOR %d OF 3  ·  %d / 9 AIR RELAYS" % [data.sector,data.relays],14,CYAN))
-	if won: box.add_child(text_line("OVERDRIVE UNLOCKED  /  Enable it in Settings for a tougher heist.",14,CYAN))
+		box.add_child(text_line("SECTOR %02d · %d AIR RELAYS · %d GUARDIANS" % [data.sector,data.relays,data.get("guardians",0)],15,CYAN))
+		box.add_child(text_line("ROUTE SEED  %s" % str(data.get("seed",0)),12,MUTED))
+	box.add_child(text_line("%s  /  RANK %s" % [data.get("weapon","VECTOR CARBINE"),data.get("rank","I")],16,CYAN))
+	if won: box.add_child(text_line("OVERDRIVE UNLOCKED  /  Enable it in Settings for a tougher heist.",13,CYAN))
 	var names: PackedStringArray = []
 	for id in data.upgrades: names.append(Rules.UPGRADE_DATA[id].name)
-	box.add_child(text_line(" + ".join(names) if not names.is_empty() else "Try harvesting a full volley, then pulse a group.", 14, MUTED))
-	var again := button("RUN IT BACK    →", func(): action.emit("restart", null), true)
+	box.add_child(text_line(" + ".join(names) if not names.is_empty() else "Your next weapon is waiting at the next checkpoint.",13,MUTED))
+	var again := button("RUN IT BACK    →",func():action.emit("restart",null),true)
 	box.add_child(again)
-	box.add_child(button("RETURN TO TITLE", func(): action.emit("title", null)))
+	box.add_child(button("RETURN TO TITLE",func():action.emit("title",null)))
+	box.add_child(button("QUIT GAME",func():action.emit("quit",null)))
 	again.grab_focus()
 
-func show_sector_complete(index: int, sector_name: String, elapsed: float, relays: int) -> void:
-	clear_modal(); shade(0.88)
+func show_sector_complete(index: int, sector_name: String, elapsed: float, relays: int, data: Dictionary = {}) -> void:
+	clear_modal(); shade(0.92)
 	hud.visible = false
-	var box := column(Vector2(420,205),600)
-	box.add_child(text_line("SECTOR 0%d / SECURED" % (index+1),15,CYAN))
+	var box := column(Vector2(400,140),640)
+	box.add_theme_constant_override("separation",16)
+	box.add_child(text_line("SECTOR %02d / SECURED" % (index+1),15,CYAN))
 	box.add_child(text_line(sector_name,46,WHITE))
-	box.add_child(text_line("The route is open. Your reactor has room for one more evolution.",22,MUTED))
-	box.add_child(text_line("%d AIR RELAYS  ·  %02d:%02d ELAPSED" % [relays,int(elapsed)/60,int(elapsed)%60],16,AMBER))
-	box.add_child(text_line("NEXT  /  " + ("SOLAR FOUNDRY\nGlide through the relay. Time the moving shutters." if index==0 else "STORM CORE\nBreak three locks and confront the Guardian."),21,CYAN))
-	var next := button("INSTALL UPGRADE & CONTINUE    →",func():action.emit("next_sector",null),true)
+	box.add_child(text_line("The next horizon is yours to take.",22,MUTED))
+	box.add_child(text_line("%d AIR RELAYS · %d GUARDIANS · %02d:%02d" % [relays,data.get("guardians",0),int(elapsed)/60,int(elapsed)%60],16,AMBER))
+	box.add_child(text_line("NEXT / %s\n%s · %s" % [data.get("next","THE NEXT HORIZON"),data.get("route","NEW ROUTE"),data.get("modifier","NEW HARDWARE")],20,CYAN))
+	box.add_child(text_line("Keep your arsenal. Install a weapon upgrade. Continue as far as you can.",18,MUTED))
+	var next := button("UPGRADE & DIVE DEEPER    →",func():action.emit("next_sector",null),true)
 	box.add_child(next)
-	box.add_child(button("RETURN TO TITLE",func():action.emit("title",null)))
+	box.add_child(button("BANK SCORE & END RUN",func():action.emit("bank",null)))
+	box.add_child(button("QUIT GAME",func():action.emit("quit",null)))
+	box.add_child(text_line("ROUTE SEED  %s  /  RESTART REPEATS THIS ROUTE" % str(data.get("seed",0)),12,MUTED))
 	next.grab_focus()
 
 func update_traversal(traversal) -> void:
@@ -431,7 +503,7 @@ func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practi
 	if boss_max > 0: boss_bar.value = boss_hp / boss_max * 100
 	var names: PackedStringArray = []
 	for id in rules.upgrades: names.append(Rules.UPGRADE_DATA[id].name)
-	build_text.text = "REACTOR BUILD\n" + "  /  ".join(names) if not names.is_empty() else ""
+	build_text.text = "  /  ".join(names) if not names.is_empty() else "EVOLVE YOUR WEAPON AT THE NEXT CHECKPOINT"
 
 func _process(delta: float) -> void:
 	if hint_time > 0:
