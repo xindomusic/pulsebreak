@@ -106,7 +106,7 @@ The new battle-state update initially ran before the old Classic director's time
 
 The [final native metrics](resonance-native/active-metrics.json) record one native automated run without accelerated simulation or a forced frame rate, on Apple M4, 16 GB memory, macOS 26.6.2 and Godot 4.7.2 using the Mobile Metal renderer. The coordinator reports one engine instance and no competing test or capture engines. Full Effects, volume 0.65 and shake 0.45 were enabled; Assist and Overdrive were disabled. Window dimensions and independent headers of all four captured PNGs agree at **1280×800**, with a 1440×900 design viewport.
 
-Seed 42 completed six sectors, two Guardians and 18 air relays, banking at **223.82 game-clock seconds with 76 hull**. Its legal build ended with kinetic III, plasma I and scatter II, five reactor upgrades, 18 pulses and 37 absorbed shots. The reviewer inspected the Guardian and banked-result images. This is a production-policy automated completion, distinct from the staged audio Guardian fixture and from human play.
+Seed 42 completed six sectors, two Guardians and 18 air relays, banking at **223.82 game-clock seconds with 76 hull**. Its legal build ended with kinetic III, plasma I and scatter II, five reactor upgrades, 18 pulses and 37 absorbed shots. The reviewer inspected the Guardian and banked-result images and found no error, failure or warning diagnostics in the [native log](resonance-native/native.log). This is a production-policy automated completion, distinct from the staged audio Guardian fixture and from human play.
 
 | Native render-interval measurement | Samples | Median | p95 | p99 |
 |---|---:|---:|---:|---:|

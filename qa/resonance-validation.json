@@ -133,7 +133,8 @@
     "scripted": true,
     "metadata": "qa/resonance-engine-audio.json",
     "raw_wav": "qa/resonance-engine-audio.wav",
-    "listening_acceptance": "not yet received for revised audio"
+    "listening_acceptance": "not yet received for revised audio",
+    "independent_decode": "qa/resonance-engine-audio-decoded.json"
   },
   "previews": [
     {

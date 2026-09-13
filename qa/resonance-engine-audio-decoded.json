@@ -1,0 +1,28 @@
+{
+  "qa/resonance-engine-audio.wav": {
+    "channels": 2,
+    "sample_rate": 48000,
+    "sample_width": 2,
+    "frames": 1728512,
+    "sha256": "cada5e04d3a7e963f9ebec8117776a241418b643ea8d799dd5c8e5472f91fe37",
+    "seconds": 36.010666666666665,
+    "peak": 0.4365234375,
+    "rms": 0.06403011825810144,
+    "samples_at_or_above_full_scale": 0,
+    "samples_near_full_scale": 0,
+    "dc_channels": [
+      -2.7201063401326184e-05,
+      0.00032905849376560953
+    ]
+  },
+  "docs/audio/resonance-engine.mp3": {
+    "sha256": "6c7de6121ec280df578b813edf13c7d0290f6a643cbad8d6a885e43153c6cb6a",
+    "frames": 1728512,
+    "sample_rate": 48000,
+    "seconds": 36.010666666666665,
+    "peak": 0.43312203884124756,
+    "rms": 0.06385763327779793,
+    "samples_at_or_above_full_scale": 0,
+    "last_sample_peak": 4.878260824625613e-06
+  }
+}
