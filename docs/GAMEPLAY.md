@@ -1,20 +1,22 @@
 # Player guide
 
-**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+**Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md).** **Begin Skybound** starts continuous generated sectors: clear enemies, reach airborne relays, cross moving gates, upgrade at checkpoints and fight recurring Guardians. At checkpoints you can continue or bank the score. See [Overdrive](OVERDRIVE.md) for the four weapons, five ranks and endless progression.
 
-**Skybound follow-up:** choose **Begin Skybound** for the three-sector route. **F** jumps; hold through the apex to glide. Flight is available in Classic too. See [Skybound](SKYBOUND.md) for relay objectives, moving shutters, wing fuel and the new campaign. The six-minute survival guide below remains applicable to Classic.
+**F** jumps; hold through the apex to glide. **Q** cycles unlocked weapons. Flight is available in Classic too. [Skybound](SKYBOUND.md) records the earlier authored three-sector campaign and explains relays, moving shutters and wing fuel. The six-minute survival and timed-upgrade sections below describe **Classic**.
 
 ## Objective and controls
 
-Survive six minutes of waves, then destroy the Reactor Guardian. Your automatic weapon handles nearby targets; the central skill is turning enemy projectiles into pulse energy.
+In Classic, survive six minutes of waves, then destroy the Reactor Guardian. In Skybound, complete sector objectives and keep progressing through checkpoints. Your automatic weapon handles nearby targets; the central skill is turning enemy projectiles into pulse energy.
 
 | Input | Action |
 |---|---|
 | WASD or arrow keys | Move relative to the screen |
 | Space | Dash in the currently held direction; use last facing when stationary |
 | E | Spend stored energy on a pulse |
+| F | Jump; hold to glide |
+| Q | Switch unlocked weapons |
 | 1 / 2 / 3 | Install the corresponding offered upgrade |
-| Esc | Pause/resume, leave settings, or cancel a rebind |
+| Esc | Pause/resume, access Quit Game, leave settings, or cancel a rebind |
 | Tab / Shift+Tab | Move menu focus |
 | Enter | Activate the focused menu control |
 | Left / right | Adjust a focused slider |

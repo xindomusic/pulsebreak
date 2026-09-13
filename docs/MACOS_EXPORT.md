@@ -1,6 +1,6 @@
 # Building a standalone Mac app
 
-The project exports a universal `.app` containing arm64 and x86_64 code. Apple Silicon was tested; Intel hardware was not. Use **Godot 4.7.2 and matching 4.7.2 templates** to reproduce the recorded environment.
+Release **1.1.0** exports a universal `.app` containing arm64 and x86_64 code, a versioned ZIP and checksums. The packaged game was tested on Mac mini M4 / 16 GB; Intel hardware was not. Use **Godot 4.7.2 and matching 4.7.2 templates** to reproduce the recorded environment. See [release notes](RELEASE_1_1.md) and [package evidence](../qa/release-package.json).
 
 ## Install the local prerequisites
 
@@ -38,9 +38,9 @@ bash tools/export_macos.sh
 open build/Pulsebreak.app
 ```
 
-The script checks the editor and template versions, checks the template archive, exports the `macOS` preset, copies `LICENSES.md` into the app's Resources directory, applies a local ad-hoc signature, and verifies it with `codesign --verify --deep --strict`.
+The script checks editor/template versions and archive integrity, refreshes asset imports, exports the `macOS` preset, copies `LICENSES.md` into Resources, applies a local ad-hoc signature, and verifies it with `codesign --verify --deep --strict`. It checks both architectures, creates **build/Pulsebreak-1.1.0-macOS-universal.zip**, verifies the ZIP and writes **build/SHA256SUMS.txt** for the archive and PCK.
 
-The built app runs without Godot installed elsewhere. Re-exporting replaces the local build; commit source changes rather than the generated bundle. The initial `.app` is about 164 MB, mostly the universal engine binary.
+The built app runs without Godot installed elsewhere or any API key. Re-exporting replaces the local build; commit source changes rather than the generated bundle. The validated 1.1.0 ZIP is 60,923,117 bytes; its exact checksum is in the package report. Most uncompressed app size is the universal engine binary.
 
 ## Configuration map
 
@@ -49,12 +49,13 @@ The built app runs without Godot installed elsewhere. Re-exporting replaces the 
 | Export preset | `macOS` in [export_presets.cfg](../export_presets.cfg) |
 | Output | `build/Pulsebreak.app` |
 | Bundle identifier | `games.pulsebreak.local` |
-| Game version in initial experiment | `1.0.0` |
+| Current game version | `1.1.0` |
+| Archive / checksums | `build/Pulsebreak-1.1.0-macOS-universal.zip` / `build/SHA256SUMS.txt` |
 | Templates | Local `.tools/export/templates/macos.zip` for both debug/release |
 | Renderer | Mobile, Metal on the tested Mac |
 | Texture compression | S3TC/BPTC and ETC2/ASTC enabled for the universal export |
 | Signing | Local ad-hoc signature; no notarization |
-| Exclusions | Tool downloads, generated builds, tests, QA artifacts, documentation, Git metadata |
+| Exclusions | Tool downloads, builds, tests, QA, docs, Git metadata and superseded root-level audio |
 
 ## Verify a package
 
@@ -70,6 +71,6 @@ For a packaged headless playthrough and a graphical timing run, use the commands
 
 ## Public distribution
 
-This repository publishes source, assets, documentation, and selected screenshots. It does not publish a notarized installer or downloadable release of the original local app. Cloning the repository and building locally is the supported reproduction path.
+This repository publishes source, assets, release notes and selected screenshots. The 1.1.0 app and ZIP were built locally and have not been attached to a GitHub Release. They are ad-hoc signed, without Apple notarization. Cloning the repository and building locally is the supported reproduction path.
 
 If a future maintainer distributes a downloadable Mac app, follow the current official [Godot macOS export guidance](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_macos.html) for Developer ID signing and notarization. Those credentials and service steps are not part of this experiment. Preserve engine and asset notices in any package you are authorized to distribute.

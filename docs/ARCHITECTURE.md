@@ -1,5 +1,7 @@
 # Architecture
 
+**Release 1.1 audio:** the current `audio_director.gd` plays the selected first ElevenLabs track as one looping Ogg stream. `set_battle_state` drives a smoothed gain target; major events duck the music, and twelve pooled cue voices preserve priority feedback. Assets are bundled for offline use. See [release notes](RELEASE_1_1.md), [asset provenance](ASSETS.md) and [audio review](../qa/release-review.md).
+
 **Overdrive runtime update:** `weapons.gd` owns weapon progression and travelling projectiles; `combat_fx.gd` owns pooled contact/destruction animation; `level_generator.gd` produces seeded route data; `campaign.gd` loads successive routes. `game.gd` coordinates weapon → reactor upgrade → continued play and bank/quit states. See [Overdrive](OVERDRIVE.md) for the current flow. The earlier architecture below remains historical.
 
 **Skybound follow-up:** [the new module map](SKYBOUND.md#implementation-map) describes traversal, campaign and sector art. The director now selects Skybound or Classic; airborne collision uses simultaneous swept XZ/Y overlap, and campaign gates share collision/visibility with machines and shots. `sector_complete` pauses at travel checkpoints before the next sector's upgrade choice. The remainder of this page describes the original flat-arena architecture retained by Classic.
@@ -32,7 +34,7 @@ flowchart TD
 | [combat_field.gd](../scripts/combat_field.gd) | Pooled bullets, swept collision, hazards, fields, effects and delayed attacks | Uses director position/rules and emits consequences |
 | [art.gd](../scripts/art.gd) | Arena and actor mesh construction | Static factories returning nodes |
 | [hud.gd](../scripts/hud.gd) | Native Godot controls, labels, cards and modal screens | Emits an `action` signal; director owns gameplay |
-| [audio_director.gd](../scripts/audio_director.gd) | Music stems and prioritized cue voices | `play_cue`, `set_intensity`, `set_volume`, `set_muted` |
+| [audio_director.gd](../scripts/audio_director.gd) | One looping release track and prioritized cue voices | `play_cue`, `set_battle_state`, `set_intensity`, `set_volume`, `set_muted` |
 | [save_store.gd](../scripts/save_store.gd) | Defaults, validation, atomic JSON replacement | Static `load_data`, `save_data`, `default_data` |
 
 ## Run states

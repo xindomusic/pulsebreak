@@ -1,14 +1,14 @@
 # Getting started on a Mac
 
-**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+**Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md) on `main`.** Choose **Begin Skybound** for continuous generated levels, four evolving weapons, jump/glide and moving gates. The selected first ElevenLabs soundtrack and prepared effects are included in the source. A local standalone app can be opened at `build/Pulsebreak.app`; a fresh clone needs the editor or a local export.
 
 ## Requirements
 
-- A Mac capable of running the standard Godot 4.7.2 editor. This experiment was tested on Apple M1 Max / 32 GB / macOS 26.6.2; other Macs have not been certified by this project.
+- A Mac capable of running the standard Godot 4.7.2 editor. Release 1.1 was tested on Mac mini M4 / 16 GB / macOS 26.6.2. Earlier M1 Max / 32 GB results are historical; Intel execution and other configurations have not been certified by this project.
 - Keyboard input for gameplay. Mouse input is supported in menus, but aiming is automatic and controller support is not implemented.
 - Git to clone the source. Python 3 is optional and only needed to regenerate audio.
 
-There is no runtime service, package registry, account, API key, or model download. The checked-in WAV files are ready to use.
+There is no runtime service, package registry, account, API key or model download. The checked-in WAV and Ogg files are ready to use. Python/audio tools and an ElevenLabs credential are unnecessary for playing or exporting the checked-in game.
 
 ## Option A: use the Godot project manager
 
@@ -22,7 +22,7 @@ There is no runtime service, package registry, account, API key, or model downlo
 
 3. Open Godot, choose **Import**, and select `project.godot` in the checkout.
 4. Allow the first asset import to finish. Press **F5** to run the project.
-5. Choose **Practice the Heist** before starting a normal run.
+5. Choose **Begin Skybound** for the continuous game, or **Practice the Heist** to learn dash harvesting and pulse attacks first.
 
 Godot writes its generated import cache to `.godot/`, which Git ignores. Importing and running do not require export templates.
 
@@ -61,7 +61,7 @@ If macOS asks to confirm opening the downloaded editor, use the normal macOS app
 
 Practice teaches movement, harvesting an orange projectile during a dash, and hitting a machine with a pulse. Missing a pulse does not advance the lesson. Practice keeps hull from falling below 35 and ends with a separate completion screen; **Begin the Full Run** starts a fresh normal run.
 
-In a normal run, start with WASD/arrows, Space, and E. Esc pauses; switching away from the game also pauses. See [Gameplay](GAMEPLAY.md) for all mechanics and [Mac export](MACOS_EXPORT.md) to build an app that runs without the editor.
+In Skybound, move with WASD/arrows, dash with Space, pulse with E, and jump/hold to glide with F. Q switches unlocked weapons. At checkpoints, continue to the next sector or bank your score. Esc opens pause and Quit Game; switching away from the game also pauses. See [Gameplay](GAMEPLAY.md) for the modes and [Mac export](MACOS_EXPORT.md) to build an app that runs without the editor.
 
 ## Local settings and progress
 

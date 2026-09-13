@@ -1,6 +1,8 @@
 # Documentation
 
-**Current branch update:** see [Resonance](RESONANCE.md) for adaptive 174 BPM drum and bass, richer colors, a layered pulse, and current M4 verification. [Overdrive](OVERDRIVE.md) records evolving weapons, Quit controls and continuous generated levels. The earlier content below describes historical updates and the original experiment.
+**Current release: [Pulsebreak 1.1.0](RELEASE_1_1.md), merged to `main`.** The release uses the player-selected first ElevenLabs DnB track and combat effects, with endless sectors, evolving weapons, flight and Quit controls. [Release notes](RELEASE_1_1.md) · [Changelog](../CHANGELOG.md) · [Release verification](../qa/README.md).
+
+[Resonance](RESONANCE.md) records the earlier visual and procedural-music iteration. [Overdrive](OVERDRIVE.md) records evolving weapons and continuous levels. Those reports retain their original measurements and audio versions.
 
 **Earlier Skybound update:** [Player/developer guide](SKYBOUND.md) · [Research](SKYBOUND_RESEARCH.md) · [Independent review](../qa/skybound-review.md).
 
@@ -10,7 +12,8 @@ Pulsebreak has two stories: a playable native Mac game, and an experiment in bui
 
 | You want to… | Read in this order |
 |---|---|
-| Play on your Mac | [Getting started](GETTING_STARTED.md) → [Gameplay](GAMEPLAY.md) |
+| Play on your Mac | [Release 1.1](RELEASE_1_1.md) → [Getting started](GETTING_STARTED.md) → [Gameplay](GAMEPLAY.md) |
+| See what shipped and what passed | [Release notes](RELEASE_1_1.md) → [QA index](../qa/README.md) → [Package evidence](../qa/release-package.json) |
 | Understand the AI development experiment | [Experiment](EXPERIMENT.md) → [Lessons learned](LESSONS_LEARNED.md) → [Final review](../qa/review-round-3.md) |
 | Modify the game | [Architecture](ARCHITECTURE.md) → [Testing](TESTING.md) → [Contributing](../CONTRIBUTING.md) |
 | Build a standalone app | [Getting started](GETTING_STARTED.md) → [Mac export](MACOS_EXPORT.md) |
@@ -20,7 +23,7 @@ Pulsebreak has two stories: a playable native Mac game, and an experiment in bui
 
 ## Current guides and historical records
 
-These guides describe the shipped experiment. The original [design](../DESIGN.md), [research notes](../findings.md), [implementation plan](superpowers/plans/2026-09-07-pulsebreak.md), and [progress log](../progress.md) preserve the development record. Some historical targets and early measurements were superseded. Use the final review and QA index for the accepted outcome.
+The release notes and current guide introductions describe version 1.1. The original [design](../DESIGN.md), [research notes](../findings.md), [implementation plan](superpowers/plans/2026-09-07-pulsebreak.md), and [progress log](../progress.md) preserve the development record. Some historical targets and early measurements were superseded. Use the release validation and QA index for the current outcome.
 
 The implementation was first committed as `a992452`. Public documentation was added afterward without changing gameplay. Native resource-pack hashes in QA reports identify evaluated packages independently of later documentation commits.
 
@@ -32,4 +35,4 @@ The implementation was first committed as `a992452`. Public documentation was ad
 - **Staged capture:** a constructed screen or scene used to inspect layout and cues.
 - **Observational rating:** a sub-agent's judgment with documented limits, including missing extended human feel and audio audition.
 
-The final rating is **8.2/10** after three review/fix cycles. It is not a 9+ certification, player survey, or comparison against another model.
+The original experiment's final rating was **8.2/10** after three review/fix cycles. Release 1.1 has 591 passing checks, packaged M4 progression evidence and a player-selected soundtrack; it has no new overall enjoyment rating. Neither result is a 9+ certification, player survey or comparison against another model.

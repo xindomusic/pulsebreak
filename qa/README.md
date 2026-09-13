@@ -1,8 +1,21 @@
 # Pulsebreak verification evidence
 
+## Release 1.1.0 — current main
+
+[Release notes](../docs/RELEASE_1_1.md) document the selected first ElevenLabs music candidate and packaged Mac game. Current release evidence:
+
+- [Validation inventory](release-validation.json): **591 checks in fourteen suites**, all passed; the generation suite exercises 768 layouts. The 91 focused audio checks cover selected resources, looping, mixing, voice priority and mute/volume behavior.
+- [Independent audio review](release-review.md) and [asset manifest](release-audio.json): accepted first-track provenance, five byte-identical prepared effects, four derived cues and all installed asset hashes.
+- [Native audio recording metadata](release-native-audio/release-engine-audio.json): 36.01 seconds of production CoreAudio output with staged events, zero near-full-scale samples and verified loop transport. This is an audio demonstration, not a progression test or listening score.
+- [Packaged native run](release-native/active-metrics.json) and [run context](release-native/run-context.json): M4 / 16 GB, 1280×800, Full Effects; three sectors, nine airborne relays and one Guardian completed at 97.13 game seconds. Active render intervals: median 16.654 ms, p95 18.459 ms, p99 18.992 ms across 5,622 samples.
+- [Package report](release-package.json): universal 1.1.0 app, original/extracted signature checks, archive hashes and integrity checks for all 78 resource-pack members. The app and ZIP are local build artifacts, excluded from Git.
+- [Source manifest](release-source.json): runtime source and import hashes at packaging, plus exact PCK and ZIP hashes. Its feature-branch label records packaging provenance; that revision was subsequently merged to `main`.
+
+The player selected the first music audition for release. The review does not assign a new overall game rating. All version-specific reports below are retained historical evidence.
+
 ## Resonance follow-up
 
-The current update is documented in [Resonance](../docs/RESONANCE.md), [research](../docs/RESONANCE_RESEARCH.md), [independent review](resonance-review.md), and [runtime source manifest](resonance-source.json). **592 checks in fourteen suites** pass, including 53 pulse and 48 new adaptive-audio checks. The [validation inventory](resonance-validation.json) separates numeric checks, native automation, staged visual captures, recorded engine audio and unverified human listening/play.
+The earlier Resonance update is documented in [Resonance](../docs/RESONANCE.md), [research](../docs/RESONANCE_RESEARCH.md), [independent review](resonance-review.md), and [runtime source manifest](resonance-source.json). At that revision, **592 checks in fourteen suites** passed, including 53 pulse and 48 adaptive-audio checks. The [validation inventory](resonance-validation.json) separates numeric checks, native automation, staged visual captures, recorded engine audio and unverified human listening/play.
 
 - `resonance-visual/visual-evidence.json`: 20 staged native images, with selected examples in `docs/images/resonance-*`.
 - `resonance-audio.json`: source synthesis statistics; `docs/audio/resonance-dnb.mp3` is the full arrangement and `resonance-battle.mp3` is an offline representative combat mix.
@@ -14,7 +27,7 @@ Earlier reports below remain historical and do not describe the current source.
 
 ## Overdrive follow-up
 
-The current update is documented in [the Overdrive guide](../docs/OVERDRIVE.md), [research](../docs/OVERDRIVE_RESEARCH.md), [independent review](overdrive-review.md), and [runtime source manifest](overdrive-source.json). Earlier evidence remains historical. Current audited total: **491 checks in twelve suites**, with 768 generated layouts. See [the validation inventory](overdrive-validation.json).
+The earlier Overdrive update is documented in [the Overdrive guide](../docs/OVERDRIVE.md), [research](../docs/OVERDRIVE_RESEARCH.md), [independent review](overdrive-review.md), and [runtime source manifest](overdrive-source.json). Its audited total was **491 checks in twelve suites**, with 768 generated layouts. See [the validation inventory](overdrive-validation.json).
 
 - `overdrive-final-normal/active-metrics.json`: corrected weapon cadence; continuous fixed-60 simulation through twelve sectors, four Guardians and 38 relays; banked at 391.20 seconds with 98 hull. All nine reactor upgrades installed; later service rewards exercised.
 - `overdrive-final-alternate/active-metrics.json`: second seed with different legal weapon choices; six sectors/two Guardians/18 relays, banked at 223.82 seconds with 76 hull.

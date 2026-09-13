@@ -6,6 +6,7 @@
 - Installed accepted weapon, impact, robot destruction and reactor pulse effects; derived the remaining weapon roles from those recordings.
 - Retained endless sectors, weapon upgrades, flight, moving gates, animated hit/death effects and Quit controls.
 - Passed 591 regression checks and a separate native audio/loop check; packaged a signed universal Mac app and ZIP with verified resource integrity.
+- Updated the root, documentation and QA READMEs, release navigation and current setup/player/audio/test/export summaries; retained earlier reviews as version-specific history.
 - See [release notes](docs/RELEASE_1_1.md), [audio review](qa/release-review.md) and [package evidence](qa/release-package.json).
 
 ## 2026-09-13 — Resonance follow-up

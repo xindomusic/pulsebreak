@@ -1,8 +1,8 @@
 # Testing and reproducing the evidence
 
-**Current branch update:** see [Overdrive](OVERDRIVE.md) for four evolving weapons, Q switching, visible Quit controls, continuous generated levels, and current verification. The earlier content below describes the original experiment and Skybound.
+**Current release: [Pulsebreak 1.1](RELEASE_1_1.md).** The [release validation inventory](../qa/release-validation.json), [audio review](../qa/release-review.md) and [packaged M4 run](../qa/release-native/active-metrics.json) describe the shipped revision.
 
-**Current checks:** run `./tools/test.sh` for twelve suites (**491 checks**). Add `--qa-campaign --qa-sectors=6` to exercise a finite six-sector slice of continuous play.
+**Current checks:** run `sh tools/test.sh` for fourteen suites (**591 checks**). Add `--qa-campaign --qa-sectors=6` to exercise a finite six-sector slice of continuous play. Record native release audio with `tools/release_audio_capture.gd`; it writes separate release evidence and verifies music-loop transport before a 36-second staged recording.
 
 **Historical Skybound follow-up:** seven suites recorded **261 passing checks** at that revision. Use `tests/skybound_visuals.gd` for its historical staged screens; the current `tests/native_controls_check.gd` includes weapon switching and records new captures under `qa/overdrive-controls`. See [Skybound](SKYBOUND.md), [native controls evidence](../qa/skybound-controls.md), and [independent review](../qa/skybound-review.md). Counts and results in the original experiment sections below are historical.
 
@@ -22,9 +22,20 @@ Run commands from the repository root after the import step in [Getting started]
 | Suite | Recorded checks | Coverage |
 |---|---:|---|
 | Combat rules | 25 | Charges/recharge, harvesting caps, pulse threshold, damage recovery, unique upgrades |
-| Save store | 68 | Missing/corrupt input, clamping, binding collisions, atomic replacement, write failure |
-| Integration | 38 | Swept absorption, pause, progression, boss cleanup, practice, remaps, dash input, wall/slow behavior, focus loss, repeated restart |
-| **Total** | **131** | All passed on the final game source |
+| Save store | 84 | Missing/corrupt input, clamping, bindings, atomic replacement and isolated fixtures |
+| Integration | 39 | Combat, pause, progression, practice, input and restart behavior |
+| Traversal | 34 | Jump, glide, fuel and landing rules |
+| Altitude integration | 34 | Airborne collision, gates and attacks |
+| Campaign | 31 | Relays, sectors and Guardian progression |
+| Generation | 47 | Layout invariants across 768 generated layouts |
+| Weapons | 50 | Projectiles, ranks, range, cover and firing cadence |
+| Endless handoffs | 45 | Continuing sectors, checkpoints and Quit-button subprocess exits |
+| Combat FX | 22 | Bounded hit, muzzle and destruction effects |
+| Pulse FX | 53 | Pulse geometry, timing, pooling and Low Effects |
+| Audio | 44 | Imported effects, voice priority, cooldown, volume and ducking |
+| Release audio | 47 | Selected soundtrack, loop, smoothing, production callbacks and limiter |
+| Native keyboard controls | 36 | Injected movement/menu/weapon controls; headless suite run has no native captures |
+| **Total** | **591** | All passed on release 1.1 |
 
 Each suite counts failures and exits nonzero when assertions fail. Read the Godot log as well as the shell exit status: resource import and script errors deserve investigation even when an unrelated process exits successfully. The save and integration suites redirect persistence to isolated test fixtures and clean them up; they do not replace the player's settings file.
 
@@ -43,6 +54,8 @@ The driver uses the same dash charges, energy, collisions, health and attacks as
 | Project flag | Meaning |
 |---|---|
 | `--qa` | Enable the seeded driver; required for the gameplay variations below |
+| `--qa-campaign` | Run the continuous Skybound sector mode |
+| `--qa-sectors=6` | Bank after the requested number of sectors; minimum three |
 | `--qa-alt` | Use seed 42 and a trail/field-oriented upgrade preference, instead of the normal seed 271828 |
 | `--qa-passive` | Disable the driver's deliberate dash/pulse use |
 | `--qa-assist` | Enable the same slower-attack Assist setting exposed in the UI |
@@ -72,7 +85,7 @@ build/Pulsebreak.app/Contents/MacOS/Pulsebreak --headless \
   --qa --qa-dir="$PWD/qa/local-packaged-sim"
 ```
 
-The recorded final packaged simulation won at 405.6 seconds with 30 hull, 266 kills, 373 absorbed shots, and 102 pulses. Its build was Flare Drive, Aftershock, Hot Capacitor, Life Circuit, and Chain Reaction. See the [JSON report](../qa/final-native-sim/active-metrics.json).
+Release 1.1 completed a native three-sector packaged run on M4: nine relays, one Guardian, 64 hull and 97.13 game seconds. [Run context](../qa/release-native/run-context.json) records the executable, bundled PCK and normal wall-clock settings. The original Classic packaged simulation below is historical: it won at 405.6 seconds with 30 hull, 266 kills, 373 absorbed shots and 102 pulses; see its [JSON report](../qa/final-native-sim/active-metrics.json).
 
 Different engine versions, source changes, seeds or driver changes can alter a result. Retain losses and record the candidate. The alternate normal trial lost at 283.5 seconds; an Assist variant reached the boss and lost at 369.45 seconds. Neither is omitted from the experiment.
 

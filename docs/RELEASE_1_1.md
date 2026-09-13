@@ -1,6 +1,10 @@
 # Pulsebreak 1.1 for Mac
 
+**Version 1.1.0 is merged to [main](https://github.com/xindomusic/pulsebreak/tree/main)** at [release commit 251313f](https://github.com/xindomusic/pulsebreak/commit/251313fa048b806842826a68bedc4526e5bd6ec8). [Repository](https://github.com/xindomusic/pulsebreak) · [Changelog](../CHANGELOG.md) · [Verification index](../qa/README.md).
+
 Open **build/Pulsebreak.app** and choose **Begin Skybound**. The standalone app includes the selected first ElevenLabs soundtrack and combat audio; it needs no editor, network connection or API key. The archive is **build/Pulsebreak-1.1.0-macOS-universal.zip**.
+
+Those binaries were built locally and are excluded from Git. These are the published release notes; the app ZIP has not been attached to a GitHub Release. A fresh clone contains source and prepared assets and can be built using the instructions below.
 
 Move with **WASD/arrows**, dash with **Space**, pulse with **E**, and jump/hold to glide with **F**. **Q** switches unlocked weapons. **Esc** opens the pause menu, including **Quit Game**. At sector checkpoints, continue the run or bank the score. New seeded sectors continue after each Guardian.
 

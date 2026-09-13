@@ -1,6 +1,6 @@
 # Possible next steps
 
-The initial experiment is complete: a playable game, three review/fix cycles, and an 8.2/10 observational result. This page proposes follow-up work; it does not claim those features or evaluations already exist.
+The original experiment completed three review/fix cycles with an 8.2/10 observational result. Since then, [release 1.1](RELEASE_1_1.md) has added endless seeded sectors, flight, weapon progression, richer effects, a player-selected soundtrack and packaged M4 validation. The proposals below began with the original experiment; current release evidence is in the [QA index](../qa/README.md).
 
 ## Improve the evidence first
 
@@ -19,7 +19,7 @@ The initial experiment is complete: a playable game, three review/fix cycles, an
 - Improve the visibility and impact of successful absorption through carefully tuned animation and sound.
 - Refine boss pacing against human play; the recorded driver's finale was shorter than the original design target.
 - Add controller support if a real player need justifies input and prompt work.
-- Consider a replay seed visible to players so a bug or build can be reproduced without development flags.
+- Evaluate a direct replay-seed entry flow; the current game already reports its run seed in results.
 
 Each proposal should begin with a concrete player problem and an observation that would validate the change. More effects, damage, enemies, or content do not automatically make the game more fun.
 

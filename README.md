@@ -6,19 +6,33 @@
 
 *[Release notes](docs/RELEASE_1_1.md), [hear the selected DnB track](docs/audio/elevenlabs/reactor_rush.mp3), and [release review](qa/release-review.md). [Resonance](docs/RESONANCE.md), [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
 
+## Release 1.1.0 on main
+
+| Check | Current release result |
+|---|---|
+| Regression suites | **591 checks in 14 suites**, all passed; includes 768 generated layouts |
+| Packaged Mac campaign | Three sectors, nine airborne relays and one Guardian completed; 64 hull at 97.13 game seconds |
+| Mac mini M4 / 16 GB | 1280×800, Full Effects; median **16.654 ms**, p95 **18.459 ms**, p99 **18.992 ms** across 5,622 active render intervals |
+| Native audio | 36.01-second CoreAudio capture; zero near-full-scale samples and verified loop transport |
+| Package | Universal arm64/x86_64 app; original and ZIP-extracted signatures and all 78 resource-pack members verified |
+
+The source and release notes are published on `main`. The app and **build/Pulsebreak-1.1.0-macOS-universal.zip** were built locally and are excluded from Git; they have not been attached to a GitHub Release. A fresh clone contains prepared assets and can be built using the guides below.
+
 ### A game-making experiment with GPT-6 Astra inside Codex
 
 **Steal the storm. Break the machine.** Pulsebreak is a playable 3D arena roguelite for Apple Silicon Macs, built with Godot 4.7.2.
 
-This repository documents an experiment by [xindomusic](https://github.com/xindomusic): take a game idea through research, design discussion, implementation, native packaging, and three sub-agent review/fix cycles using **GPT-6 Astra inside Codex**. The code, original procedural art and synthesized audio, tests, and review evidence are here so the result can be inspected and reproduced.
+This repository documents an experiment by [xindomusic](https://github.com/xindomusic): take a game idea through research, design discussion, implementation, native packaging, and independent review using **GPT-6 Astra inside Codex**. The original prototype had three review/fix cycles; later updates added flight, endless sectors, weapons, richer effects and the selected ElevenLabs audio. Code, procedural art, audio, tests and review evidence are available for inspection and reproduction.
 
 ![Pulsebreak's native Mac title screen](docs/images/title.png)
 
-*Actual title render from the packaged Mac app. Other illustrated scenes in the guides are explicitly staged source captures.*
+*Historical title render from the original packaged Mac app. The current visual style is shown at the top of this README; other illustrated scenes are explicitly staged source captures.*
 
-**[Read the experiment](docs/EXPERIMENT.md)** · **[Play from source](docs/GETTING_STARTED.md)** · **[Browse the documentation](docs/README.md)** · **[Read the final review](qa/review-round-3.md)**
+**[Read the experiment](docs/EXPERIMENT.md)** · **[Play from source](docs/GETTING_STARTED.md)** · **[Browse the documentation](docs/README.md)** · **[Release review](qa/release-review.md)**
 
-## What happened?
+## Original experiment results — September 7
+
+These results describe the original Classic prototype. Current release results are above; the historical 8.2 rating is not a fresh assessment of version 1.1.
 
 | Question | Recorded result |
 |---|---|
@@ -32,14 +46,16 @@ This is a documented project experiment, not a controlled model benchmark or a c
 
 ## The game
 
-Survive six minutes on the Skyforge deck, then defeat the Reactor Guardian. Your weapon fires automatically at nearby machines. The important decisions are movement, harvesting, and when to release a pulse:
+Choose **Begin Skybound** for continuous generated sectors across three environment styles. Clear machines, reach airborne relays, cross moving gates and install upgrades at checkpoints. Continue into the next sector or bank your score; Guardians recur as the run progresses. Four weapon families evolve through five ranks, with different projectiles, recoil and hit/destruction feedback.
+
+**Classic** retains the six-minute survival run and final Reactor Guardian. Weapons fire automatically at nearby machines in both modes. The important decisions are movement, harvesting and when to release a pulse:
 
 1. **Dash through orange shots** to absorb them and steal energy.
 2. **Spend at least 30 energy on a pulse.** More stored energy means a larger, stronger blast.
-3. **Choose upgrades** at minutes one through five. Each installation repairs 20 hull.
+3. **Choose upgrades** at Skybound checkpoints, or at minutes one through five in Classic.
 4. **Read enemy warnings.** Charged lanes and ground hazards demand different evasive moves.
 
-There are nine upgrades, three regular enemy roles, optional repair cores, and a two-phase boss. A victory unlocks Overdrive for tougher subsequent runs. Start with **Practice the Heist** to learn the core move.
+The Vector Carbine, Shatter Cannon, Arc Relay and Nova Lance offer different combat styles. Nine reactor upgrades, three regular enemy roles, repair cores and two-phase Guardians add progression and threats. **Practice the Heist** teaches the core dash-and-pulse move. See the [Overdrive guide](docs/OVERDRIVE.md) for continuous progression and weapon details.
 
 ![Staged combat scene showing a charger warning and orange projectiles](docs/images/combat.png)
 
@@ -65,13 +81,15 @@ The [getting-started guide](docs/GETTING_STARTED.md) provides exact command-line
 | WASD / arrow keys | Move |
 | Space | Dash in the current movement direction, or last direction while stationary |
 | E | Release a pulse |
+| F | Jump; hold to glide |
+| Q | Switch unlocked weapons |
 | 1 / 2 / 3 | Select an upgrade |
-| Esc | Pause / resume / back |
+| Esc | Pause / resume / back; access Quit Game |
 | F11 | Toggle fullscreen |
 
 Gameplay uses a keyboard; menus also accept mouse clicks. Settings include remapping, Assist, Low Effects, volume, and screen shake. Changing to another app pauses live combat. See the [full player guide](docs/GAMEPLAY.md).
 
-## How the experiment worked
+## Original review history
 
 The user set the platform, requested research before implementation, approved the design, and asked for independent sub-agent ratings with a maximum of three improvement cycles. Codex coordinated implementation and tools; bounded sub-agent tasks covered art, audio, saves, and independent review.
 
@@ -88,23 +106,24 @@ The original above-9 target was not reached. Read the [experiment protocol](docs
 | Guide | What it covers |
 |---|---|
 | [Documentation index](docs/README.md) | Reading paths for players, developers, and experiment readers |
+| [Release 1.1](docs/RELEASE_1_1.md) | Selected soundtrack, current features, native M4 validation, package and rebuild instructions |
 | [Experiment](docs/EXPERIMENT.md) | GPT-6 Astra inside Codex, user involvement, delegation, review cap, evidence limits |
 | [Getting started](docs/GETTING_STARTED.md) | Fresh clone, editor setup, running, local saves, troubleshooting |
 | [Gameplay](docs/GAMEPLAY.md) | Controls, combat rules, enemies, all nine upgrades, practice, difficulty |
 | [Architecture](docs/ARCHITECTURE.md) | Scene ownership, state transitions, collision, persistence, extension points |
 | [Testing and reproduction](docs/TESTING.md) | All suites, driver flags, visual captures, performance methodology |
 | [Mac export](docs/MACOS_EXPORT.md) | Matching templates, local app creation, signing, distribution limits |
-| [Assets](docs/ASSETS.md) | Procedural meshes, audio synthesis, UI, screenshot provenance |
+| [Assets](docs/ASSETS.md) | Procedural meshes, selected ElevenLabs audio, historical synthesis, UI and screenshot provenance |
 | [Lessons learned](docs/LESSONS_LEARNED.md) | Concrete defects, fixes, and the limits of the measurements |
 | [Roadmap](docs/ROADMAP.md) | Remaining work and evidence needed to call it an improvement |
 | [Contributing](CONTRIBUTING.md) | Reporting bugs, proposing changes, validation expectations |
-| [Changelog](CHANGELOG.md) | Initial experiment and public documentation release |
+| [Changelog](CHANGELOG.md) | Release 1.1 and earlier feature/experiment changes |
 
 ## Project facts and provenance
 
 The implementation is GDScript with Godot's Mobile renderer and Metal on the tested Mac. Start with [game.gd](scripts/game.gd), [rules.gd](scripts/rules.gd), and [the architecture guide](docs/ARCHITECTURE.md).
 
-The recorded native benchmark used an **Apple M1 Max with 32 GB RAM**. A round-two candidate's p95 render interval was **10.353 ms** in a 1920×1080 window with 1728×1080 aspect-preserving gameplay rendering. That candidate predates the final fixes; the [performance report](qa/README.md) identifies the exact build and limits. This is not a performance guarantee for every Mac.
+The current release was tested on **Mac mini M4 / 16 GB**; the [release notes](docs/RELEASE_1_1.md) and [native run context](qa/release-native/run-context.json) identify the packaged game and settings. Historical M1 Max measurements remain in the [QA index](qa/README.md). These are recorded results on specific hardware, not a performance guarantee for every Mac.
 
 The original game code and assets were created for this experiment with Codex assistance. See [LICENSES.md](LICENSES.md) for provenance and Godot notices. Public source visibility does not by itself assign an open-source license to the original game content; no additional license grant has been selected.
 
