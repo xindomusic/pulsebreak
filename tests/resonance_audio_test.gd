@@ -1,10 +1,9 @@
 extends SceneTree
-## Independent stream-container and adaptive mix checks. No listening is claimed.
+## Independent approved-track container and adaptive gain checks. No listening is claimed.
 const Director = preload("res://scripts/audio_director.gd")
-const STEMS := ["foundation", "drive", "lead"]
+const MUSIC_PATH := "res://assets/audio/elevenlabs/music_reactor_rush.ogg"
+const APPROVED_CUES := ["kinetic_fire", "plasma_fire", "armor_impact", "machine_break", "pulse"]
 const RATE := 44100
-const TEMPO := 174.0
-const BEATS := 256
 var checks := 0
 var failures := 0
 
@@ -55,7 +54,7 @@ func ogg_header(path: String) -> Dictionary:
 	return {"channels": channels, "rate": rate, "frames": frames, "pages": pages}
 
 func levels_valid(levels: PackedFloat32Array) -> bool:
-	if levels.size() != 3: return false
+	if levels.size() != 1: return false
 	for level in levels:
 		if not is_finite(level) or level < -80.0 or level > 6.0: return false
 	return true
@@ -119,41 +118,33 @@ func production_audio_checks() -> void:
 	await process_frame
 
 func run_checks() -> void:
-	var expected_frames := roundi(float(BEATS) * 60.0 / TEMPO * RATE)
-	var source_lengths: Dictionary = {}
-	for name: String in STEMS:
-		var path := "res://assets/audio/music_resonance_%s.ogg" % name
-		var header := ogg_header(path)
-		check(not header.is_empty(), name + " has readable complete source Ogg/Vorbis pages")
-		if header.is_empty(): continue
-		check(header.channels == 2 and header.rate == RATE, name + " source is stereo 44.1 kHz")
-		check(header.frames == expected_frames, name + " source ends at the intended 64-bar sample count")
-		source_lengths[header.frames] = true
-	check(source_lengths.size() == 1, "all source stems share one exact sample-length timeline")
+	check(Director.MUSIC_PATH == MUSIC_PATH, "runtime selects the user-approved first candidate")
+	var header := ogg_header(MUSIC_PATH)
+	check(not header.is_empty(), "the approved first candidate has readable complete source Ogg/Vorbis pages")
+	if not header.is_empty():
+		check(header.channels == 2 and header.rate == RATE, "the approved music source is stereo 44.1 kHz")
+		check(header.frames > 43 * RATE and header.frames < 45 * RATE, "the release retains the approved track's roughly 44-second duration")
 
 	var director = Director.new()
 	root.add_child(director)
 	await process_frame
 	director.set_process(false)
-	var mix: AudioStreamSynchronized = director._music.stream as AudioStreamSynchronized
-	check(mix != null and mix == director._mix and mix.stream_count == 3, "music uses one three-stream synchronized resource")
-	if mix == null:
+	var music := director._music.stream as AudioStreamOggVorbis
+	check(music != null, "the approved music plays as one Ogg track")
+	if music == null:
 		director.queue_free()
 		await process_frame
 		quit(1)
 		return
-	var loop_settings := true
-	var runtime_lengths := true
-	for index in range(mix.stream_count):
-		var stem := mix.get_sync_stream(index) as AudioStreamOggVorbis
-		loop_settings = loop_settings and stem != null and stem.loop and is_zero_approx(stem.loop_offset)
-		if stem != null:
-			loop_settings = loop_settings and is_equal_approx(stem.bpm, TEMPO) and stem.beat_count == BEATS and stem.bar_beats == 4
-			runtime_lengths = runtime_lengths and absf(stem.get_length() - float(expected_frames) / RATE) <= 1.0 / RATE
-	check(loop_settings, "each imported stem loops from zero with aligned tempo and bar metadata")
-	check(runtime_lengths, "engine decoding preserves the source end-granule duration")
-	check(director._music.playing and director._music.get_stream_playback() != null, "the synchronized player actually starts playback")
+	check(music.loop and is_zero_approx(music.loop_offset), "the approved music explicitly loops from its prepared origin")
+	check(is_zero_approx(music.bpm) and music.beat_count == 0, "runtime metadata does not claim an unmeasured tempo or beat count")
+	if not header.is_empty():
+		check(absf(music.get_length() - float(header.frames) / RATE) <= 1.0 / RATE, "engine decoding preserves the approved source end-granule duration")
+	check(director._music.playing and director._music.get_stream_playback() != null, "the approved track actually starts playback")
 	var playback = director._music.get_stream_playback()
+	for cue: String in APPROVED_CUES:
+		var stream := director._streams.get(cue) as AudioStreamWAV
+		check(stream != null and stream.resource_path.begins_with("res://assets/audio/elevenlabs/"), cue + " resolves to the accepted generated release effects")
 
 	director.set_volume(1.0)
 	var inactive := peak_target(director, 1.0, 1.0, 1.0, true, false)
@@ -162,7 +153,7 @@ func run_checks() -> void:
 	var calm := peak_target(director, 0.0, 0.0, 0.0)
 	var calm_levels: PackedFloat32Array = director.mix_levels()
 	check(calm > 0.2 and calm < 0.4, "active calm play retains a deliberate groove floor")
-	check(director._music.volume_db + calm_levels[0] > -32.0, "the foundation remains present in the default active mix")
+	check(director._music.volume_db > -32.0, "the approved track remains present in the active calm mix")
 	var enemies := peak_target(director, 1.0, 0.0, 0.0)
 	var incoming := peak_target(director, 0.0, 1.0, 0.0)
 	var charged := peak_target(director, 0.0, 0.0, 1.0)
@@ -174,8 +165,8 @@ func run_checks() -> void:
 	var saturated := peak_target(director, 5.0, 5.0, 5.0, true)
 	var high_levels: PackedFloat32Array = director.mix_levels()
 	check(saturated <= 1.0 and saturated > 0.95 and levels_valid(high_levels), "extreme pressure remains a bounded finite high-intensity mix")
-	check(high_levels[1] > calm_levels[1] + 3.0 and high_levels[2] > calm_levels[2] + 3.0, "drive and lead gain meaningfully change between calm and high combat")
-	check(absf(high_levels[0] - calm_levels[0]) < 8.0, "the foundation does not vanish when combat layers become prominent")
+	check(high_levels[0] > calm_levels[0] + 1.0 and high_levels[0] - calm_levels[0] < 8.0, "combat raises the approved track gain within a bounded range")
+	check(absf(director._music.volume_db - high_levels[0]) < 0.01, "the declared single music gain is applied once at full user volume")
 	check(peak_target(director, -4.0, -4.0, -4.0) >= calm - 0.01, "negative pressure does not erase the active groove floor")
 	var invalid_target := peak_target(director, NAN, INF, -INF)
 	check(is_finite(invalid_target) and invalid_target > 0.2 and invalid_target < 0.4 and levels_valid(director.mix_levels()), "non-finite battle inputs cannot poison the music gains")
@@ -198,12 +189,12 @@ func run_checks() -> void:
 	director.set_intensity(0.6)
 	settle(director)
 	var before_duck: float = director._music.volume_db
-	var stem_balance: PackedFloat32Array = director.mix_levels()
+	var unducked_gain: PackedFloat32Array = director.mix_levels()
 	director._last_cue.clear()
 	director.play_cue("pulse", 1.0)
 	director._process(0.0)
 	check(director._music.volume_db < before_duck - 3.0, "a charged pulse makes immediate room in the music mix")
-	check(same_levels(director.mix_levels(), stem_balance), "pulse ducking preserves the relative music-layer balance")
+	check(same_levels(director.mix_levels(), unducked_gain), "pulse ducking preserves the gain requested by combat intensity")
 	settle(director, 2.0)
 	check(absf(director._music.volume_db - before_duck) < 0.1, "music returns after the pulse envelope without a stuck duck")
 	var routine_duck: float = director._music.volume_db
@@ -211,13 +202,12 @@ func run_checks() -> void:
 	director.play_cue("kinetic_fire")
 	director._process(0.0)
 	check(absf(director._music.volume_db - routine_duck) < 0.1, "routine automatic fire does not repeatedly suppress the groove")
-	check(director._streams.pulse.resource_path.ends_with("pulse_resonance.wav"), "the production pulse cue uses the new discharge audio")
 
 	director.set_muted(true)
-	check(director._music.volume_db <= -80.0 and director._music.playing, "mute silences the composite without stopping its shared timeline")
+	check(director._music.volume_db <= -80.0 and director._music.playing, "mute silences the approved track without stopping playback")
 	director.set_muted(false)
 	director.set_volume(0.0)
-	check(director._music.volume_db <= -80.0, "zero volume silences all synchronized layers through their player")
+	check(director._music.volume_db <= -80.0, "zero volume silences the approved music player")
 	director.set_volume(NAN)
 	check(is_zero_approx(director._volume) and is_finite(director._music.volume_db) and director._music.volume_db <= -80.0, "an invalid volume cannot send non-finite gain to the audio server")
 	director.set_volume(0.5)
@@ -239,5 +229,5 @@ func run_checks() -> void:
 	await process_frame
 	await process_frame
 	await production_audio_checks()
-	print("Resonance audio: %d checks, %d failures; container and runtime state checks, no audition" % [checks, failures])
+	print("Release audio: %d checks, %d failures; container and runtime state checks, no audition" % [checks, failures])
 	quit(1 if failures else 0)

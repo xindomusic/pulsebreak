@@ -2,7 +2,11 @@
 
 ## Project code and assets
 
-The game code, interface, icon, procedural 3D geometry, music, and sound effects were created for this project with Codex assistance. Models and environment geometry are constructed in `scripts/art.gd` and `scripts/showcase_art.gd`; music and cues are synthesized by `tools/generate_audio.py`, `tools/generate_weapon_audio.py` and `tools/generate_resonance_audio.py`. The Resonance score uses original notes and synthesized drums, with NumPy/SoundFile/ffmpeg as development tools for generation and encoding. No external artwork, models, textures, sample packs, or third-party music were imported.
+The game code, interface, icon and procedural 3D geometry were created for this project with Codex assistance. Models and environment geometry are constructed in `scripts/art.gd` and `scripts/showcase_art.gd`; no external artwork, models, textures or sample packs were imported.
+
+Release 1.1 uses music and combat effects generated with ElevenLabs from project-written prompts. The player selected the first **Reactor Rush** music audition (`music_v2`); the main effects use `eleven_text_to_sound_v2`. Runtime audio is bundled under `assets/audio/elevenlabs/` and plays offline. Five prepared effects are preserved exactly; additional weapon/install/Guardian cues are local edits and layers of those effects. `tools/install_release_audio.py` documents the conversion and `qa/release-audio.json` records sources and hashes. The generation credential is not part of the game or its source checkout.
+
+Earlier procedural music and remaining interface cues were synthesized by `tools/generate_audio.py`, `tools/generate_weapon_audio.py` and `tools/generate_resonance_audio.py`. NumPy, SoundFile and ffmpeg are development tools for preparation and encoding. Historical audition assets and reports remain in the source checkout; the exported game includes the selected release soundtrack.
 
 This notice records provenance; it does not assign an open-source license to the original game code or assets. Godot's license below applies to the engine, not automatically to the game's original content.
 

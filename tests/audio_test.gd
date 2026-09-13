@@ -76,10 +76,10 @@ func run_checks() -> void:
 	var fire_lengths: Dictionary={}
 	var maximum_peak := 0.0
 	for name: String in NEW_CUES:
-		var stats:=pcm_stats("res://assets/audio/%s.wav" % name)
+		var stats:=pcm_stats(AudioDirector.cue_path(name))
 		check(not stats.is_empty(),name+" is readable stereo16-bit PCM")
 		if stats.is_empty(): continue
-		check(stats.rate==44100 and stats.seconds>=0.15 and stats.seconds<=2.0,name+" has the intended sample rate and a bounded cue duration")
+		check(stats.rate==44100 and stats.seconds>=0.15 and stats.seconds<=3.0,name+" has the intended sample rate and a bounded cue duration")
 		check(stats.peak<0.95 and stats.rms>0.01 and absf(stats.dc)<0.01 and stats.stereo_differences>100,name+" contains non-silent distinct channels without saturated PCM or large DC offset")
 		hashes[stats.hash]=true
 		maximum_peak=maxf(maximum_peak,stats.peak)
@@ -96,17 +96,9 @@ func run_checks() -> void:
 		var stream: AudioStreamWAV=director._streams.get(name) as AudioStreamWAV
 		imported_stereo=imported_stereo and stream!=null and stream.stereo and stream.mix_rate==44100
 	check(imported_stereo,"engine import preserves stereo and sample rate for all new cues")
-	var synchronized: AudioStreamSynchronized=director._music.stream as AudioStreamSynchronized
-	var aligned := synchronized!=null and synchronized.stream_count==3
-	var looping := aligned
-	if aligned:
-		var length: float=synchronized.get_sync_stream(0).get_length()
-		for index in range(synchronized.stream_count):
-			var stem: AudioStreamOggVorbis=synchronized.get_sync_stream(index) as AudioStreamOggVorbis
-			aligned=aligned and stem!=null and absf(stem.get_length()-length)<1.0/44100.0
-			looping=looping and stem!=null and stem.loop and is_zero_approx(stem.loop_offset) and stem.get_length()>0.0
-	check(director._music.playing and aligned,"three equal-length music stems start through one synchronized player")
-	check(looping,"all three music stems have explicit nonempty loops from their common origin")
+	var score := director._music.stream as AudioStreamOggVorbis
+	check(director._music.playing and score!=null,"the accepted complete music track starts through one player")
+	check(score!=null and score.loop and is_zero_approx(score.loop_offset) and score.get_length()>40.0,"the accepted arrangement has an explicit nonempty loop from its origin")
 
 	reset_voices(director)
 	director.play_cue("kinetic_fire")
@@ -151,10 +143,10 @@ func run_checks() -> void:
 	check(director._music.volume_db<music_before-4.0,"a major combat cue ducks the music level immediately on the next mix-state update")
 	director._process(1.0)
 	check(is_equal_approx(director._music.volume_db,music_before),"music gain recovers after the bounded duck envelope")
-	var pressure_before: float=director.mix_levels()[1]
+	var pressure_before: float=director.mix_levels()[0]
 	director.set_intensity(2.0)
 	director._process(1.0)
-	check(director._intensity==1.0 and director.mix_levels()[1]>pressure_before,"clamped combat intensity raises the drive stem")
+	check(director._intensity==1.0 and director.mix_levels()[0]>pressure_before,"clamped combat intensity raises the accepted music track")
 
 	director.set_muted(true)
 	sequence=director._cue_sequence

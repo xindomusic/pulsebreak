@@ -1,0 +1,41 @@
+{
+  "audio_driver": "CoreAudio",
+  "bus_effect_order": [
+    {
+      "class": "AudioEffectHardLimiter",
+      "enabled": true,
+      "index": 0
+    }
+  ],
+  "engine": "4.7.2-stable (official)",
+  "failure": "Approved music failed the native loop-wrap transport check.",
+  "human_playthrough": false,
+  "kind": "scripted_native_engine_master_audio",
+  "mix_rate": 48000.0,
+  "music_loop_check": {
+    "loop_counter_supported": true,
+    "loops_after": 0,
+    "loops_before": 0,
+    "note": "Transport wrap verified before recording; no listening or beat-grid claim.",
+    "passed": false,
+    "position_after_wait": 0.0809297040104866,
+    "same_playback": false,
+    "seek_seconds": 44.1291844177246,
+    "wait_seconds": 0.34
+  },
+  "music_path": "res://assets/audio/elevenlabs/music_reactor_rush.ogg",
+  "music_sha256": "dd518e0eebfd7380881d3a497589be5af7c7ae753252d598fe3d8d6b995d2ad9",
+  "notes": "Staged audio audition, not progression or performance evidence. First half installs four rank III weapons and spawns one gunner per install. At18s the tool jumps to sector3 and invokes the production Guardian entry with four scripted escorts. Two full charges are injected. Combat, pilot, enemy attacks and adaptive intensity remain production behavior; health/recovery only change through normal gameplay and production entry. No preference saves.",
+  "pcm": {},
+  "performance_test": false,
+  "progression_test": false,
+  "recorded_after_limiter": false,
+  "requested_seconds": 36.0,
+  "scripted_events": [],
+  "seed": 74921,
+  "success": false,
+  "telemetry": [],
+  "volume": 0.65,
+  "wall_record_seconds": 0.0,
+  "wav": "/Users/xinboonchen/pulsebreak/qa/release-native-audio/release-engine-audio.wav"
+}

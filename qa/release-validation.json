@@ -1,0 +1,80 @@
+{
+  "method": "Headless Godot regression suites; native controls suite uses injected events without native captures in this run.",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "suites": [
+    {
+      "suite": "Combat rules",
+      "checks": 25,
+      "failures": 0
+    },
+    {
+      "suite": "Save",
+      "checks": 84,
+      "failures": 0
+    },
+    {
+      "suite": "Integration",
+      "checks": 39,
+      "failures": 0
+    },
+    {
+      "suite": "Traversal",
+      "checks": 34,
+      "failures": 0
+    },
+    {
+      "suite": "Altitude integration",
+      "checks": 34,
+      "failures": 0
+    },
+    {
+      "suite": "Campaign",
+      "checks": 31,
+      "failures": 0
+    },
+    {
+      "suite": "Generation",
+      "checks": 47,
+      "failures": 0
+    },
+    {
+      "suite": "Weapons",
+      "checks": 50,
+      "failures": 0
+    },
+    {
+      "suite": "Endless handoffs",
+      "checks": 45,
+      "failures": 0
+    },
+    {
+      "suite": "Combat FX",
+      "checks": 22,
+      "failures": 0
+    },
+    {
+      "suite": "Pulse FX",
+      "checks": 53,
+      "failures": 0
+    },
+    {
+      "suite": "Audio",
+      "checks": 44,
+      "failures": 0
+    },
+    {
+      "suite": "Release audio",
+      "checks": 47,
+      "failures": 0
+    },
+    {
+      "suite": "Native keyboard controls",
+      "checks": 36,
+      "failures": 0
+    }
+  ],
+  "total_checks": 591,
+  "total_failures": 0,
+  "log_directory": "/tmp/pulsebreak-tests.RKzA7a",
+  "notes": "Sandboxed macOS CA-store queries emit get_system_ca_certificates warnings; game tests use no network."
+}

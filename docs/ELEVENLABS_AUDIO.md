@@ -1,5 +1,7 @@
 # Pulsebreak audio audition
 
+**Release decision:** the player selected the first version and requested shipment. Release 1.1 integrates `reactor_rush` and the accepted combat effects. The heavier revision remains comparison history. See the [release notes](RELEASE_1_1.md).
+
 [Open the listening page](audio/elevenlabs/index.html) and start with **Battle mix**. **Heavier revision** is selected by default; the **First version** button switches both the music and battle players for comparison.
 
 ## Heavier revision

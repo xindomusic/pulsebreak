@@ -1,10 +1,10 @@
 # Pulsebreak
 
-**Current feature branch: [Resonance](docs/RESONANCE.md)** — original adaptive **174 BPM drum and bass**, richer navy/cobalt/coral colors, and a layered reactor blast with a new stereo discharge. Endless generated sectors, evolving weapons, flight, animated enemy breakup and Quit controls carry forward. Double-click **Play Pulsebreak.command**, then choose **Begin Skybound**. **F** jumps/holds to glide; **Q** switches unlocked weapons; **Esc** opens pause and Quit.
+**Current Mac release: [Pulsebreak 1.1](docs/RELEASE_1_1.md)** — the player-selected first ElevenLabs DnB track, new combat sounds, richer navy/cobalt/coral colors and a layered reactor blast. Endless generated sectors, evolving weapons, flight, animated enemy breakup and Quit controls carry forward. Open **build/Pulsebreak.app**, then choose **Begin Skybound**. **F** jumps/holds to glide; **Q** switches unlocked weapons; **Esc** opens pause and Quit. The game runs offline without an API key.
 
 ![Staged native Resonance title and courier](docs/images/resonance-title.png)
 
-*[What changed](docs/RESONANCE.md), [hear the DnB track](docs/audio/resonance-dnb.mp3), [research](docs/RESONANCE_RESEARCH.md), and [independent review](qa/resonance-review.md). [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
+*[Release notes](docs/RELEASE_1_1.md), [hear the selected DnB track](docs/audio/elevenlabs/reactor_rush.mp3), and [release review](qa/release-review.md). [Resonance](docs/RESONANCE.md), [Overdrive](docs/OVERDRIVE.md), [Skybound](docs/SKYBOUND.md), and the original experiment below remain historical.*
 
 ### A game-making experiment with GPT-6 Astra inside Codex
 

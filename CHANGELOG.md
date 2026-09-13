@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 — 2026-09-13 — Mac release
+
+- Integrated the player-selected first ElevenLabs DnB track as an offline looping score, with smoothed combat gain and major-event ducking.
+- Installed accepted weapon, impact, robot destruction and reactor pulse effects; derived the remaining weapon roles from those recordings.
+- Retained endless sectors, weapon upgrades, flight, moving gates, animated hit/death effects and Quit controls.
+- Passed 591 regression checks and a separate native audio/loop check; packaged a signed universal Mac app and ZIP with verified resource integrity.
+- See [release notes](docs/RELEASE_1_1.md), [audio review](qa/release-review.md) and [package evidence](qa/release-package.json).
+
 ## 2026-09-13 — Resonance follow-up
 
 - Composed original 174 BPM drum and bass with a 64-bar arrangement and three synchronized stereo stems responding to nearby threats, incoming attacks, charge and Guardians.

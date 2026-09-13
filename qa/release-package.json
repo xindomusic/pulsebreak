@@ -1,0 +1,433 @@
+{
+  "pck_format": 4,
+  "engine_version": "4.7.2",
+  "pck_sha256": "999b1fa62bf427ea700e8cdc3537764f757b098fd51b1e0129495e455c21b917",
+  "pck_bytes": 1415660,
+  "file_count": 78,
+  "all_member_md5_verified": true,
+  "approved_audio_imports_verified": [
+    "assets/audio/elevenlabs/music_reactor_rush.ogg.import",
+    "assets/audio/elevenlabs/kinetic_fire.wav.import",
+    "assets/audio/elevenlabs/scatter_fire.wav.import",
+    "assets/audio/elevenlabs/arc_fire.wav.import",
+    "assets/audio/elevenlabs/plasma_fire.wav.import",
+    "assets/audio/elevenlabs/armor_impact.wav.import",
+    "assets/audio/elevenlabs/machine_break.wav.import",
+    "assets/audio/elevenlabs/guardian_break.wav.import",
+    "assets/audio/elevenlabs/weapon_install.wav.import",
+    "assets/audio/elevenlabs/pulse.wav.import"
+  ],
+  "excluded_development_paths_absent": true,
+  "environment_files_absent": true,
+  "superseded_music_absent": true,
+  "files": [
+    {
+      "path": ".godot/exported/133200997/export-19246414aa9fb561ced4b8dce477acec-default_bus_layout.res",
+      "bytes": 603,
+      "md5": "cbb8683e48fd7b0558a649797b5d590d"
+    },
+    {
+      "path": ".godot/exported/133200997/export-3070c538c03ee49b7677ff960a3f5195-main.scn",
+      "bytes": 683,
+      "md5": "c71fc6259066039855214a7d1bbf90cc"
+    },
+    {
+      "path": ".godot/global_script_class_cache.cfg",
+      "bytes": 8,
+      "md5": "393edccab1b3701df5cb9b4f4cfc3775"
+    },
+    {
+      "path": ".godot/imported/absorb.wav-422eb593ea8d30f79967e8e9f66ba6f2.sample",
+      "bytes": 3087,
+      "md5": "1af6e6f1c09b98d5d1989efc719e654d"
+    },
+    {
+      "path": ".godot/imported/arc_fire.wav-b41d6d3ccad089b867dd89b7e5772286.sample",
+      "bytes": 19647,
+      "md5": "16b78097e409f8764087495e5dd23720"
+    },
+    {
+      "path": ".godot/imported/armor_impact.wav-989108b382cc6d516b6f77bde47ddbdc.sample",
+      "bytes": 13415,
+      "md5": "e0cc6542cf3c122d900916f1baa489fa"
+    },
+    {
+      "path": ".godot/imported/boss.wav-ddb6c7f6bdafc090efb2210b84ae8009.sample",
+      "bytes": 16023,
+      "md5": "dd45951049e4af45bebd8c3a1f1919ed"
+    },
+    {
+      "path": ".godot/imported/core.wav-764b2f41f19f3f2bdf15f64cfa29cf67.sample",
+      "bytes": 5847,
+      "md5": "0d7d62425e8e6e987f24a3834ebb2354"
+    },
+    {
+      "path": ".godot/imported/dash.wav-c732fa599cfe157dd4267b88c75a825a.sample",
+      "bytes": 2447,
+      "md5": "f0d7a78dca1e2b5d2713dd892a71dc55"
+    },
+    {
+      "path": ".godot/imported/defeat.wav-2c373cdad262b5fb9203b05423989caa.sample",
+      "bytes": 18247,
+      "md5": "31f0051dd37b6c4e0519344d877ec616"
+    },
+    {
+      "path": ".godot/imported/guardian_break.wav-2e898d31dbdcc74a98e3993d1cc396ff.sample",
+      "bytes": 96231,
+      "md5": "e220feac4486fc1201804dcdc695ac2c"
+    },
+    {
+      "path": ".godot/imported/hit.wav-96dc477cdf4a42f381370dba6e3f75ce.sample",
+      "bytes": 2999,
+      "md5": "dce6137f3be045a5d6fd630f9484bc78"
+    },
+    {
+      "path": ".godot/imported/icon.svg-56083ea2a1f1a4f1e49773bdc6d7826c.ctex",
+      "bytes": 7280,
+      "md5": "b3d812401211ce7b9f2bf6cf2937ef4a"
+    },
+    {
+      "path": ".godot/imported/kinetic_fire.wav-bd6ef3fee807b6182be4e1d9de43f470.sample",
+      "bytes": 14471,
+      "md5": "478057f846283c473993435e10892d6f"
+    },
+    {
+      "path": ".godot/imported/machine_break.wav-1d4e5922126188d2d619186273ead7c0.sample",
+      "bytes": 72935,
+      "md5": "8a0bac90c45215d811b11e5eac1e40af"
+    },
+    {
+      "path": ".godot/imported/music_reactor_rush.ogg-85cab1171f0e9d99098733418a620d38.oggvorbisstr",
+      "bytes": 709406,
+      "md5": "c1116eb5562e8ba5e9502239a4073df7"
+    },
+    {
+      "path": ".godot/imported/plasma_fire.wav-a6eb5da8159bb628bc3f3638cb82f5c8.sample",
+      "bytes": 50559,
+      "md5": "ced8e9c4a74cdd597e1e2f91fd803d8b"
+    },
+    {
+      "path": ".godot/imported/pulse.wav-bee913dca0b4298bbaba907ab87a3c45.sample",
+      "bytes": 96231,
+      "md5": "665792fde31c4920c22b4e2f903fea08"
+    },
+    {
+      "path": ".godot/imported/ready.wav-b90efe24faa05372f3b25ab2e0f1b3d9.sample",
+      "bytes": 3087,
+      "md5": "030d50d5775cd99988f265595305e640"
+    },
+    {
+      "path": ".godot/imported/scatter_fire.wav-8180d4a35c031fd6ee36335e5f79c24f.sample",
+      "bytes": 20879,
+      "md5": "c84419e2faf45b323aa7497f085c0323"
+    },
+    {
+      "path": ".godot/imported/upgrade.wav-6853b7f856a19267cd7715d3e916de87.sample",
+      "bytes": 7991,
+      "md5": "8bf66c2b11db38cc77fc725a9802092f"
+    },
+    {
+      "path": ".godot/imported/victory.wav-d893d32ad919f27e15cf04d35e288b78.sample",
+      "bytes": 20039,
+      "md5": "aa12b456e9bce846a01a05d2d3b00d8d"
+    },
+    {
+      "path": ".godot/imported/warning.wav-bbd467b4b8c964daf182674a45c0d6f0.sample",
+      "bytes": 6463,
+      "md5": "6479f5d04c2155e54d7d5121e849cfb2"
+    },
+    {
+      "path": ".godot/imported/weapon_install.wav-b4032cf4ee5ebed595274f21a5c114ef.sample",
+      "bytes": 20863,
+      "md5": "afbb4050eb6356f0979d25c4ed08af8b"
+    },
+    {
+      "path": ".godot/uid_cache.bin",
+      "bytes": 1541,
+      "md5": "9fa4bfaac2a254d30c2bd543cd5d0508"
+    },
+    {
+      "path": "assets/audio/absorb.wav.import",
+      "bytes": 153,
+      "md5": "7f6da4380b1b74c1f630bda7e1ff0660"
+    },
+    {
+      "path": "assets/audio/boss.wav.import",
+      "bytes": 151,
+      "md5": "539e26b31ccd226630a27774e6ee3e08"
+    },
+    {
+      "path": "assets/audio/core.wav.import",
+      "bytes": 151,
+      "md5": "6b412f52c36149c3208fa04013172c0c"
+    },
+    {
+      "path": "assets/audio/dash.wav.import",
+      "bytes": 151,
+      "md5": "55316a802c71c4372c6055570f895bf2"
+    },
+    {
+      "path": "assets/audio/defeat.wav.import",
+      "bytes": 153,
+      "md5": "86567a0d4ee1872c3b43472e13d25439"
+    },
+    {
+      "path": "assets/audio/elevenlabs/arc_fire.wav.import",
+      "bytes": 155,
+      "md5": "6ae015e9ee082dc097e52354ddddbf6b"
+    },
+    {
+      "path": "assets/audio/elevenlabs/armor_impact.wav.import",
+      "bytes": 158,
+      "md5": "b69d9c791d0e395be92c7006d44d1f24"
+    },
+    {
+      "path": "assets/audio/elevenlabs/guardian_break.wav.import",
+      "bytes": 161,
+      "md5": "fbc5665ca4957e40a2daa8e65d824b92"
+    },
+    {
+      "path": "assets/audio/elevenlabs/kinetic_fire.wav.import",
+      "bytes": 158,
+      "md5": "ae5a01f631a9abba83916b13f3536c9d"
+    },
+    {
+      "path": "assets/audio/elevenlabs/machine_break.wav.import",
+      "bytes": 160,
+      "md5": "c302631d7958f926c46d2cb38be18eb9"
+    },
+    {
+      "path": "assets/audio/elevenlabs/music_reactor_rush.ogg.import",
+      "bytes": 185,
+      "md5": "de51607cb386edc69f279162b3672139"
+    },
+    {
+      "path": "assets/audio/elevenlabs/plasma_fire.wav.import",
+      "bytes": 158,
+      "md5": "90f7c195aca26c8b1eeadbf1878d8bf0"
+    },
+    {
+      "path": "assets/audio/elevenlabs/pulse.wav.import",
+      "bytes": 152,
+      "md5": "053f3d2ea5d902c104aea522f0429943"
+    },
+    {
+      "path": "assets/audio/elevenlabs/scatter_fire.wav.import",
+      "bytes": 159,
+      "md5": "ed4396aa5e83bbbb37451e6c4539fb8d"
+    },
+    {
+      "path": "assets/audio/elevenlabs/weapon_install.wav.import",
+      "bytes": 160,
+      "md5": "ced9cff4beccd691cf5f2e04ac4eb158"
+    },
+    {
+      "path": "assets/audio/hit.wav.import",
+      "bytes": 150,
+      "md5": "79976dfda2c5cf216679de16e2355152"
+    },
+    {
+      "path": "assets/audio/ready.wav.import",
+      "bytes": 151,
+      "md5": "b9a731bfd03101f4369a94a55c22f1bb"
+    },
+    {
+      "path": "assets/audio/upgrade.wav.import",
+      "bytes": 152,
+      "md5": "f11c652025c0699185105d822fbc8840"
+    },
+    {
+      "path": "assets/audio/victory.wav.import",
+      "bytes": 153,
+      "md5": "929f6ca350e82e430410bdce46f69aaa"
+    },
+    {
+      "path": "assets/audio/warning.wav.import",
+      "bytes": 153,
+      "md5": "47822a4ded2227051b8d15ac1d15a967"
+    },
+    {
+      "path": "assets/icon.svg",
+      "bytes": 338,
+      "md5": "2cefa5dab1c863b1793d53bf9be47474"
+    },
+    {
+      "path": "assets/icon.svg.import",
+      "bytes": 193,
+      "md5": "c2dad355966e3f34b6e114543581a9fa"
+    },
+    {
+      "path": "default_bus_layout.tres.remap",
+      "bytes": 111,
+      "md5": "caa69edbcd9c267d88b28eef335d0f5e"
+    },
+    {
+      "path": "main.tscn.remap",
+      "bytes": 97,
+      "md5": "c74a9853779200b38c91a70cebd41c10"
+    },
+    {
+      "path": "project.binary",
+      "bytes": 1090,
+      "md5": "f11eb4f015a942d58dc334684edb3361"
+    },
+    {
+      "path": "scripts/art.gd.remap",
+      "bytes": 38,
+      "md5": "814e712b17834301067f69cbbb59765b"
+    },
+    {
+      "path": "scripts/art.gdc",
+      "bytes": 34099,
+      "md5": "d4e50c8c615e5cb0bf12feea45179c36"
+    },
+    {
+      "path": "scripts/audio_director.gd.remap",
+      "bytes": 49,
+      "md5": "7b9adacc2c5dd383c9dbdddfc80743aa"
+    },
+    {
+      "path": "scripts/audio_director.gdc",
+      "bytes": 5690,
+      "md5": "c7d787f67f3862f43e2129f393b3c72c"
+    },
+    {
+      "path": "scripts/campaign.gd.remap",
+      "bytes": 43,
+      "md5": "83468664a69f1dbd64235508b9293de8"
+    },
+    {
+      "path": "scripts/campaign.gdc",
+      "bytes": 9133,
+      "md5": "73e48e9cdfbcb5aba9e68c26803ad448"
+    },
+    {
+      "path": "scripts/combat_field.gd.remap",
+      "bytes": 47,
+      "md5": "44e4b0e56961f763da7c658a86a1febb"
+    },
+    {
+      "path": "scripts/combat_field.gdc",
+      "bytes": 8226,
+      "md5": "b303512a25ab8f9e908bfa913976005c"
+    },
+    {
+      "path": "scripts/combat_fx.gd.remap",
+      "bytes": 44,
+      "md5": "4ea5d6889465b0a7dbb7f67cb89990e9"
+    },
+    {
+      "path": "scripts/combat_fx.gdc",
+      "bytes": 17512,
+      "md5": "028e19928162cf869482f6c46864ae48"
+    },
+    {
+      "path": "scripts/enemy.gd.remap",
+      "bytes": 40,
+      "md5": "5a495e818d5987541d0ff40aadd5aff5"
+    },
+    {
+      "path": "scripts/enemy.gdc",
+      "bytes": 9668,
+      "md5": "5b03c56b5bcdcd2dc138a12588c53a8e"
+    },
+    {
+      "path": "scripts/game.gd.remap",
+      "bytes": 39,
+      "md5": "d09d7499784225fd170969c0c7fc2cff"
+    },
+    {
+      "path": "scripts/game.gdc",
+      "bytes": 36921,
+      "md5": "ee4ac1a3d8dbd7b0b77c861e13b78a55"
+    },
+    {
+      "path": "scripts/hud.gd.remap",
+      "bytes": 38,
+      "md5": "8e02593165028c666aea3ccaa63ef591"
+    },
+    {
+      "path": "scripts/hud.gdc",
+      "bytes": 22005,
+      "md5": "52b3703bfec18b6ab9f91a454dfc4e90"
+    },
+    {
+      "path": "scripts/level_generator.gd.remap",
+      "bytes": 50,
+      "md5": "490980b210bd1116a2e59b376862ae9b"
+    },
+    {
+      "path": "scripts/level_generator.gdc",
+      "bytes": 5758,
+      "md5": "fb4c930fd335c218918d725dfcfcc753"
+    },
+    {
+      "path": "scripts/rules.gd.remap",
+      "bytes": 40,
+      "md5": "2a3c96df65ec5de0bc2febc94566433e"
+    },
+    {
+      "path": "scripts/rules.gdc",
+      "bytes": 3368,
+      "md5": "b506f5ae30e50eb19cc6bbe694c1c6c8"
+    },
+    {
+      "path": "scripts/save_store.gd.remap",
+      "bytes": 45,
+      "md5": "3272172630438464533cc68518119d5f"
+    },
+    {
+      "path": "scripts/save_store.gdc",
+      "bytes": 3641,
+      "md5": "939d2e64d025743580faadcacdf3079b"
+    },
+    {
+      "path": "scripts/showcase_art.gd.remap",
+      "bytes": 47,
+      "md5": "79006848f06e98b2f4a7d4950c5d701c"
+    },
+    {
+      "path": "scripts/showcase_art.gdc",
+      "bytes": 23574,
+      "md5": "d8d9fde0b684ad9d16af1b22053524a9"
+    },
+    {
+      "path": "scripts/traversal.gd.remap",
+      "bytes": 44,
+      "md5": "64ac99fbf8aa2c4770aef31ef49afcf7"
+    },
+    {
+      "path": "scripts/traversal.gdc",
+      "bytes": 3670,
+      "md5": "81c53f4710dd5b35b24e30da47d458a8"
+    },
+    {
+      "path": "scripts/weapons.gd.remap",
+      "bytes": 42,
+      "md5": "99c07d0f04b82112739a129533b0c68b"
+    },
+    {
+      "path": "scripts/weapons.gdc",
+      "bytes": 8822,
+      "md5": "ac8d8bfac499a1b8e3d65f6e2ca53810"
+    }
+  ],
+  "application_version": "1.1.0",
+  "architectures": [
+    "x86_64",
+    "arm64"
+  ],
+  "signing": "local ad-hoc; not notarized",
+  "original_app_signature_verified": true,
+  "zip_extracted_app_signature_verified": true,
+  "zip_extracted_pck_identical": true,
+  "zip_extracted_notices_identical": true,
+  "zip_path": "build/Pulsebreak-1.1.0-macOS-universal.zip",
+  "zip_sha256": "c7cfabf26ae468526f4416e3f01f55acb1b2e8c07e669b7e3ad56278a945bfe5",
+  "zip_bytes": 60923117,
+  "all_remaining_ui_cues_present": true,
+  "superseded_root_combat_cues_absent": true,
+  "template_source": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
+  "macos_template_sha256": "88df5e2e6fee99088699be66e6d42e4da4fb0c5619d054297d755a49558a4792",
+  "editor_version": "4.7.2.stable.official.ed1daf0bf"
+}

@@ -1,0 +1,199 @@
+{
+  "selection": "User accepted FIRST ElevenLabs audition and requested shipping the game.",
+  "music_source": "reactor_rush (music_v2); heavier music_v2_5 revision is excluded from runtime.",
+  "sources": {
+    "reactor_rush": {
+      "accepted_preview": "docs/audio/elevenlabs/reactor_rush.mp3",
+      "accepted_preview_sha256": "67ba638251b030ccf05a9ec1b5831220612cbc3d2ad1c707b31b542b40260a56",
+      "prepared_wav_sha256": "ebf29c8dc0803021d4e1e82816811414d9464c2eca1bcd050259c98ff52529b0"
+    },
+    "kinetic_fire": {
+      "accepted_preview": "docs/audio/elevenlabs/kinetic_fire.mp3",
+      "accepted_preview_sha256": "96ec340f8ab1dee5a4c58048fb41095323b9b4a2ca0c9088c336017dda631942",
+      "prepared_wav_sha256": "2b1c821e97ad13e70b4ebf06f067d2134537b16934b90bc28b5c1e8c165b99b8"
+    },
+    "plasma_fire": {
+      "accepted_preview": "docs/audio/elevenlabs/plasma_fire.mp3",
+      "accepted_preview_sha256": "c03024983601b0e60b9d5c24ed6bf6ae032b9295687319ad7e7e39078b06aa24",
+      "prepared_wav_sha256": "c68179ad1ad3c59ea43f40aa32416c5183ee77ad297dc6a61eba90c2009704f3"
+    },
+    "armor_hit": {
+      "accepted_preview": "docs/audio/elevenlabs/armor_hit.mp3",
+      "accepted_preview_sha256": "d2b1a796e088dcd6da40d968208b5683bc06cce17445a90141f18472e1f93925",
+      "prepared_wav_sha256": "34942bd96c0ce92ced3cee1347167291d823b956b110941bbcf07ee693ec91ae"
+    },
+    "enemy_break": {
+      "accepted_preview": "docs/audio/elevenlabs/enemy_break.mp3",
+      "accepted_preview_sha256": "099e591b8a459acbed89371becd8c76b9856b1da73696ba4a01ec4f9eeef951b",
+      "prepared_wav_sha256": "11aa318a7d8391cb945aaf23d61b1e87bbcf95934c17c73942ff7b841527cb26"
+    },
+    "reactor_pulse": {
+      "accepted_preview": "docs/audio/elevenlabs/reactor_pulse.mp3",
+      "accepted_preview_sha256": "bc6041019be23bf4fb13558e340c670a40ace4f82f5589c04d6925f7f30c9e32",
+      "prepared_wav_sha256": "4e622de7c1eae2ab9c143f326d0fc7ec48847108492c213ea07c81112a03de5e"
+    }
+  },
+  "assets": {
+    "music": {
+      "path": "assets/audio/elevenlabs/music_reactor_rush.ogg",
+      "sha256": "dd518e0eebfd7380881d3a497589be5af7c7ae753252d598fe3d8d6b995d2ad9",
+      "decoded": {
+        "duration_seconds": 44.199183673469385,
+        "sample_peak": 0.8809888958930969,
+        "peak_dbfs": -1.1005913092334065,
+        "rms": 0.1723288092063185,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          -0.0003687426844658025,
+          -0.0004531500781826456
+        ]
+      },
+      "loop_boundary_sample_difference": 1.440468690111496e-05,
+      "processing": "Vorbis encoding of accepted PCM; full arrangement, length and tempo preserved. Loop repeats the file, with no claim of beat-grid certification."
+    },
+    "kinetic_fire": {
+      "path": "assets/audio/elevenlabs/kinetic_fire.wav",
+      "sha256": "2b1c821e97ad13e70b4ebf06f067d2134537b16934b90bc28b5c1e8c165b99b8",
+      "decoded": {
+        "duration_seconds": 0.3942857142857143,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.24371485597046857,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          0.009331888567861097,
+          0.009671134237917314
+        ]
+      },
+      "processing": "Accepted prepared effect, unchanged PCM."
+    },
+    "plasma_fire": {
+      "path": "assets/audio/elevenlabs/plasma_fire.wav",
+      "sha256": "c68179ad1ad3c59ea43f40aa32416c5183ee77ad297dc6a61eba90c2009704f3",
+      "decoded": {
+        "duration_seconds": 1.406984126984127,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.15936723390873805,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          -0.0015114119767281984,
+          -3.110581664094733e-05
+        ]
+      },
+      "processing": "Accepted prepared effect, unchanged PCM."
+    },
+    "armor_impact": {
+      "path": "assets/audio/elevenlabs/armor_impact.wav",
+      "sha256": "34942bd96c0ce92ced3cee1347167291d823b956b110941bbcf07ee693ec91ae",
+      "decoded": {
+        "duration_seconds": 0.36435374149659866,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.060321093544059755,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          0.00012287940437710044,
+          0.00013982665043195326
+        ]
+      },
+      "processing": "Accepted prepared effect, unchanged PCM."
+    },
+    "machine_break": {
+      "path": "assets/audio/elevenlabs/machine_break.wav",
+      "sha256": "11aa318a7d8391cb945aaf23d61b1e87bbcf95934c17c73942ff7b841527cb26",
+      "decoded": {
+        "duration_seconds": 2.0355555555555553,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.11369275828902865,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          8.594270547585164e-05,
+          0.00047291537336610065
+        ]
+      },
+      "processing": "Accepted prepared effect, unchanged PCM."
+    },
+    "pulse": {
+      "path": "assets/audio/elevenlabs/pulse.wav",
+      "sha256": "4e622de7c1eae2ab9c143f326d0fc7ec48847108492c213ea07c81112a03de5e",
+      "decoded": {
+        "duration_seconds": 2.6890702947845804,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.3504728349210194,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          -0.0029719918197285457,
+          -0.002346957655110946
+        ]
+      },
+      "processing": "Accepted prepared effect, unchanged PCM."
+    },
+    "scatter_fire": {
+      "path": "assets/audio/elevenlabs/scatter_fire.wav",
+      "sha256": "b31898c53058ee56868e850524e5d6c3cd9007a52d728d5b434f89f4d652ce8c",
+      "decoded": {
+        "duration_seconds": 0.5749886621315192,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.19932783000466592,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          0.0003083205709191495,
+          0.0003255128098873092
+        ]
+      },
+      "processing": "Pitched kinetic body, armor layer, and short mechanical debris from accepted effects."
+    },
+    "arc_fire": {
+      "path": "assets/audio/elevenlabs/arc_fire.wav",
+      "sha256": "d2210d10f19570721d632084b8a2da5bf2ed613d769eadc31e84fbe66f1ce308",
+      "decoded": {
+        "duration_seconds": 0.54,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.21909982272006437,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          -0.00042604404922655793,
+          -0.0005301785246795477
+        ]
+      },
+      "processing": "Shorter, higher-pitched accepted plasma discharge."
+    },
+    "guardian_break": {
+      "path": "assets/audio/elevenlabs/guardian_break.wav",
+      "sha256": "b1364eecb98d3daba4d0a46faf83bfcf674b2ab0bbe2420e03e9f0386fb2e0c5",
+      "decoded": {
+        "duration_seconds": 2.6890702947845804,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.29444152124582024,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          -1.2459431498127972e-05,
+          -7.2930495839587476e-06
+        ]
+      },
+      "processing": "Accepted reactor pulse with a lower-pitched mechanical destruction layer."
+    },
+    "weapon_install": {
+      "path": "assets/audio/elevenlabs/weapon_install.wav",
+      "sha256": "6333f4852daa7620ed1f7e0a50b93cf274c9ac0fe251661b65bd201b5d544e7b",
+      "decoded": {
+        "duration_seconds": 0.5742857142857143,
+        "sample_peak": 0.707916259765625,
+        "peak_dbfs": -3.0003622493859567,
+        "rms": 0.15633315400923944,
+        "samples_at_or_above_full_scale": 0,
+        "dc_offset_per_channel": [
+          -0.0001428045763709972,
+          -0.00010639580186863303
+        ]
+      },
+      "processing": "Mechanical latch and short power-up layers cut from accepted effects."
+    }
+  }
+}

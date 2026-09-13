@@ -1,0 +1,29 @@
+{
+  "kind": "native_exported_app_automated_campaign",
+  "human_playthrough": false,
+  "executable": "/Users/xinboonchen/pulsebreak/build/Pulsebreak.app/Contents/MacOS/Pulsebreak",
+  "working_directory": "/private/tmp",
+  "source_path_argument": false,
+  "arguments": [
+    "--windowed",
+    "--resolution",
+    "1280x800",
+    "--qa",
+    "--qa-campaign",
+    "--qa-alt",
+    "--qa-sectors=3"
+  ],
+  "pck_sha256": "999b1fa62bf427ea700e8cdc3537764f757b098fd51b1e0129495e455c21b917",
+  "archive_sha256": "c7cfabf26ae468526f4416e3f01f55acb1b2e8c07e669b7e3ad56278a945bfe5",
+  "exit_code": 0,
+  "result": "Three sectors completed; banked after first Guardian.",
+  "window_pixels": [
+    1280,
+    800
+  ],
+  "internal_viewport": [
+    1440,
+    900
+  ],
+  "notes": "Uses bundled PCK; normal wall-clock simulation, Full Effects, volume0.65. Three warm-up seconds and inactive transitions excluded from render intervals; no isolated GPU timing or human fun claim."
+}
