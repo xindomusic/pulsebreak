@@ -3,6 +3,7 @@
 build/
 qa/**/captures/
 qa/captures/
+qa/elevenlabs-audition/prepared/
 .DS_Store
 .superpowers/
 *.tmp

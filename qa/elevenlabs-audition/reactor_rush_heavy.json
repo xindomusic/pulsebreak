@@ -1,0 +1,21 @@
+{
+  "provider": "ElevenLabs",
+  "name": "reactor_rush_heavy",
+  "title": "Reactor Rush — heavier DnB revision",
+  "endpoint": "/v1/music",
+  "output_format": "mp3_44100_128",
+  "request": {
+    "model_id": "music_v2_5",
+    "music_length_ms": 44138,
+    "force_instrumental": true,
+    "prompt": "Original instrumental 174 BPM drum and bass for an intense futuristic arena battle. Extremely heavy, aggressive neurofunk with relentless rolling breakbeats. DRUMS AND BASS ARE THE FEATURED INSTRUMENTS, up front and dominant throughout. A huge tight deep punchy kick drives syncopated DnB rhythms. Every backbeat has a thick hard acoustic snare body, hard rimshot crack and explosive short noisy snap; tightly compressed break layers, busy snare ghost notes and rolling shuffling percussion make the groove urgent and physical. Bass is massive: snarling distorted modulated Reese bass, grinding resonant mid-bass, nasty growling call-and-response phrases and a thick controlled mono sub. Bass articulation follows the drum syncopation and punches through with audible low-mid weight, not only deep rumble. Very sparse dark sci-fi synth stabs only as punctuation; focus the whole record on the bass hook and hard drums. Start straight on a violent full-energy drop in the first beat. Maintain relentless 174 BPM breakbeat motion, with intricate fills and increasingly aggressive bass answers every four bars. One very short half-bar tension gap near the middle, then slam back into an even harder final drop. Heavy saturated drum bus character and gritty bass texture, defined transients, controlled sub and clean treble. Finished muscular modern club mix. No vocals, speech, melodic singing, soft pads, airy cinematic intro, long breakdown, euphoric trance lead, house beat, trap beat or chiptune. Music only, no weapons or explosion sound effects."
+  },
+  "started_at": "2026-09-13T21:56:22.527711+00:00",
+  "status": "complete",
+  "purpose": "Private audition; not yet approved for game integration.",
+  "song-id": "AKjX9xvBqmbGKbPZxyTD",
+  "completed_at": "2026-09-13T21:56:30.159695+00:00",
+  "bytes": 706396,
+  "sha256": "03d16b2ad2641019964e06876f5a3e59994738ab96e2c454789f65cc4673ffdd",
+  "file": "reactor_rush_heavy.mp3"
+}

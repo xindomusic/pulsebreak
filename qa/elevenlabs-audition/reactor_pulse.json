@@ -1,0 +1,22 @@
+{
+  "provider": "ElevenLabs",
+  "name": "reactor_pulse",
+  "title": "Overload reactor blast",
+  "endpoint": "/v1/sound-generation",
+  "output_format": "mp3_44100_128",
+  "request": {
+    "duration_seconds": 3.0,
+    "text": "One spectacular sci-fi reactor pulse detonation at the very start. Enormous sharp energy CRACK, dense concussive low-mid body, deep sub drop and a radial tearing electromagnetic shockwave. Bright crystalline fragments scatter wide, a collapsing ion storm crackles into silence. Cinematic ultimate attack with a textured aftermath. No pre-charge, repeated blasts, voice, music or ambience.",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt_influence": 0.6,
+    "loop": false
+  },
+  "started_at": "2026-09-13T21:48:08.616590+00:00",
+  "status": "complete",
+  "purpose": "Private audition; not yet approved for game integration.",
+  "character-cost": "33",
+  "completed_at": "2026-09-13T21:48:10.753835+00:00",
+  "bytes": 48945,
+  "sha256": "05a726bb7d5ed78fa27b10d25ecc9b5bb62d3d0fd7043fa7c49646fae0870add",
+  "file": "reactor_pulse.mp3"
+}

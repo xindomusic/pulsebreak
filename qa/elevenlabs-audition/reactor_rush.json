@@ -1,0 +1,21 @@
+{
+  "provider": "ElevenLabs",
+  "name": "reactor_rush",
+  "title": "Reactor Rush — aggressive DnB",
+  "endpoint": "/v1/music",
+  "output_format": "mp3_44100_128",
+  "request": {
+    "model_id": "music_v2",
+    "music_length_ms": 44138,
+    "force_instrumental": true,
+    "prompt": "Original instrumental combat soundtrack for a kinetic futuristic arena game. 174 BPM aggressive drum and bass, neurofunk weight with dancefloor momentum. Make it feel like a finished record: hard syncopated punchy kicks, enormous cracking snare with acoustic body and tight metallic snap, intricate rolling chopped breakbeats, snare ghost notes, swinging shuffles and crisp hi-hats. A snarling distorted modulated Reese bass trades short rhythmic phrases with a growling mid-bass answer; deep controlled mono sub follows the kick pockets. Dark electric tension with vivid triumphant futuristic synth stabs, very little sustained lead so combat sounds have room. Immediate full-energy drum and bass groove in the first second, no cinematic ambient introduction. Develop a memorable bass hook, add short drum fills every four bars, one brief one-bar tension pullback near the middle, then a heavier second drop with evolving bass rhythm. Maintain fast forward motion to the end. Cohesive punchy club mix, powerful bass and drums, transients preserved, clean controlled high frequencies. No vocals, speech, chanting, acoustic ballad, chiptune, trap beat or four-on-the-floor house. Music only: no gunfire or explosions."
+  },
+  "started_at": "2026-09-13T21:46:05.117670+00:00",
+  "status": "complete",
+  "purpose": "Private audition; not yet approved for game integration.",
+  "song-id": "EIESFdn8ctD5yuwnJT7b",
+  "completed_at": "2026-09-13T21:46:14.716823+00:00",
+  "bytes": 707231,
+  "sha256": "ad182d4532d043c4d39e3243f0e0b8190f992a4af81c29cb1687106889e5dc62",
+  "file": "reactor_rush.mp3"
+}

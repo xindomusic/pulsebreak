@@ -1,0 +1,20 @@
+{
+  "provider": "ElevenLabs",
+  "name": "plasma_fire",
+  "title": "Heavy plasma launcher",
+  "endpoint": "/v1/sound-generation",
+  "output_format": "mp3_44100_128",
+  "request": {
+    "duration_seconds": 1.8,
+    "text": "One isolated heavy science fiction plasma cannon shot. An immediate huge low-mid electromagnetic THWUMP with a vicious bright ion crack, thick tearing electrical texture and short descending resonant power tail. Powerful, physical and futuristic, cinematic game sound design. Centered punch with a wider electrical tail, clear initial transient. One shot at the start, then decay to silence. No charging introduction, thin cartoon pew, repeated shots, music, speech or ambient bed.",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt_influence": 0.6,
+    "loop": false
+  },
+  "started_at": "2026-09-13T21:46:16.556901+00:00",
+  "status": "http_error",
+  "purpose": "Private audition; not yet approved for game integration.",
+  "http_status": 400,
+  "completed_at": "2026-09-13T21:46:16.710161+00:00",
+  "api_status": "invalid_text_length"
+}

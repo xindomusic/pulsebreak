@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulsebreak — Audio audition</title>
+<style>
+  :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #070b19; color: #edf2ff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 85% 8%, #42235b77, transparent 50%), radial-gradient(ellipse at 2% 45%, #053e5c66, transparent 55%); }
+  main { width: min(1020px, 100%); margin: auto; padding: 42px 24px 56px; }
+  .brand { display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 12px; font-weight: 750; letter-spacing: .2em; color: #8aadd0; }
+  .brand strong { color: #59e6f2; }
+  .signal { width: 9px; height: 9px; display: inline-block; margin-right: 9px; background: #ff886f; border-radius: 50%; box-shadow: 0 0 18px #ff735b; }
+  h1 { font-size: clamp(40px, 7vw, 72px); letter-spacing: -.05em; line-height: 1.02; margin: 52px 0 18px; max-width: 650px; }
+  h1 span { color: #ff967d; }
+  p { line-height: 1.6; color: #a8b9d1; }
+  .intro { max-width: 620px; font-size: 17px; margin-bottom: 30px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  article { background: #121b30d9; border: 1px solid #293650; border-radius: 18px; padding: 25px; min-width: 0; }
+  article.hero { grid-column: 1 / -1; border-color: #4bcfd66b; background: linear-gradient(125deg, #123642d9, #161c38 65%, #392638); }
+  .eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .17em; font-weight: 750; color: #64e3ed; }
+  h2 { margin: 12px 0 8px; font-size: 26px; letter-spacing: -.025em; }
+  article p { margin-top: 7px; font-size: 14px; }
+  audio { display: block; width: 100%; height: 44px; margin-top: 22px; }
+  .hero-top { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .badge { font-size: 11px; font-weight: 750; letter-spacing: .1em; color: #ffae97; border: 1px solid #ff9a7655; border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
+  .versions { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; }
+  .versions button { cursor: pointer; border: 1px solid #425778; border-radius: 999px; color: #b7c6da; background: #131f35; padding: 11px 17px; font: inherit; font-size: 13px; font-weight: 650; }
+  .versions button[aria-pressed="true"] { background: #ffc0a9; border-color: #ffc0a9; color: #25182a; }
+  .comparison-note { font-size: 12px; margin: 0 0 24px; }
+  .cue-list { margin-top: 30px; }
+  .cue-list h2 { font-size: 19px; margin-bottom: 16px; }
+  .cue { display: grid; grid-template-columns: 38px 1fr minmax(220px, 46%); align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid #273149; }
+  .number { color: #65859f; font-variant-numeric: tabular-nums; font-size: 12px; }
+  .cue h3 { font-size: 15px; margin: 0 0 5px; }
+  .cue small { color: #8fa6c2; }
+  .cue audio { margin: 0; height: 36px; }
+  footer { margin-top: 25px; color: #778da8; font-size: 12px; line-height: 1.6; }
+  a { color: #79dfe9; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid #ffae97; outline-offset: 5px; }
+  @media (max-width: 640px) { main { padding: 25px 18px; } .brand { font-size: 9px; letter-spacing: .12em; } h1 { margin-top: 40px; } .grid { grid-template-columns: 1fr; } article { padding: 21px; } .hero-top { align-items: flex-start; } .badge { font-size: 9px; } .cue { grid-template-columns: 24px 1fr; } .cue audio { grid-column: 2; } }
+</style>
+<main>
+  <div class="brand"><strong><span class="signal"></span>PULSEBREAK</strong><span>AUDIO AUDITION / 02</span></div>
+  <h1>Feel the <span>reactor.</span></h1>
+  <p class="intro">A heavier take on drum and bass: dominant drums, thicker snare body and grinding bass movement. Hear the new ElevenLabs revision with the combat effects.</p>
+  <div class="versions" role="group" aria-label="Compare music versions"><button type="button" aria-pressed="true" data-version="heavy">Heavier revision</button><button type="button" aria-pressed="false" data-version="original">First version</button></div>
+  <p class="comparison-note" id="version-note" aria-live="polite">Heavier revision selected · Playback loudness matched for comparison.</p>
+  <div class="grid">
+    <article class="hero">
+      <div class="hero-top"><div><div class="eyebrow">Start here</div><h2>Battle mix</h2></div><span class="badge">44 SECONDS</span></div>
+      <p>DnB under kinetic and plasma volleys, armor hits, robot destruction, and two overload blasts. An offline scripted montage for judging the sound together.</p>
+      <audio id="battle-player" controls preload="metadata" aria-label="Heavier battle mix" src="battle_preview_heavy.mp3"><a href="battle_preview_heavy.mp3">Play heavier battle mix</a></audio>
+    </article>
+    <article>
+      <div class="eyebrow">Music only</div><h2>Reactor Rush</h2>
+      <p>174 BPM target. Rolling breaks, cracking snares and aggressive Reese bass. Instrumental, 44 seconds.</p>
+      <audio id="music-player" controls preload="metadata" aria-label="Reactor Rush heavier revision music" src="reactor_rush_heavy.mp3"><a href="reactor_rush_heavy.mp3">Play heavier music</a></audio>
+    </article>
+    <article>
+      <div class="eyebrow">Effects only</div><h2>The arsenal</h2>
+      <p>Five sounds in order: kinetic, plasma, armor hit, robot destruction, then reactor overload. 15 seconds.</p>
+      <audio controls preload="metadata" aria-label="Five sound effect reel"><source src="effects_reel.mp3" type="audio/mpeg"><a href="effects_reel.mp3">Play effects</a></audio>
+    </article>
+  </div>
+  <section class="cue-list" aria-labelledby="individual-title">
+    <h2 id="individual-title">Individual sounds</h2>
+    <div class="cue"><span class="number">01</span><div><h3>Kinetic cannon</h3><small>Crack · body · mechanism</small></div><audio controls preload="metadata" aria-label="Kinetic cannon" src="kinetic_fire.mp3"></audio></div>
+    <div class="cue"><span class="number">02</span><div><h3>Heavy plasma</h3><small>Electromagnetic punch · ion tail</small></div><audio controls preload="metadata" aria-label="Heavy plasma cannon" src="plasma_fire.mp3"></audio></div>
+    <div class="cue"><span class="number">03</span><div><h3>Armor impact</h3><small>Metal · ceramic · sparks</small></div><audio controls preload="metadata" aria-label="Armor impact" src="armor_hit.mp3"></audio></div>
+    <div class="cue"><span class="number">04</span><div><h3>Robot destruction</h3><small>Rupture · debris · power failure</small></div><audio controls preload="metadata" aria-label="Robot destruction" src="enemy_break.mp3"></audio></div>
+    <div class="cue"><span class="number">05</span><div><h3>Reactor overload</h3><small>Concussion · shockwave · aftermath</small></div><audio controls preload="metadata" aria-label="Reactor overload blast" src="reactor_pulse.mp3"></audio></div>
+  </section>
+  <footer>Generated with ElevenLabs, then trimmed and balanced locally. Descriptions reflect the requested sound direction; listening will determine what belongs in Pulsebreak. <a href="../../ELEVENLABS_AUDIO.md">Audition notes</a></footer>
+</main>
+<script>
+  const players = [...document.querySelectorAll('audio')];
+  players.forEach(player => {
+    player.volume = 0.7;
+    player.addEventListener('play', () => players.forEach(other => { if (other !== player) other.pause(); }));
+  });
+  const versions = [...document.querySelectorAll('[data-version]')];
+  versions.forEach(button => button.addEventListener('click', () => {
+    const heavy = button.dataset.version === 'heavy';
+    if (button.getAttribute('aria-pressed') === 'true') return;
+    versions.forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+    [['battle-player', heavy ? 'battle_preview_heavy.mp3' : 'battle_preview.mp3', 'battle mix'],
+     ['music-player', heavy ? 'reactor_rush_heavy.mp3' : 'reactor_rush.mp3', 'music']].forEach(([id, source, label]) => {
+       const player = document.getElementById(id);
+       const wasPlaying = !player.paused;
+       player.src = source;
+       player.setAttribute('aria-label', (heavy ? 'Heavier ' : 'First version ') + label);
+       player.load();
+       if (wasPlaying) player.play().catch(() => {});
+     });
+    document.getElementById('version-note').textContent = (heavy ? 'Heavier revision' : 'First version') + ' selected · Playback loudness matched for comparison.';
+  }));
+</script>
+</html>

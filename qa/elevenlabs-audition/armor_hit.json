@@ -1,0 +1,22 @@
+{
+  "provider": "ElevenLabs",
+  "name": "armor_hit",
+  "title": "Armor impact",
+  "endpoint": "/v1/sound-generation",
+  "output_format": "mp3_44100_128",
+  "request": {
+    "duration_seconds": 1.0,
+    "text": "One isolated high velocity projectile striking a robot's thick armored plate. Immediate sharp hard metallic crunch, compact weighty knock, brief brittle ceramic shatter and tiny sizzling sparks. Extremely tight satisfying game hit confirmation, short dry decay. One impact at the start, no ricochet whistle, second impact, explosion, voice, music or background noise.",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt_influence": 0.6,
+    "loop": false
+  },
+  "started_at": "2026-09-13T21:48:05.040202+00:00",
+  "status": "complete",
+  "purpose": "Private audition; not yet approved for game integration.",
+  "character-cost": "11",
+  "completed_at": "2026-09-13T21:48:06.799402+00:00",
+  "bytes": 17180,
+  "sha256": "39cecf40488ff2348b26124a1ad7d6dc2be5f6d042c2762ca723b6847897d281",
+  "file": "armor_hit.mp3"
+}

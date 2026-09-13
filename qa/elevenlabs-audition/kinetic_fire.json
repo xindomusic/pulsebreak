@@ -1,0 +1,22 @@
+{
+  "provider": "ElevenLabs",
+  "name": "kinetic_fire",
+  "title": "Kinetic cannon",
+  "endpoint": "/v1/sound-generation",
+  "output_format": "mp3_44100_128",
+  "request": {
+    "duration_seconds": 1.2,
+    "text": "One isolated single shot from a powerful futuristic kinetic rifle, immediate dry sharp ballistic CRACK layered with a deep compact chesty punch, a quick metal bolt clack and tiny hot casing tick, short controlled tail. Expensive cinematic game weapon sound, tactile and aggressive, close perspective. One shot only at the very start, silence after its decay. No firing sequence, laser beep, voice, music, ambience or long reverb.",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt_influence": 0.6,
+    "loop": false
+  },
+  "started_at": "2026-09-13T21:46:14.717229+00:00",
+  "status": "complete",
+  "purpose": "Private audition; not yet approved for game integration.",
+  "character-cost": "13",
+  "completed_at": "2026-09-13T21:46:16.555390+00:00",
+  "bytes": 20106,
+  "sha256": "0f0fb4e7b0f23bfbeb9c03e274fea478e8e2b0ae809b1dd6fe2008da60ecb304",
+  "file": "kinetic_fire.mp3"
+}
