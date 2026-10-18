@@ -14,7 +14,7 @@ const COLORS: Dictionary = {
 	"arc": Palette.WEAPON_ELECTRIC, "plasma": Palette.WEAPON_PLASMA,
 	"white": Color("f3ffff"), "ember": Color("ff8c4b"),
 	"smoke": Color("263545"), "dark": Color("111e2b"),
-	"pulse_cyan": Color("24dcff"), "pulse_violet": Color("59b7ff"),
+	"pulse_cyan": Color("f5f1e8"), "pulse_violet": Palette.ICE,
 	"pulse_hot": Color("ffe8bb")
 }
 var low_effects := false:
@@ -440,11 +440,11 @@ func destroy_enemy(model: Node3D, at: Vector3, kind: String, direction: Vector3)
 static func _ghost_mat() -> StandardMaterial3D:
 	if _ghost_material: return _ghost_material
 	var m := StandardMaterial3D.new()
-	m.albedo_color = Color(0.45,0.95,1.0,0.5)
+	m.albedo_color = Color(1.0,0.62,0.25,0.45)
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.emission_enabled = true
-	m.emission = Color(0.3,0.85,1.0)
+	m.emission = Color(1.0,0.55,0.2)
 	m.emission_energy_multiplier = 0.8
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	_ghost_material = m
@@ -489,7 +489,7 @@ func damage_number(at: Vector3, amount: float, shielded: bool = false) -> void:
 		label = number_pool.pop_back()
 	label.visible = true
 	label.text = str(int(round(amount)))
-	label.modulate = Color("9fd8ff") if shielded else (Color("ffd078") if amount >= 40.0 else Color("f3ffff"))
+	label.modulate = Palette.ICE if shielded else (Palette.GOLD if amount >= 40.0 else Palette.WHITE)
 	label.position = at + Vector3(rng.randf_range(-0.25,0.25), 0.55, rng.randf_range(-0.1,0.1))
 	label.scale = Vector3.ONE * (1.35 if amount >= 40.0 else 1.0)
 	numbers.append({"node": label, "life": 0.65, "total": 0.65})

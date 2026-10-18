@@ -9,16 +9,16 @@ const MAX_GATES := 3
 const MIN_WARNING := 1.35
 const HISTORY_LIMIT := 32
 const THEMES := [
-	{"name":"SKYPORT","color":Color("76f7df")},
-	{"name":"SOLAR FOUNDRY","color":Color("ffd18a")},
-	{"name":"TEMPEST CORE","color":Color("7ac7ff")}
+	{"name":"SKYPORT","color":Color("c3d5e0")},
+	{"name":"SOLAR FOUNDRY","color":Color("e0a458")},
+	{"name":"TEMPEST CORE","color":Color("8fb0c9")}
 ]
 const ONBOARDING := [
-	{"name":"SKYPORT", "subtitle":"Take the high road.", "color":Color("76f7df"), "kills":4,
+	{"name":"SKYPORT", "subtitle":"Take the high road.", "color":Color("c3d5e0"), "kills":4,
 	 "targets":[Vector3(0,2.6,4),Vector3(-7,2.6,-1),Vector3(5,2.6,-7)]},
 	{"name":"SOLAR FOUNDRY", "subtitle":"Ride the current. Thread the shutters.", "color":Color("ffd18a"), "kills":8,
 	 "targets":[Vector3(-7,2.6,4),Vector3(6,2.6,-1),Vector3(-5,2.6,-8)]},
-	{"name":"TEMPEST CORE", "subtitle":"Cut the locks. Steal the storm.", "color":Color("7ac7ff"), "kills":0,
+	{"name":"TEMPEST CORE", "subtitle":"Cut the locks. Steal the storm.", "color":Color("8fb0c9"), "kills":0,
 	 "targets":[Vector3(6,2.6,3),Vector3(-6,2.6,-3),Vector3(0,2.6,-9)]}
 ]
 const ROUTES := [

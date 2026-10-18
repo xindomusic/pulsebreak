@@ -16,7 +16,7 @@ Pulsebreak's visuals are constructed in source with Codex assistance; no externa
 
 [art.gd](../scripts/art.gd) builds the Skyforge deck, perimeter machinery, player, five enemy silhouettes (including the Splitter and its mites), and Guardian from Godot primitives, chamfered custom meshes and shared PBR materials with procedural roughness grain. Repeated details use shared resources and MultiMesh groups. Actor factories return nodes with named parts such as `Body`, `Reactor`, `Ring`, and `Shield`; gameplay can animate or toggle them without owning their mesh construction.
 
-The visual palette separates the mint-cyan player/pulse language, orange absorbable shots, amber harvest economy, and coral charge or ground warnings; [palette.gd](../scripts/palette.gd) is the single token source for HUD, weapons and FX. The mostly open floor preserves movement space and visibility. This is procedural stylized 3D art, not a generated image projected into a scene.
+The visual palette (1.3.1 aerospace-instrument direction) is warm off-white on graphite with one signal-orange accent for energy and action, gold only for salvage money, coral-red only for danger, and pale ice for the player marker and glide; [palette.gd](../scripts/palette.gd) is the single token source for HUD, weapons and FX. The mostly open floor preserves movement space and visibility. This is procedural stylized 3D art, not a generated image projected into a scene.
 
 Camera, lighting, sky, ambient light and fog are configured by the director in [game.gd](../scripts/game.gd). Runtime bullet, trail, ring, spark and hazard geometry lives in [combat_field.gd](../scripts/combat_field.gd). The app icon is [an SVG](../assets/icon.svg).
 

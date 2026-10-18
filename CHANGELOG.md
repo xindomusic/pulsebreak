@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.1 — 2026-10-18 — UI palette overhaul
+
+- Killed the neon-mint/purple AI-template look. New "aerospace instrument" direction: warm off-white type on graphite, one signal-orange accent (the color of the shots you steal), gold only for salvage money, red only for danger, ice only for the player marker and glide. Researched against Destiny/Hades/Dead Space UI practice; see [the loop record](qa/ui131-review.md).
+- Embedded real type (OFL): Barlow for text, Barlow Condensed for display, IBM Plex Mono for timer/score/costs. No more system-font UI.
+- One primary button per screen (off-white, Destiny-style); focus is a white outline that never impersonates the primary; settings show ON/OFF state and numeric slider readouts.
+- Combat color law: hostile fire saturated red-orange, friendly pulse cream/ice, ice player ring, coral hazards with a readable fill.
+- Three independent agent review loops: UI/theme rose 4.8-6.0 -> 6.2-6.5 -> **6.6/10 final**. Green/purple/neon verified gone; 9/10 not claimed - the remaining gap is bespoke art, not color.
+- Gameplay is unchanged from 1.3.0. Published the universal Mac ZIP and checksums under `v1.3.1`; exported app verified with a simulated Classic win. [Package report](qa/release-1.3.1-package.json).
+
 ## 1.3.0 — 2026-10-18 — Reforge Mac release
 
 - Lifelike pass: per-surface PBR (clearcoat ceramic, titanium, copper, rubber), procedural roughness grain with planar UVs on chamfered armor, sky ambient/reflections, ACES + bloom, three-point lighting, contact shadows, pulsing reactor cores, higher-fidelity round meshes.

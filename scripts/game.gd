@@ -106,7 +106,7 @@ func _ready() -> void:
 	weapon_fx = CombatFX.new(); add_child(weapon_fx)
 	weapons = Weapons.new(); weapons.game = self; add_child(weapons)
 	weapons.reset()
-	player_marker = field.ring(0.62,Color(0.46,1,0.87,0.65)); add_child(player_marker)
+	player_marker = field.ring(0.82,Color("dff2ff")); add_child(player_marker)
 	var contact := MeshInstance3D.new()
 	var contact_mesh := CylinderMesh.new()
 	contact_mesh.top_radius=0.55; contact_mesh.bottom_radius=0.55; contact_mesh.height=0.015; contact_mesh.radial_segments=24
@@ -183,9 +183,9 @@ func setup_world() -> void:
 	var env := Environment.new()
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color("071323")
+	sky_material.sky_top_color = Color("0a0e13")
 	sky_material.sky_horizon_color = Color("375667")
-	sky_material.ground_bottom_color = Color("0a1825")
+	sky_material.ground_bottom_color = Color("0c0f12")
 	sky_material.ground_horizon_color = Color("375667")
 	sky_material.sky_curve = 0.2
 	sky.sky_material = sky_material
@@ -196,12 +196,12 @@ func setup_world() -> void:
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.glow_enabled = true
-	env.glow_intensity = 0.35
+	env.glow_intensity = 0.25
 	env.glow_strength = 0.9
 	env.glow_bloom = 0.12
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.06
-	env.adjustment_saturation = 1.08  # Mobile renderer has no SSAO; grounding comes from shadows + grain
+	env.adjustment_saturation = 0.98  # Mobile renderer has no SSAO; grounding comes from shadows + grain
 	env.fog_enabled = true
 	env.fog_light_color = Color("142344")
 	env.fog_density = 0.0015
@@ -210,24 +210,24 @@ func setup_world() -> void:
 	add_child(world)
 	key_light = DirectionalLight3D.new()
 	key_light.rotation_degrees = Vector3(-58,-28,0)
-	key_light.light_color = Color("fff1dd")
+	key_light.light_color = Color("f4f2ec")
 	key_light.light_energy = 1.45
 	key_light.shadow_enabled = true
 	key_light.directional_shadow_max_distance = 90
 	add_child(key_light)
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-35,55,0)
-	fill.light_color = Color("9fc6e8")
+	fill.light_color = Color("cfd8de")
 	fill.light_energy = 0.35
 	fill.shadow_enabled = false
 	add_child(fill)
 	var rim := DirectionalLight3D.new()
 	rim.rotation_degrees = Vector3(-25,140,0)
-	rim.light_color = Color("ffb37a")
-	rim.light_energy = 0.7
+	rim.light_color = Color("ff9a4d")
+	rim.light_energy = 0.5
 	add_child(rim)
 	pulse_light = OmniLight3D.new()
-	pulse_light.light_color = Color("67dfff")
+	pulse_light.light_color = Color("ffd9a8")
 	pulse_light.light_energy = 0.0
 	pulse_light.omni_range = 9.0
 	pulse_light.shadow_enabled = false
@@ -299,8 +299,8 @@ func show_title_scene() -> void:
 	camera.look_at(Vector3.ZERO)
 
 func set_sector_lighting(index: int) -> void:
-	var colors := [Color("fff1dd"),Color("ffd9a8"),Color("cfe8ff")]
-	var fogs := [Color("142344"),Color("33200f"),Color("12304a")]
+	var colors := [Color("f4f2ec"),Color("f5e3c2"),Color("e2ecf4")]
+	var fogs := [Color("141a20"),Color("211a12"),Color("131b23")]
 	key_light.light_color = colors[index]
 	world_environment.fog_light_color = fogs[index]
 	var sky_material: ProceduralSkyMaterial = world_environment.sky.sky_material
@@ -607,7 +607,7 @@ func _physics_process(delta: float) -> void:
 	if traversal.jumped: cue("dash",0.5)
 	if traversal.landed:
 		player_node.set_meta("landing_impact",clampf(traversal.landing_speed/12.0,0.2,1.0))
-		add_effect(Vector3(player_position.x,0,player_position.z),Color("a0fff0"),0.95)
+		add_effect(Vector3(player_position.x,0,player_position.z),Color("ffd9a8"),0.95)
 		if weapon_fx.has_method("dust_ring"): weapon_fx.dust_ring(player_position, clampf(traversal.landing_speed/10.0,0.4,1.4))
 		cue("ready",0.32)
 	if movement.length_squared()>0.01: facing = movement.normalized()
@@ -632,7 +632,7 @@ func _physics_process(delta: float) -> void:
 	trail_timer -= step
 	if rules.dash_time>0 and trail_timer<=0:
 		trail_timer = 0.045
-		add_trail(player_position,Color(0.38,1,0.83,0.65),0.65)
+		add_trail(player_position,Color(1.0,0.58,0.22,0.6),0.65)
 		if weapon_fx.has_method("dash_ghost"): weapon_fx.dash_ghost(player_node)
 		if traversal.height<0.45 and (rules.level("wake")>0 or rules.level("frost")>0):
 			field.add_field(player_position,rules.level("wake")>0)
@@ -714,7 +714,7 @@ func dash() -> void:
 		pulse_at(player_position,30.0,true,0.35)
 	trail_timer = 0
 	cue("dash")
-	add_effect(player_position,Color("76f7df"),1.2)
+	add_effect(player_position,Color("ff8a2a"),1.2)
 
 func pulse() -> void:
 	var power: float = rules.spend_pulse()

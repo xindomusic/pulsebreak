@@ -19,7 +19,7 @@ func _ready() -> void:
 	shot_mesh.height = 0.4
 	shot_mesh.radial_segments = 4
 	shot_mesh.rings = 1
-	shot_material = glow_material(Color("ffb465"))
+	shot_material = glow_material(Color("ff5a26"))
 
 func glow_material(color: Color, transparent: bool = false) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -117,14 +117,14 @@ func line(from: Vector3, to: Vector3, color: Color, width: float = 0.04) -> void
 
 func add_hazard(at: Vector3, radius: float, warning: float) -> void:
 	if hazards.size() >= 5: return
-	var node := ring(radius,Color(1,0.28,0.39,0.9))
+	var node := ring(radius,Color(0.9,0.28,0.30,0.9))
 	add_child(node)
 	node.position = Vector3(clampf(at.x,-12,12),0.10,clampf(at.z,-12,12))
 	var fill := MeshInstance3D.new()
 	var fill_mesh := CylinderMesh.new()
 	fill_mesh.top_radius = radius; fill_mesh.bottom_radius = radius; fill_mesh.height = 0.02; fill_mesh.radial_segments = 28
 	fill.mesh = fill_mesh
-	fill.material_override = glow_material(Color(1,0.3,0.36,0.20),true)
+	fill.material_override = glow_material(Color(0.9,0.28,0.30,0.34),true)
 	fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(fill)
 	fill.position = node.position + Vector3(0,-0.02,0)
@@ -178,7 +178,7 @@ func update(delta: float, fx_delta: float = -1.0) -> void:
 			harvest_hit = game.campaign.resolve_gates(shot_at,receiver_at).is_equal_approx(receiver_at)
 		if harvest_hit:
 			game.rules.harvest([10.0,15.0,18.0,22.0][game.rules.level("capacitor")])
-			line(node.position,game.player_position+Vector3(0,1,0),Color("76f7df"),0.06)
+			line(node.position,game.player_position+Vector3(0,1,0),Color("ff8a2a"),0.06)
 			game.cue("absorb",0.65)
 			game.harvest_flash = 0.25
 			discard_bullet(i)
