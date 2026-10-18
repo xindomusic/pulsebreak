@@ -5,8 +5,8 @@
   "change": "UI/theme overhaul (aerospace-instrument palette, embedded OFL fonts); gameplay unchanged from 1.3.0",
   "zip": {
     "file": "Pulsebreak-1.3.1-macOS-universal.zip",
-    "bytes": 62292180,
-    "sha256": "325be618cc11afc6af207c51e1e601f8ad3d4c780543c09dd7bb60fa06d9b7b7"
+    "bytes": 62292218,
+    "sha256": "db9d4338bea7a78431c5bd18f9b98fc117212c8a209139a770aea8d785d34685"
   },
   "pck": {
     "bytes": 2854356,
@@ -16,5 +16,6 @@
   "signature": "ad-hoc, codesign --verify --deep --strict passed",
   "tests": "632 checks in 15 suites, all passed",
   "packaged_run": "Exported app simulated Classic win, 0 script errors (qa/ui131/packaged)",
-  "grade": "UI/theme agent review loops: 4.8-6.0 -> 6.2-6.5 -> 6.6 final (qa/ui131-review.md); 9/10 not claimed"
+  "grade": "UI/theme agent review loops: 4.8-6.0 -> 6.2-6.5 -> 6.6 final (qa/ui131-review.md); 9/10 not claimed",
+  "built_from": "main merge commit f044c16 (PCK identical to branch build)"
 }
