@@ -1,11 +1,15 @@
 extends CanvasLayer
 const Rules = preload("res://scripts/rules.gd")
+const Palette = preload("res://scripts/palette.gd")
 signal action(name: String, value: Variant)
-const INK := Color("08131e")
-const CYAN := Color("76f7df")
-const MUTED := Color("9eb5c5")
-const WHITE := Color("edf6f7")
-const AMBER := Color("ffb477")
+## One color-token set for the whole game: deep-navy ink, mint-cyan player,
+## amber harvest, coral threat. The 3D palette in art.gd uses the same hues.
+const INK: Color = Palette.INK
+const CYAN: Color = Palette.MINT
+const MUTED: Color = Palette.MUTED
+const WHITE: Color = Palette.WHITE
+const AMBER: Color = Palette.AMBER
+const CORAL: Color = Palette.CORAL
 var root: Control
 var modal: Control
 var hud: Control
@@ -36,6 +40,8 @@ var altitude_text: Label
 var objective_text: Label
 var weapon_text: Label
 var weapon_detail: Label
+var combo_text: Label
+var threshold_tick: Label
 
 func set_bindings(bindings: Dictionary) -> void:
 	for id in bindings: key_names[id]=OS.get_keycode_string(int(bindings[id]))
@@ -155,6 +161,8 @@ func build_hud() -> void:
 	time_text = label_at(hud, "00:00", Vector2(662, 20), 34)
 	time_text.add_theme_font_override("font", heavy)
 	score_text = label_at(hud, "000000  /  SCORE", Vector2(1180, 32), 18)
+	combo_text = label_at(hud, "", Vector2(1180, 92), 20, AMBER)
+	combo_text.add_theme_font_override("font", heavy)
 	label_at(hud, "ESC  PAUSE", Vector2(1260, 66), 13, MUTED)
 	var reactor := Panel.new()
 	reactor.position = Vector2(500, 785)
@@ -164,6 +172,7 @@ func build_hud() -> void:
 	hud.add_child(reactor)
 	energy_text = label_at(reactor, "E  PULSE  /  0", Vector2(22, 12), 16, CYAN)
 	energy_bar = bar_at(reactor, Vector2(22, 44), Vector2(250, 9), CYAN)
+	threshold_tick = label_at(reactor, "|", Vector2(22 + 250*0.30 - 3, 38), 14, AMBER)
 	dash_text = label_at(reactor, "SPACE  DASH\n●  ●", Vector2(302, 12), 16, WHITE)
 	harvest_guide=label_at(reactor, "DASH THROUGH ORANGE SHOTS TO CHARGE", Vector2(22, 62), 10, MUTED)
 	weapon_text=label_at(hud,"VECTOR CARBINE / I",Vector2(35,766),18,CYAN)
@@ -179,8 +188,8 @@ func build_hud() -> void:
 	banner.size = Vector2(820, 100)
 	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	banner.add_theme_font_override("font", heavy)
-	boss_name = label_at(hud, "THE REACTOR GUARDIAN", Vector2(430, 92), 13, AMBER)
-	boss_bar = bar_at(hud, Vector2(430, 120), Vector2(580, 8), AMBER)
+	boss_name = label_at(hud, "THE REACTOR GUARDIAN", Vector2(430, 92), 13, CORAL)
+	boss_bar = bar_at(hud, Vector2(430, 120), Vector2(580, 8), CORAL)
 	boss_bar.visible = false
 	boss_name.visible = false
 	objective_text = label_at(hud,"",Vector2(280,142),16,CYAN)
@@ -195,7 +204,7 @@ func build_hud() -> void:
 	flight.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(flight)
 	flight_text = label_at(flight,"F  JUMP / HOLD TO GLIDE",Vector2(18,12),14,CYAN)
-	flight_bar = bar_at(flight,Vector2(18,44),Vector2(268,7),Color("b7d8ff"))
+	flight_bar = bar_at(flight,Vector2(18,44),Vector2(268,7),Palette.WEAPON_ELECTRIC)
 	altitude_text = label_at(flight,"WINGS READY",Vector2(18,62),11,MUTED)
 
 func clear_modal() -> void:
@@ -219,7 +228,7 @@ func column(pos: Vector2, width: float) -> VBoxContainer:
 	modal.add_child(box)
 	return box
 
-func show_title(best: int, practiced: bool) -> void:
+func show_title(best: int, practiced: bool, cores: int = 0) -> void:
 	clear_modal()
 	hud.visible = false
 	var gradient := Gradient.new()
@@ -238,14 +247,15 @@ func show_title(best: int, practiced: bool) -> void:
 	title.add_theme_font_override("font", heavy)
 	title.add_theme_constant_override("line_spacing", -25)
 	label_at(modal, "STEAL THE STORM.", Vector2(65, 394), 25, CYAN)
-	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nBuild your arsenal. Break the next horizon.", Vector2(65, 442), 19, MUTED)
+	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nBuild your arsenal. Break the next horizon.", Vector2(65, 428), 19, MUTED)
 	desc.size.x = 490
-	var box := column(Vector2(65, 515), 385)
+	var box := column(Vector2(65, 482), 385)
 	box.add_theme_constant_override("separation",10)
 	var play := button("BEGIN SKYBOUND    →", func(): action.emit("campaign", false), true)
 	box.add_child(play)
 	box.add_child(button("PRACTICE THE HEIST", func(): action.emit("practice", true)))
 	box.add_child(button("CLASSIC  /  SIX-MINUTE SURVIVAL", func(): action.emit("start", false)))
+	box.add_child(button("HANGAR  /  %d SALVAGE CORES" % cores, func(): action.emit("hangar", null)))
 	var controls:=HBoxContainer.new()
 	controls.add_theme_constant_override("separation",10)
 	for item in [["SETTINGS","settings"],["QUIT GAME","quit"]]:
@@ -254,10 +264,10 @@ func show_title(best: int, practiced: bool) -> void:
 		controls.add_child(control)
 	box.add_child(controls)
 	play.grab_focus()
-	label_at(modal, "PERSONAL BEST  /  %06d" % best, Vector2(65, 786), 14, AMBER)
+	label_at(modal, "PERSONAL BEST  /  %06d   ·   SALVAGE CORES  /  %d" % [best, cores], Vector2(65, 786), 14, AMBER)
 	label_at(modal, "%s  MOVE    %s  DASH    %s  PULSE    %s  JUMP / GLIDE" % [movement_keys(),key_names.dash.to_upper(),key_names.pulse.to_upper(),key_names.jump.to_upper()], Vector2(65, 846), 12, MUTED)
 	label_at(modal, "03 SECTORS. THEN THE UNKNOWN.\nNEW ROUTES / EVOLVING WEAPONS", Vector2(945, 790), 14, CYAN)
-	label_at(modal,"COURIER / MK.III\nVECTOR WING SYSTEM",Vector2(1020,91),14,CYAN)
+	label_at(modal,"COURIER / MK.III\nVECTOR WING SYSTEM",Vector2(612,84),14,CYAN)
 	if not practiced:
 		label_at(modal, "FIRST RUN? PRACTICE TEACHES HARVESTING. SKYBOUND TEACHES FLIGHT.", Vector2(65, 814), 10, MUTED)
 
@@ -288,6 +298,52 @@ func show_practice_complete() -> void:
 	box.add_child(button("PRACTICE AGAIN",func():action.emit("practice",true)))
 	box.add_child(button("RETURN TO TITLE",func():action.emit("title",null)))
 	start.grab_focus()
+
+func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
+	clear_modal(); shade(0.94)
+	hud.visible = false
+	var cores: int = int(settings.get("cores",0))
+	var perks: Dictionary = settings.get("perks",{})
+	label_at(modal, "THE HANGAR", Vector2(65, 58), 44, CYAN)
+	label_at(modal, "Salvage cores are earned on every run and never lost. Permanent perks apply to every future run.", Vector2(65, 122), 16, MUTED)
+	label_at(modal, "YOU HOLD %d CORES" % cores, Vector2(1050, 70), 22, AMBER)
+	var ids: Array = perk_data.keys()
+	for i in range(ids.size()):
+		var id: String = ids[i]
+		var data: Dictionary = perk_data[id]
+		var rank: int = int(perks.get(id,0))
+		var card := PanelContainer.new()
+		card.position = Vector2(65 + (i%3)*440, 175 + (i/3)*300)
+		card.size = Vector2(424, 284)
+		card.add_theme_stylebox_override("panel", panel(Color("122736"), Color("3a6471")))
+		modal.add_child(card)
+		var box := VBoxContainer.new()
+		box.add_theme_constant_override("separation", 12)
+		card.add_child(box)
+		box.add_child(text_line(data.name, 21))
+		box.add_child(text_line("●".repeat(rank) + "○".repeat(3-rank) + "   RANK %d / 3" % rank, 15, CYAN))
+		var desc := text_line(data.description, 16, MUTED)
+		desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		box.add_child(desc)
+		if rank >= 3:
+			box.add_child(text_line("MASTERED", 16, AMBER))
+		else:
+			var cost: int = int(data.cost[rank])
+			box.add_child(text_line("%d SALVAGE CORES" % cost, 15, AMBER))
+			var buy := button("INSTALL RANK %d" % (rank+1), func(): action.emit("buy_perk", id), cores >= cost)
+			buy.disabled = cores < cost
+			box.add_child(buy)
+	var prestige: int = int(settings.get("prestige",0))
+	var prestige_cost: int = int(40 * pow(1.5, prestige))
+	var prestige_button := button("OVERCHARGE CELL %d  /  +%d%% SCORE FOREVER  /  %d CORES" % [prestige+1, prestige+1, prestige_cost], func(): action.emit("buy_prestige", null), cores >= prestige_cost)
+	prestige_button.position = Vector2(505, 800); prestige_button.size = Vector2(640, 52)
+	prestige_button.disabled = cores < prestige_cost
+	modal.add_child(prestige_button)
+	var back := button("BACK TO TITLE", func(): action.emit("title", null), true)
+	back.position = Vector2(65, 800); back.size = Vector2(320, 52)
+	modal.add_child(back)
+	back.grab_focus()
+
 
 func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	clear_modal(); shade(0.94)
@@ -345,7 +401,7 @@ func show_rebind(id: String) -> void:
 	box.add_child(text_line("BIND " + id.to_upper(), 40, CYAN))
 	box.add_child(text_line("Press a keyboard key.\nEsc cancels. Reserved menu keys cannot be assigned.", 22))
 
-func show_upgrades(ids: Array) -> void:
+func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 	clear_modal(); shade(0.94)
 	offers = ids.duplicate()
 	label_at(modal, "REACTOR EVOLUTION", Vector2(485, 172), 34, CYAN)
@@ -361,16 +417,23 @@ func show_upgrades(ids: Array) -> void:
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 18)
 		card.add_child(box)
-		box.add_child(text_line("0%d  /  %s" % [i+1,data.family], 13, AMBER))
+		var current: int = int(levels.get(id,0))
+		var mark_names := ["MK I","MK II","MK III"]
+		box.add_child(text_line("0%d  /  %s  /  %s" % [i+1,data.family,mark_names[mini(current,2)]], 13, AMBER))
 		box.add_child(text_line(data.icon, 46, CYAN))
-		box.add_child(text_line(data.name, 23))
-		var desc := text_line(data.description, 17, MUTED)
+		box.add_child(text_line(data.name + ("  " + "●".repeat(current) + "○".repeat(3-current) if current>0 else ""), 23))
+		var fam_owned := 0
+		for fam_id in Rules.FAMILIES[data.family]:
+			if int(levels.get(fam_id,0))>0 or fam_id==id: fam_owned += 1
+		var resonance_text: String = {"HARVEST":"+1 DASH CHARGE","ECHO":"PULSE RADIUS +8%","WAKE":"COMBO WINDOW +25%"}[data.family]
+		box.add_child(text_line("%s %d/3  ·  RESONANCE: %s" % [data.family, fam_owned, resonance_text], 12, AMBER if fam_owned>=3 else MUTED))
+		var desc := text_line(data.marks[mini(current,2)], 17, MUTED)
 		desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		box.add_child(desc)
-		var choose := button("[%d]  INSTALL" % (i+1), func(): action.emit("upgrade", id), true)
+		var choose := button("[%d]  %s" % [i+1, "INSTALL" if current==0 else "RAISE TO " + mark_names[mini(current,2)]], func(): action.emit("upgrade", id), true)
 		box.add_child(choose)
 		if i == 0: choose.grab_focus()
-	label_at(modal, "UPGRADES LAST FOR THIS RUN  /  EVERY CHOICE CHANGES YOUR PLAY", Vector2(403, 724), 12, MUTED)
+	label_at(modal, "EACH SYSTEM HAS THREE MARKS  /  OWN ALL THREE OF A FAMILY FOR ITS RESONANCE", Vector2(380, 724), 12, MUTED)
 
 func show_weapon_upgrades(ids: Array, data: Array) -> void:
 	clear_modal(); shade(0.95)
@@ -435,6 +498,7 @@ func show_result(won: bool, data: Dictionary) -> void:
 	box.add_child(text_line("%06d" % data.score,64,WHITE))
 	box.add_child(text_line("SCORE  /  BEST %06d" % data.best,14,AMBER))
 	box.add_child(text_line("%d machines broken · %d shots stolen · %d pulses" % [data.kills,data.absorbed,data.pulses],17))
+	box.add_child(text_line("BEST COMBO ×%d  ·  +%d SALVAGE CORES (HOLD %d)" % [data.get("best_combo",0),data.get("cores_earned",0),data.get("cores",0)],15,AMBER))
 	box.add_child(text_line("TIME  %02d:%02d" % [int(data.time)/60,int(data.time)%60],16,MUTED))
 	if data.get("campaign",false):
 		box.add_child(text_line("SECTOR %02d · %d AIR RELAYS · %d GUARDIANS" % [data.sector,data.relays,data.get("guardians",0)],15,CYAN))
@@ -442,7 +506,10 @@ func show_result(won: bool, data: Dictionary) -> void:
 	box.add_child(text_line("%s  /  RANK %s" % [data.get("weapon","VECTOR CARBINE"),data.get("rank","I")],16,CYAN))
 	if won: box.add_child(text_line("OVERDRIVE UNLOCKED  /  Enable it in Settings for a tougher heist.",13,CYAN))
 	var names: PackedStringArray = []
-	for id in data.upgrades: names.append(Rules.UPGRADE_DATA[id].name)
+	var result_levels: Dictionary = data.get("levels",{})
+	for id in data.upgrades:
+		var lv: int = int(result_levels.get(id,1))
+		names.append(Rules.UPGRADE_DATA[id].name + ("" if lv<=1 else " Mk" + str(lv)))
 	box.add_child(text_line(" + ".join(names) if not names.is_empty() else "Your next weapon is waiting at the next checkpoint.",13,MUTED))
 	var again := button("RUN IT BACK    →",func():action.emit("restart",null),true)
 	box.add_child(again)
@@ -489,24 +556,33 @@ func show_banner(title: String, subtitle: String) -> void:
 	banner.modulate.a = 1
 
 func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practice: bool) -> void:
+	health_bar.max_value = rules.max_health
 	health_bar.value = rules.health
 	health_text.text = "HULL  /  %03d" % ceili(rules.health)
-	health_bar.get_theme_stylebox("fill").bg_color = CYAN if rules.health > 30 else Color("ff7467")
+	health_bar.get_theme_stylebox("fill").bg_color = CYAN if rules.health > 0.3*rules.max_health else CORAL
 	energy_bar.value = rules.energy
 	var charged: bool = rules.energy >= 85
-	var pulse_color := Color("bd98ff") if charged else CYAN
+	var pulse_color := Palette.AMBER_HOT if charged else CYAN
 	energy_bar.get_theme_stylebox("fill").bg_color = pulse_color
 	energy_text.add_theme_color_override("font_color",pulse_color)
-	energy_text.text = "%s  PULSE  /  %03d%s" % [key_names.pulse.to_upper(),int(rules.energy), "  OVERLOAD" if charged else "  READY" if rules.energy >= 30 else ""]
-	dash_text.text = key_names.dash.to_upper()+"  DASH\n" + ("●  ●" if rules.dash_charges == 2 else "●  ○" if rules.dash_charges == 1 else "○  ○")
+	energy_text.text = "%s  PULSE  /  %03d%s" % [key_names.pulse.to_upper(),int(rules.energy), "  OVERLOAD" if charged else "  READY" if rules.energy >= rules.pulse_threshold() else ""]
+	if threshold_tick: threshold_tick.position.x = 22 + 250*(rules.pulse_threshold()/100.0) - 3
+	var dash_cap: int = rules.max_dash_charges + (1 if rules.family_complete("HARVEST") else 0)
+	dash_text.text = key_names.dash.to_upper()+"  DASH\n" + "● ".repeat(rules.dash_charges) + "○ ".repeat(maxi(0,dash_cap-rules.dash_charges))
 	time_text.text = "%02d:%02d" % [int(run_time)/60,int(run_time)%60]
 	score_text.text = "%06d  /  SCORE" % rules.score
 	status_text.text = "PRACTICE  /  LEARN THE HEIST" if practice else "SKYFORGE  /  THREAT %02d" % (1+int(run_time/60))
 	boss_bar.visible = boss_max > 0
 	boss_name.visible = boss_max > 0
+	objective_text.position.y = 162 if boss_max > 0 else 142
 	if boss_max > 0: boss_bar.value = boss_hp / boss_max * 100
+	combo_text.text = "COMBO ×%d  +%d%%" % [rules.combo, int(round((rules.combo_multiplier()-1.0)*100.0))] if rules.combo>=2 else ""
 	var names: PackedStringArray = []
-	for id in rules.upgrades: names.append(Rules.UPGRADE_DATA[id].name)
+	for id in rules.upgrades:
+		var lv: int = rules.level(id)
+		names.append(Rules.UPGRADE_DATA[id].name + ("" if lv<=1 else " Mk"+str(lv)))
+	for family in Rules.FAMILIES:
+		if rules.family_complete(family): names.append(family+" RESONANCE")
 	build_text.text = "  /  ".join(names) if not names.is_empty() else "EVOLVE YOUR WEAPON AT THE NEXT CHECKPOINT"
 
 func _process(delta: float) -> void:

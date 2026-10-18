@@ -8,6 +8,14 @@ const Traversal = preload("res://scripts/traversal.gd")
 const Campaign = preload("res://scripts/campaign.gd")
 const Weapons = preload("res://scripts/weapons.gd")
 const CombatFX = preload("res://scripts/combat_fx.gd")
+const PERK_DATA := {
+	"hull":{"name":"REINFORCED HULL","cost":[24,48,90],"description":"+10 max hull per rank."},
+	"dash":{"name":"ION SERVOS","cost":[24,48,90],"description":"Dash recharges 8% faster per rank."},
+	"harvest":{"name":"GREEDY COILS","cost":[30,60,108],"description":"+1 energy from every stolen shot, per rank."},
+	"battery":{"name":"WARM START","cost":[18,36,72],"description":"Begin every run with +10 energy per rank."},
+	"armory":{"name":"ARMORY OVERDRIVE","cost":[30,66,120],"description":"+2.5% weapon damage per rank, from the first shot."},
+	"combo":{"name":"TEMPO KEEPER","cost":[18,42,78],"description":"Combo window +0.4s per rank. Keep the streak alive."}}
+const PRESTIGE_BASE_COST := 40
 var weapons: Node3D
 var weapon_fx: Node3D
 var weapon_choices: Array = []
@@ -56,6 +64,9 @@ var last_upgrade := 0
 var upgrade_choices: Array = []
 var shake := 0.0
 var harvest_flash := 0.0
+var hitstop := 0.0
+var camera_punch := 0.0
+var cores_earned := 0
 var practice := false
 var practice_step := 0
 var practice_pulse_hit := false
@@ -96,6 +107,19 @@ func _ready() -> void:
 	weapons = Weapons.new(); weapons.game = self; add_child(weapons)
 	weapons.reset()
 	player_marker = field.ring(0.62,Color(0.46,1,0.87,0.65)); add_child(player_marker)
+	var contact := MeshInstance3D.new()
+	var contact_mesh := CylinderMesh.new()
+	contact_mesh.top_radius=0.55; contact_mesh.bottom_radius=0.55; contact_mesh.height=0.015; contact_mesh.radial_segments=24
+	contact.mesh = contact_mesh
+	var contact_mat := StandardMaterial3D.new()
+	contact_mat.albedo_color = Color(0,0,0,0.4)
+	contact_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	contact_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	contact.material_override = contact_mat
+	contact.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	contact.name = "ContactShadow"
+	player_node.add_child(contact)
+	contact.position.y = 0.02
 	campaign = Campaign.new(); campaign.game = self; add_child(campaign)
 	ui = HUD.new(); add_child(ui)
 	ui.set_bindings(bindings)
@@ -106,7 +130,7 @@ func _ready() -> void:
 		add_child(sound)
 		if sound.has_method("set_volume"): sound.set_volume(settings.volume)
 	apply_settings()
-	ui.show_title(settings.best,settings.practiced)
+	ui.show_title(settings.best,settings.practiced,int(settings.get("cores",0)))
 	show_title_scene()
 	var args := OS.get_cmdline_user_args()
 	qa_mode = args.has("--qa")
@@ -167,10 +191,17 @@ func setup_world() -> void:
 	sky.sky_material = sky_material
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("7a92ca")
-	env.ambient_light_energy = 0.25
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	env.ambient_light_energy = 0.55
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.glow_enabled = true
+	env.glow_intensity = 0.35
+	env.glow_strength = 0.9
+	env.glow_bloom = 0.12
+	env.adjustment_enabled = true
+	env.adjustment_contrast = 1.06
+	env.adjustment_saturation = 1.08  # Mobile renderer has no SSAO; grounding comes from shadows + grain
 	env.fog_enabled = true
 	env.fog_light_color = Color("142344")
 	env.fog_density = 0.0015
@@ -179,15 +210,21 @@ func setup_world() -> void:
 	add_child(world)
 	key_light = DirectionalLight3D.new()
 	key_light.rotation_degrees = Vector3(-58,-28,0)
-	key_light.light_color = Color("dbe5ff")
-	key_light.light_energy = 1.3
+	key_light.light_color = Color("fff1dd")
+	key_light.light_energy = 1.45
 	key_light.shadow_enabled = true
 	key_light.directional_shadow_max_distance = 90
 	add_child(key_light)
+	var fill := DirectionalLight3D.new()
+	fill.rotation_degrees = Vector3(-35,55,0)
+	fill.light_color = Color("9fc6e8")
+	fill.light_energy = 0.35
+	fill.shadow_enabled = false
+	add_child(fill)
 	var rim := DirectionalLight3D.new()
 	rim.rotation_degrees = Vector3(-25,140,0)
-	rim.light_color = Color("8d69ff")
-	rim.light_energy = 0.55
+	rim.light_color = Color("ffb37a")
+	rim.light_energy = 0.7
 	add_child(rim)
 	pulse_light = OmniLight3D.new()
 	pulse_light.light_color = Color("67dfff")
@@ -240,6 +277,7 @@ func save_settings() -> void:
 func apply_settings() -> void:
 	if sound and sound.has_method("set_volume"): sound.set_volume(float(settings.volume))
 	key_light.shadow_enabled = not settings.get("low_effects",false)
+	if world_environment: world_environment.glow_enabled = not settings.get("low_effects",false)
 	if is_instance_valid(weapon_fx): weapon_fx.low_effects=bool(settings.get("low_effects",false))
 	if is_instance_valid(pulse_light):
 		pulse_light.visible = pulse_light_time > 0.0 and not settings.get("low_effects",false)
@@ -261,8 +299,8 @@ func show_title_scene() -> void:
 	camera.look_at(Vector3.ZERO)
 
 func set_sector_lighting(index: int) -> void:
-	var colors := [Color("dbe5ff"),Color("ffe1c0"),Color("e4d9ff")]
-	var fogs := [Color("142344"),Color("321c36"),Color("241735")]
+	var colors := [Color("fff1dd"),Color("ffd9a8"),Color("cfe8ff")]
+	var fogs := [Color("142344"),Color("33200f"),Color("12304a")]
 	key_light.light_color = colors[index]
 	world_environment.fog_light_color = fogs[index]
 	var sky_material: ProceduralSkyMaterial = world_environment.sky.sky_material
@@ -312,9 +350,9 @@ func choose_weapon(id: String) -> void:
 	upgrade_choices=rules.upgrade_options(rng)
 	if not upgrade_choices.is_empty():
 		state="upgrade"
-		ui.show_upgrades(upgrade_choices)
+		ui.show_upgrades(upgrade_choices,rules.upgrade_levels)
 	else:
-		rules.health=minf(100,rules.health+20)
+		rules.health=minf(rules.heal_ceiling(),rules.health+20)
 		rules.energy=minf(100,rules.energy+25)
 		rules.recovery=2.0
 		state="run"
@@ -331,7 +369,7 @@ func begin_campaign_boss() -> void:
 	weapons.clear_projectiles()
 	if is_instance_valid(core_node): core_node.queue_free()
 	core_node = null
-	rules.health = minf(100,rules.health+25)
+	rules.health = minf(rules.heal_ceiling(),rules.health+25)
 	rules.energy = maxf(40,rules.energy)
 	rules.recovery = 2.0
 	for gate in campaign.gates:
@@ -339,7 +377,7 @@ func begin_campaign_boss() -> void:
 		gate.previous_open=1.0
 		Campaign.Visuals.animate_gate(gate.node,1.0,campaign.elapsed)
 	boss_ref = spawn_enemy("boss",Vector3(0,0,-2.8))
-	boss_ref.hp = 1800.0*(1.2 if hard_mode else 1.0)*(1.0+minf(1.5,float(campaign.sector/3)*0.2))
+	boss_ref.hp = 1800.0*(1.2 if hard_mode else 1.0)*(1.0+minf(3.0,float(campaign.sector/3)*0.25))
 	boss_ref.max_hp = boss_ref.hp
 	qa_boss_entry = {"time":run_time,"health":rules.health,"position":str(player_position)}
 	state = "boss"
@@ -354,11 +392,15 @@ func start_run(is_practice: bool = false) -> void:
 	campaign.clear()
 	traversal.reset()
 	set_sector_lighting(0)
+	practice = is_practice
 	rules.reset()
 	weapons.reset()
+	apply_perks()
+	cores_earned = 0
+	hitstop = 0.0
+	camera_punch = 0.0
 	weapon_choices.clear()
 	guardians_defeated=0
-	practice = is_practice
 	state = "run"
 	run_time = 0
 	spawn_timer = 1.2
@@ -387,6 +429,46 @@ func start_run(is_practice: bool = false) -> void:
 	else:
 		announce("WELCOME TO THE SKYFORGE", "Survive six minutes. Break the guardian.")
 		ui.show_hint("%s dashes through orange shots. %s spends stolen energy." % [key_name("dash"),key_name("pulse")],7)
+
+func perk_rank(id: String) -> int:
+	return int(Dictionary(settings.get("perks",{})).get(id,0))
+
+func apply_perks() -> void:
+	if practice: return
+	rules.max_health = 100.0 + 10.0*perk_rank("hull")
+	rules.health = rules.max_health
+	rules.dash_recharge_time = 1.5 * pow(0.92, perk_rank("dash"))
+	rules.harvest_bonus = float(perk_rank("harvest"))
+	rules.energy = minf(100.0, 10.0*perk_rank("battery"))
+	rules.combo_window = 3.0 + 0.4*perk_rank("combo")
+	rules.score_bonus = 0.01*float(int(settings.get("prestige",0)))
+	weapons.overclocks += perk_rank("armory")
+
+func prestige_cost() -> int:
+	return int(PRESTIGE_BASE_COST * pow(1.5, int(settings.get("prestige",0))))
+
+func buy_prestige() -> void:
+	var cost: int = prestige_cost()
+	if int(settings.get("cores",0)) < cost: return
+	settings.cores = int(settings.get("cores",0)) - cost
+	settings.prestige = int(settings.get("prestige",0)) + 1
+	save_settings()
+	cue("upgrade")
+	ui.show_hangar(settings, PERK_DATA)
+
+func buy_perk(id: String) -> void:
+	if not PERK_DATA.has(id): return
+	var rank: int = perk_rank(id)
+	if rank >= 3: return
+	var cost: int = int(PERK_DATA[id].cost[rank])
+	if int(settings.get("cores",0)) < cost: return
+	settings.cores = int(settings.get("cores",0)) - cost
+	var perks: Dictionary = Dictionary(settings.get("perks",{})).duplicate()
+	perks[id] = rank + 1
+	settings.perks = perks
+	save_settings()
+	cue("upgrade")
+	ui.show_hangar(settings, PERK_DATA)
 
 func clear_run() -> void:
 	for enemy in enemies:
@@ -426,13 +508,13 @@ func on_ui_action(action: String, value: Variant) -> void:
 			campaign.clear()
 			traversal.reset()
 			show_title_scene()
-			ui.show_title(settings.best,settings.practiced)
+			ui.show_title(settings.best,settings.practiced,int(settings.get("cores",0)))
 		"settings":
 			settings_origin = state
 			state = "settings"; ui.show_settings(settings,bindings)
 		"back":
 			state = settings_origin
-			if state == "title": ui.show_title(settings.best,settings.practiced)
+			if state == "title": ui.show_title(settings.best,settings.practiced,int(settings.get("cores",0)))
 			else: state = "paused"; ui.show_pause()
 		"setting":
 			settings[value.key] = value.value
@@ -442,6 +524,9 @@ func on_ui_action(action: String, value: Variant) -> void:
 			bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F,"weapon":KEY_Q}
 			configure_input(); save_settings(); ui.show_settings(settings,bindings)
 		"upgrade": choose_upgrade(value)
+		"hangar": state="hangar"; ui.show_hangar(settings,PERK_DATA)
+		"buy_perk": buy_perk(value)
+		"buy_prestige": buy_prestige()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -464,6 +549,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				previous_state = state; state = "paused"; ui.show_pause()
 			elif state == "paused": on_ui_action("resume",null)
 			elif state == "settings": on_ui_action("back",null)
+			elif state == "hangar": state="title"; ui.show_title(settings.best,settings.practiced,int(settings.get("cores",0)))
 			return
 		if state == "weapon_upgrade" and event.keycode in [KEY_1,KEY_2,KEY_3]:
 			var index: int = event.keycode - KEY_1
@@ -504,6 +590,12 @@ func _physics_process(delta: float) -> void:
 			else: next_sector()
 		return
 	var step := delta
+	if hitstop > 0.0 and not qa_mode:
+		# Only the hitstop window itself runs slow; the rest of a long step
+		# (a hitch, or a test driving one big step) still advances normally.
+		var slowed: float = minf(delta, hitstop)
+		hitstop = maxf(0.0, hitstop - delta)
+		step = (delta - slowed) + slowed * 0.10
 	if qa_fast: step = delta * 4
 	qa_elapsed += delta
 	player_previous = player_position
@@ -516,10 +608,11 @@ func _physics_process(delta: float) -> void:
 	if traversal.landed:
 		player_node.set_meta("landing_impact",clampf(traversal.landing_speed/12.0,0.2,1.0))
 		add_effect(Vector3(player_position.x,0,player_position.z),Color("a0fff0"),0.95)
+		if weapon_fx.has_method("dust_ring"): weapon_fx.dust_ring(player_position, clampf(traversal.landing_speed/10.0,0.4,1.4))
 		cue("ready",0.32)
 	if movement.length_squared()>0.01: facing = movement.normalized()
 	if rules.dash_time > 0:
-		var dash_speed := 30.0 * (0.85 if rules.upgrades.has("collector") else 1.0)
+		var dash_speed: float = 30.0 * float([1.0,0.85,0.80,0.75][rules.level("collector")])
 		player_velocity = dash_direction * dash_speed
 	else:
 		player_velocity = movement * (9.0 if traversal.gliding else 7.0)
@@ -532,24 +625,30 @@ func _physics_process(delta: float) -> void:
 	Art.animate_player(player_node,step,movement.length(),not traversal.grounded,traversal.gliding,rules.dash_time>0,display_time)
 	player_marker.visible = true
 	player_marker.position = Vector3(player_position.x,0.06,player_position.z)
-	player_marker.scale = Vector3.ONE*(1.0+traversal.height*0.12)
+	player_marker.scale = Vector3.ONE*(1.0+traversal.height*0.12+harvest_flash*1.4)
+	var marker_mat: StandardMaterial3D = player_marker.material_override as StandardMaterial3D
+	if marker_mat: marker_mat.emission_energy_multiplier = 1.4 + harvest_flash*10.0
 	player_node.visible = not (rules.recovery>0 and sin(display_time*45)>0.7)
 	trail_timer -= step
 	if rules.dash_time>0 and trail_timer<=0:
 		trail_timer = 0.045
 		add_trail(player_position,Color(0.38,1,0.83,0.65),0.65)
-		if traversal.height<0.45 and (rules.upgrades.has("wake") or rules.upgrades.has("frost")):
-			field.add_field(player_position,rules.upgrades.has("wake"))
-		if rules.upgrades.has("ignite"):
+		if weapon_fx.has_method("dash_ghost"): weapon_fx.dash_ghost(player_node)
+		if traversal.height<0.45 and (rules.level("wake")>0 or rules.level("frost")>0):
+			field.add_field(player_position,rules.level("wake")>0)
+		if rules.level("ignite")>0:
 			for enemy in enemies:
-				if not enemy.dead and not dash_hit.has(enemy) and enemy.position.distance_to(player_position)<1.2:
-					dash_hit.append(enemy); enemy.take_hit(24,true)
+				if not enemy.dead and enemy.spawning<=0 and not dash_hit.has(enemy) and enemy.position.distance_to(player_position)<1.2:
+					dash_hit.append(enemy)
+					enemy.take_hit(float([0.0,24.0,36.0,50.0][rules.level("ignite")]),true)
+					if enemy.dead and rules.level("ignite")>=3:
+						rules.dash_charges = mini(rules.max_dash_charges + (1 if rules.family_complete("HARVEST") else 0), rules.dash_charges + 1)
 	weapons.record_enemy_positions()
 	for enemy in enemies:
 		if is_instance_valid(enemy): enemy.update(step)
-	field.update(step)
+	field.update(step, delta if not qa_fast else step)
 	weapons.update(step)
-	weapon_fx.update(step)
+	weapon_fx.update(delta if not qa_fast else step)
 	pulse_light_time = maxf(0.0,pulse_light_time-step)
 	pulse_light.visible = pulse_light_time > 0.0 and not settings.get("low_effects",false)
 	pulse_light.light_energy = pulse_light_strength*pow(pulse_light_time/0.26,2)
@@ -572,6 +671,9 @@ func _physics_process(delta: float) -> void:
 	harvest_flash = maxf(0,harvest_flash-step)
 	shake = maxf(0,shake-step*2.5)
 	camera.position = camera_home+Vector3(sin(display_time*83),0,cos(display_time*69))*shake*float(settings.shake)
+	camera_punch = maxf(0.0,camera_punch-step*3.0)
+	var camera_base: float = 28.5 if state=="boss" else 31.8
+	camera.size = lerpf(camera.size, camera_base - camera_punch*2.4, minf(1.0,step*3.0))
 	var boss_hp := 0.0
 	var boss_max := 0.0
 	if is_instance_valid(boss_ref) and not boss_ref.dead:
@@ -607,6 +709,9 @@ func dash() -> void:
 		if direction.length_squared()>0.01: facing=direction.normalized()
 	dash_direction = facing
 	dash_hit.clear()
+	if rules.level("capacitor")>=3 and rules.energy>=100.0:
+		rules.energy -= 30.0
+		pulse_at(player_position,30.0,true,0.35)
 	trail_timer = 0
 	cue("dash")
 	add_effect(player_position,Color("76f7df"),1.2)
@@ -614,16 +719,21 @@ func dash() -> void:
 func pulse() -> void:
 	var power: float = rules.spend_pulse()
 	if power<=0:
-		ui.show_hint("Need 30 energy. Dash THROUGH orange shots to steal charge.",2.4)
+		ui.show_hint("Need %d energy. Dash THROUGH orange shots to steal charge." % int(rules.pulse_threshold()),2.4)
 		return
 	pulse_at(player_position,power,false)
-	if rules.upgrades.has("echo"):
-		field.delayed.append({"kind":"echo","origin":player_position,"power":power,"timer":0.45})
+	var echo_level: int = rules.level("echo")
+	if echo_level>0:
+		field.delayed.append({"kind":"echo","origin":player_position,"power":power,"timer":0.45,"scale":float([0.45,0.45,0.60,0.60][echo_level]),"follow":echo_level>=3})
+		if echo_level>=3:
+			field.delayed.append({"kind":"echo","origin":player_position,"power":power,"timer":0.9,"scale":0.35,"follow":true})
 
-func pulse_at(at: Vector3, power: float, echo: bool = false) -> void:
-	var radius := (4.0+power*0.044)*(1.35 if rules.upgrades.has("radius") else 1.0)
-	var damage := (27.0+power*0.82)*(1.2 if rules.upgrades.has("ignite") else 1.0)
-	if echo: damage *= 0.45
+func pulse_at(at: Vector3, power: float, echo: bool = false, echo_scale: float = 0.45) -> void:
+	var radius: float = (4.0+power*0.044)*float([1.0,1.35,1.55,1.80][rules.level("radius")])
+	if rules.family_complete("ECHO"): radius *= 1.08
+	var damage: float = (27.0+power*0.82)*float([1.0,1.2,1.3,1.4][rules.level("ignite")])
+	damage *= 1.0 - 0.05*float(rules.level("radius")) - 0.05*float(rules.level("chain")) - (0.10 if rules.level("echo")>0 else 0.0)
+	if echo: damage *= echo_scale
 	weapon_fx.pulse(at,power,radius,echo)
 	pulse_light.position = at+Vector3(0,1.8,0)
 	pulse_light.omni_range = radius+1.0
@@ -635,18 +745,41 @@ func pulse_at(at: Vector3, power: float, echo: bool = false) -> void:
 	for enemy in enemies:
 		if not enemy.dead and enemy.spawning<=0 and enemy.position.distance_to(at)<radius+enemy.radius:
 			enemy.take_hit(damage,true,(enemy.position-at).normalized(),"plasma")
+			if rules.level("radius")>=2 and not enemy.dead and enemy.kind!="boss" and enemy.position.distance_to(at)>radius*0.5:
+				var pulled: Vector3 = enemy.position.lerp(Vector3(at.x,enemy.position.y,at.z),0.15)
+				enemy.position = campaign.resolve_gates(enemy.position,pulled) if campaign_active else pulled
 			hit.append(enemy)
 	if practice and practice_step==2 and not echo:
 		practice_pulse_hit=not hit.is_empty()
 		if not practice_pulse_hit:
 			ui.show_hint("PULSE MISSED  /  Let the machines land, harvest more orange shots, then press %s nearby." % key_name("pulse"),60)
-	if rules.upgrades.has("chain"):
+	if hit.size()>=3 and not echo:
+		hitstop = maxf(hitstop,0.06)
+		camera_punch = maxf(camera_punch,0.7)
+	if rules.level("radius")>=3 and not echo:
+		for i in range(6):
+			var ang := TAU*float(i)/6.0
+			field.add_field(at+Vector3(sin(ang),0,cos(ang))*radius*0.85,true,1.2)
+	if rules.level("wake")>=3 and not echo:
+		var ignited: Array = []
+		for f in field.fields:
+			if not f.burning: continue
+			for enemy in enemies:
+				if not enemy.dead and enemy.spawning<=0 and enemy not in ignited and enemy.position.distance_to(f.node.position)<1.4:
+					ignited.append(enemy)
+					enemy.take_hit(20.0,true)
+	var chain_level: int = rules.level("chain")
+	if chain_level>0 and not echo:
 		var jumps := 0
-		for enemy in enemies:
-			if enemy.dead or enemy in hit or jumps>=4: continue
+		var sorted: Array = enemies.duplicate()
+		if chain_level>=2: sorted.sort_custom(func(a,b): return a.hp/maxf(a.max_hp,1.0)>b.hp/maxf(b.max_hp,1.0))
+		for enemy in sorted:
+			if enemy.dead or enemy.spawning>0 or enemy in hit or jumps>=int([0,4,6,8][chain_level]): continue
+			if campaign_active and campaign.resolve_gates(at+Vector3(0,0.8,0),enemy.position+Vector3(0,0.8,0)).distance_to(enemy.position+Vector3(0,0.8,0))>0.05: continue
 			if enemy.position.distance_to(at)<radius+5:
 				weapon_fx.arc_link(at+Vector3(0,0.8,0),enemy.position+Vector3(0,0.8,0),3)
-				enemy.take_hit(damage*0.7,true)
+				enemy.take_hit(damage*float([0.0,0.7,0.8,0.9][chain_level]),true)
+				if enemy.dead and chain_level>=3: rules.energy=minf(100.0,rules.energy+4.0)
 				jumps += 1
 
 func update_battle_audio() -> void:
@@ -683,8 +816,13 @@ func spawn_enemy(kind: String, at: Vector3) -> Node3D:
 	add_child(enemy)
 	enemy.setup(self,kind,Vector3(at.x,0,at.z))
 	if campaign_active and campaign.sector>=3 and kind!="boss":
-		enemy.hp*=1.0+minf(1.1,float(campaign.sector-2)*0.06)
+		enemy.hp*=1.0+minf(2.2,float(campaign.sector-2)*0.06)
 		enemy.max_hp=enemy.hp
+	if campaign_active and campaign.sector>=4 and kind not in ["boss","mite"] and rng.randf()<0.14:
+		enemy.elite=["swift","armored","volatile"][rng.randi_range(0,2)]
+		if enemy.elite=="swift": enemy.speed*=1.45
+		elif enemy.elite=="armored": enemy.hp*=1.8; enemy.max_hp=enemy.hp
+		enemy.base_scale=1.25
 	enemies.append(enemy)
 	return enemy
 
@@ -704,8 +842,8 @@ func update_director(delta: float) -> void:
 			core_node=null
 			player_node.position = Vector3(0,0,8)
 			player_previous = player_position
-			rules.health = minf(100,rules.health+25)
-			rules.energy = maxf(30,rules.energy)
+			rules.health = minf(rules.heal_ceiling(),rules.health+25)
+			rules.energy = maxf(rules.pulse_threshold(),rules.energy)
 			boss_ref=spawn_enemy("boss",Vector3(0,0,-6))
 			state="boss"
 			announce("THE REACTOR GUARDIAN", "Steal its volleys. Break its core.")
@@ -723,6 +861,7 @@ func update_director(delta: float) -> void:
 				var roll := rng.randf()
 				if roll>0.6 and run_time>18: kind="charger"
 				if roll>0.8 and run_time>110: kind="bruiser"
+				if roll>0.7 and roll<=0.8 and run_time>150: kind="splitter"
 				# Scheduled anchor gunners preserve harvesting opportunities;
 				# killing one never causes an immediate reactive replacement.
 				if next_gunner_wave%3==0: kind="gunner"
@@ -763,13 +902,17 @@ func refresh_practice_hint() -> void:
 
 func choose_upgrade(id: String) -> void:
 	if state!="upgrade" or id not in upgrade_choices: return
+	var fam_before: bool = rules.family_complete(Rules.UPGRADE_DATA[id].family)
 	rules.apply_upgrade(id)
-	rules.health=minf(100,rules.health+20)
+	rules.health=minf(rules.heal_ceiling(),rules.health+20)
 	upgrade_choices.clear()
 	state="run"
 	ui.show_game()
 	rules.recovery=1.0
-	ui.show_hint("INSTALLED  /  "+Rules.UPGRADE_DATA[id].name+"  /  +20 HULL",3)
+	var fam: String = Rules.UPGRADE_DATA[id].family
+	if rules.family_complete(fam) and not fam_before:
+		announce(fam+" RESONANCE", {"HARVEST":"+1 dash charge","ECHO":"Pulse radius +8%","WAKE":"Combo window +25%"}[fam])
+	ui.show_hint("INSTALLED  /  "+Rules.UPGRADE_DATA[id].name+" Mk"+str(rules.level(id))+"  /  +20 HULL",3)
 	if qa_mode: print("QA upgrade: "+id)
 
 func spawn_core() -> void:
@@ -792,7 +935,7 @@ func update_core(delta: float) -> void:
 	core_time-=delta
 	core_node.rotation.y+=delta*1.6
 	if player_position.distance_to(core_node.position)<1.2:
-		rules.health=minf(100,rules.health+22)
+		rules.health=minf(rules.heal_ceiling(),rules.health+22)
 		rules.energy=minf(100,rules.energy+20)
 		rules.score+=150
 		cue("core"); add_effect(core_node.position,Color("ffbe83"),2)
@@ -802,14 +945,25 @@ func update_core(delta: float) -> void:
 		core_node.queue_free(); core_node=null
 
 func enemy_defeated(enemy: Node3D) -> void:
-	var value := 80 if enemy.kind=="bruiser" else 45 if enemy.kind=="charger" else 30
+	var value := 80 if enemy.kind=="bruiser" else 60 if enemy.kind=="splitter" else 45 if enemy.kind=="charger" else 15 if enemy.kind=="mite" else 30
+	if enemy.get("elite") not in [null,""]: value *= 2
 	rules.register_kill(value)
+	if not qa_mode: hitstop = maxf(hitstop, 0.12 if enemy.kind=="boss" else 0.04)
+	if enemy.kind=="splitter":
+		for off in [Vector3(0.9,0,0.4),Vector3(-0.9,0,-0.4)]:
+			var mite = spawn_enemy("mite", enemy.position+off)
+			if mite: mite.spawning = 0.25
+	if enemy.get("elite")=="volatile":
+		add_hazard(enemy.position,2.2,1.35)
 	cue("guardian_break" if enemy.kind=="boss" else "machine_break",1.0 if enemy.kind=="boss" else 0.7)
 	if enemy.kind=="boss":
+		for burst in range(3):
+			field.delayed.append({"kind":"burst","origin":enemy.position+Vector3(rng.randf_range(-1.2,1.2),1.0,rng.randf_range(-1.2,1.2)),"timer":0.25+0.4*float(burst)})
+		shake = maxf(shake,0.5)
 		rules.score+=2500
 		guardians_defeated+=1
 		ending_delay=1.8
-		field.clear.call_deferred()
+		field.clear.call_deferred(true)
 
 func hit_player(amount: float, ground_hazard: bool = false) -> void:
 	if rules.damage(amount,ground_hazard):
@@ -817,16 +971,21 @@ func hit_player(amount: float, ground_hazard: bool = false) -> void:
 			qa_damage_events.append({"time":run_time,"damage":amount,"ground":ground_hazard,"health":rules.health,"position":str(player_position)})
 		shake=0.22
 		cue("hit")
-		add_effect(player_position,Color("ff6c7c"),1.5)
+		add_effect(player_position,Color("ff5d5d"),1.5)
 
 func finish(won: bool, retired: bool = false) -> void:
 	if state=="result": return
 	state="result"
 	settings.best=maxi(int(settings.best),rules.score)
 	if won: settings.won=true
+	if not practice:
+		cores_earned = rules.kills/6 + rules.score/5000 + guardians_defeated*10 + (15 if won else 0)
+		if not won and not retired: cores_earned = int(cores_earned*0.6)
+		settings.cores = int(settings.get("cores",0)) + cores_earned
+		settings.runs = int(settings.get("runs",0)) + 1
 	if not practice: save_settings()
 	player_node.visible=true
-	ui.show_result(won,{"score":rules.score,"best":settings.best,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"time":run_time,"upgrades":rules.upgrades,"overdrive":hard_mode,"campaign":campaign_active,"relays":campaign.total_relays if campaign_active else 0,"sector":campaign.sector+1 if campaign_active else 0,"retired":retired,"seed":campaign.run_seed,"guardians":guardians_defeated,"weapon":Weapons.PROFILES[weapons.mode].name,"rank":Weapons.roman(weapons.tier())})
+	ui.show_result(won,{"cores_earned":cores_earned,"cores":int(settings.get("cores",0)),"best_combo":rules.best_combo,"score":rules.score,"best":settings.best,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"time":run_time,"upgrades":rules.upgrades,"levels":rules.upgrade_levels,"overdrive":hard_mode,"campaign":campaign_active,"relays":campaign.total_relays if campaign_active else 0,"sector":campaign.sector+1 if campaign_active else 0,"retired":retired,"seed":campaign.run_seed,"guardians":guardians_defeated,"weapon":Weapons.PROFILES[weapons.mode].name,"rank":Weapons.roman(weapons.tier())})
 	cue("victory" if won or retired else "defeat")
 	if qa_mode:
 		write_qa(won)
@@ -844,7 +1003,7 @@ func hit_spark(at: Vector3,color: Color) -> void: field.spark(at,color)
 func fire_volley(origin: Vector3,direction: Vector3,count: int,speed: float) -> void: field.fire(origin,direction,count,speed)
 func add_hazard(at: Vector3,radius: float,warning: float) -> void: field.add_hazard(at,radius,warning)
 func queue_volley(origin: Vector3,direction: Vector3,count: int,speed: float,delay: float) -> void:
-	field.delayed.append({"kind":"volley","origin":origin,"direction":direction,"count":count,"speed":speed,"timer":delay})
+	if field.delayed.size()<32: field.delayed.append({"kind":"volley","origin":origin,"direction":direction,"count":count,"speed":speed,"timer":delay})
 func announce(title: String,subtitle: String) -> void: ui.show_banner(title,subtitle)
 
 func pilot(delta: float) -> Vector3:
@@ -946,7 +1105,7 @@ func write_qa(won: bool) -> void:
 		var samples: Array=qa_segments[id]
 		samples.sort()
 		segments[id]={"samples":samples.size(),"median_ms":samples[int(samples.size()*0.5)],"p95_ms":samples[int(samples.size()*0.95)],"p99_ms":samples[int(samples.size()*0.99)]}
-	var report := {"win":won,"time":run_time,"score":rules.score,"health":rules.health,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"upgrades":rules.upgrades,"passive":qa_passive,"simulation":qa_simulation,"accelerated":qa_fast,"render_frame_p95_ms":render_p95,"render_frame_median_ms":render_median,"render_frame_p99_ms":render_p99,"render_samples":qa_render_frames.size(),"segments":segments,"warmup_excluded_seconds":3,"settings":{"assist":settings.assist,"low_effects":settings.low_effects,"shake":settings.shake,"volume":settings.volume,"overdrive":hard_mode},"engine":Engine.get_version_info().string,"renderer":RenderingServer.get_current_rendering_method(),"gpu":RenderingServer.get_video_adapter_name(),"cpu":OS.get_processor_name(),"memory":OS.get_memory_info(),"os":OS.get_name()+" "+OS.get_version(),"viewport":str(get_viewport().get_visible_rect().size),"window_pixels":str(get_window().size)}
+	var report := {"win":won,"time":run_time,"score":rules.score,"health":rules.health,"kills":rules.kills,"absorbed":rules.absorbed,"pulses":rules.pulses,"upgrades":rules.upgrades,"levels":rules.upgrade_levels,"passive":qa_passive,"simulation":qa_simulation,"accelerated":qa_fast,"render_frame_p95_ms":render_p95,"render_frame_median_ms":render_median,"render_frame_p99_ms":render_p99,"render_samples":qa_render_frames.size(),"segments":segments,"warmup_excluded_seconds":3,"settings":{"assist":settings.assist,"low_effects":settings.low_effects,"shake":settings.shake,"volume":settings.volume,"overdrive":hard_mode},"engine":Engine.get_version_info().string,"renderer":RenderingServer.get_current_rendering_method(),"gpu":RenderingServer.get_video_adapter_name(),"cpu":OS.get_processor_name(),"memory":OS.get_memory_info(),"os":OS.get_name()+" "+OS.get_version(),"viewport":str(get_viewport().get_visible_rect().size),"window_pixels":str(get_window().size)}
 	report["weapons"] = {"equipped":weapons.mode,"ranks":weapons.ranks,"overclocks":weapons.overclocks,"shots":weapons.shots_fired,"hits":weapons.hits,"kills":weapons.kills}
 	report["mode"] = "skybound" if campaign_active else "classic"
 	if campaign_active:

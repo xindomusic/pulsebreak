@@ -10,6 +10,7 @@ var speed := 2.0
 var cooldown := 1.6
 var age := 0.0
 var windup := 0.0
+var windup_total := 0.8
 var charge_time := 0.0
 var charge_direction := Vector3.ZERO
 var shield_broken := 0.0
@@ -29,6 +30,11 @@ var impact_cooldown := 0.0
 var flash_time := 0.0
 var flash_parts: Array[Dictionary] = []
 var flash_active := false
+var slow_power := 0.5
+var slowed_time := 0.0
+var elite := ""
+var knockback := Vector3.ZERO
+var base_scale := 1.0
 static var flash_material: StandardMaterial3D
 static var shield_flash_material: StandardMaterial3D
 
@@ -45,16 +51,34 @@ func setup(owner_game: Node3D, enemy_kind: String, at: Vector3) -> void:
 	elif kind == "bruiser":
 		hp = 135; speed = 1.5; radius = 0.85
 		model = Art.enemy(kind)
+	elif kind == "splitter":
+		hp = 70; speed = 2.2; radius = 0.8
+		model = Art.enemy(kind)
+	elif kind == "mite":
+		hp = 18; speed = 3.6; radius = 0.42
+		model = Art.enemy(kind)
 	else:
 		hp = 44; speed = 1.9
 		model = Art.enemy(kind)
 	max_hp = hp
 	if game.hard_mode: hp*=1.2; max_hp=hp; speed*=1.1
 	add_child(model)
+	var contact := MeshInstance3D.new()
+	var contact_mesh := CylinderMesh.new()
+	contact_mesh.top_radius = radius*1.05; contact_mesh.bottom_radius = radius*1.05; contact_mesh.height = 0.015; contact_mesh.radial_segments = 24
+	contact.mesh = contact_mesh
+	var contact_mat := StandardMaterial3D.new()
+	contact_mat.albedo_color = Color(0,0,0,0.42)
+	contact_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	contact_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	contact.material_override = contact_mat
+	contact.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	contact.position.y = 0.02
+	add_child(contact)
 	_cache_flash_parts(model)
 	model.scale = Vector3.ONE * 0.01
 	cooldown += game.rng.randf_range(0, 1.1)
-	telegraph = game.make_ring(radius + 0.5, Color(1, 0.53, 0.25, 0.8))
+	telegraph = game.make_ring(radius + 0.5, Color("bcd6e8"))
 	add_child(telegraph)
 	telegraph.position.y = 0.06
 	if kind=="charger":
@@ -81,15 +105,22 @@ func update(delta: float) -> void:
 	hit_reaction=move_toward(hit_reaction,0.0,delta*5.5)
 	if spawning > 0:
 		spawning -= delta
-		model.scale = Vector3.ONE * clampf(1.0 - spawning / 0.85, 0.01, 1)
+		model.scale = Vector3.ONE * base_scale * clampf(1.0 - spawning / 0.85, 0.01, 1)
 		telegraph.scale = Vector3.ONE * (1.1 + sin(age * 12) * 0.1)
 		if spawning <= 0:
-			telegraph.visible = false
+			model.scale = Vector3.ONE * base_scale
+			telegraph.visible = elite != ""
+			if elite != "":
+				telegraph.material_override = game.field.glow_material(Color("ffd24d") if elite=="swift" else Color("ff5d5d") if elite=="volatile" else Color("e8ecf2"), true)
 		return
 	var previous_position := position
 	var was_charging := charge_time > 0.0
 	shield_broken = maxf(0, shield_broken - delta)
 	slow = maxf(0, slow - delta)
+	if slow <= 0: slowed_time = maxf(0.0, slowed_time - delta*1.5)
+	if knockback.length_squared() > 0.001:
+		position += knockback * delta
+		knockback = knockback.move_toward(Vector3.ZERO, delta*11.0)
 	hurt = maxf(0, hurt - delta)
 	model.position.y = sin(age * 3.0) * 0.035
 	var shield: Node3D = model.get_node_or_null("Shield")
@@ -98,21 +129,34 @@ func update(delta: float) -> void:
 	to_player.y = 0
 	var distance := to_player.length()
 	var direction := to_player.normalized()
-	var move_speed := speed * (0.5 if slow > 0 else 1.0)
+	var move_speed := speed * (slow_power if slow > 0 else 1.0)
 	if charge_time > 0:
 		charge_time -= delta
 		var wanted:=delta*(14.0 if kind=="charger" else 9.0)
-		if slow>0: wanted*=0.5
+		if slow>0: wanted*=slow_power
 		var travel:=distance_to_wall(charge_direction,wanted)
 		position+=charge_direction*travel
 		if travel<wanted: charge_time=0
 		game.add_trail(position, Color(1, 0.24, 0.42, 0.5), 0.4)
 	elif windup > 0:
+		# Aim tracks only during the first half of the windup, then locks.
+		# The warning lane is re-aimed in world space every frame, so what
+		# the player sees is exactly where the attack will go.
+		if windup > windup_total*0.5 and kind in ["gunner", "bruiser"]:
+			charge_direction = direction
+		rotation.y = lerp_angle(rotation.y, atan2(charge_direction.x, charge_direction.z), delta*6.0)
+		if warning_lane:
+			warning_lane.rotation.y = atan2(charge_direction.x,charge_direction.z) - rotation.y
 		windup -= delta
+		# Anticipation: the whole machine crouches and swells before it commits.
+		var crouch: float = clampf(1.0 - windup / 0.8, 0.0, 1.0)
+		model.scale = Vector3(1.0 + crouch*0.08, 1.0 - crouch*0.14, 1.0 + crouch*0.08) * base_scale
 		telegraph.visible = true
-		telegraph.scale = Vector3.ONE * (1.0 + sin(age * 22) * 0.08)
+		telegraph.scale = Vector3.ONE * lerpf(1.7, 1.0, clampf(1.0 - windup/windup_total, 0.0, 1.0))
 		if windup <= 0:
-			telegraph.visible = false
+			model.scale = Vector3.ONE * base_scale
+			telegraph.visible = elite != ""
+			telegraph.scale = Vector3.ONE
 			if warning_lane: warning_lane.visible=false
 			perform_attack(direction)
 	else:
@@ -126,7 +170,8 @@ func update(delta: float) -> void:
 			position += direction * move_speed * delta
 		cooldown -= delta * (0.78 if game.settings.get("assist", false) else 1.0)
 		if cooldown <= 0:
-			windup = 0.8 if kind != "boss" else 1.0
+			windup_total = 0.8 if kind != "boss" else 1.0
+			windup = windup_total
 			charge_direction = to_player + game.player_velocity * 0.32
 			charge_direction.y = 0.0
 			charge_direction = charge_direction.normalized()
@@ -137,7 +182,7 @@ func update(delta: float) -> void:
 				var fill: MeshInstance3D=warning_lane.get_node("LaneFill")
 				fill.mesh.size.z=maxf(0.1,lane_length)
 				fill.position.z=lane_length*0.5
-			cooldown = 2.8 if kind == "gunner" else 3.4
+			cooldown = 2.8 if kind == "gunner" else 2.2 if kind == "mite" else 3.4
 			if kind == "boss": cooldown = 2.2 if phase == 2 else 2.9
 			game.cue("warning", 0.5)
 	position.x = clampf(position.x, -14.5, 14.5)
@@ -157,6 +202,12 @@ func update(delta: float) -> void:
 		phase = 2
 		game.announce("GUARDIAN // OVERDRIVE", "Offset volleys. Watch the marked ground.")
 		game.cue("boss", 1.0)
+		game.shake = maxf(game.shake, 0.45)
+		game.camera_punch = maxf(game.camera_punch, 0.8)
+		var bfx: Node3D = game.get("weapon_fx") as Node3D
+		if is_instance_valid(bfx):
+			bfx.impact(global_position+Vector3.UP*1.6, Vector3.UP, "plasma", 2.2)
+			bfx.dust_ring(global_position, 2.0)
 	var visible_speed: float = clampf(position.distance_to(previous_position)/maxf(delta*speed,0.001),0.0,1.0)
 	Art.animate_enemy(model,delta,visible_speed,charge_time>0.0,hit_direction,hit_reaction,age)
 
@@ -195,6 +246,11 @@ func steer_around_gate(from: Vector3, wanted: Vector3, distance: float) -> Vecto
 	return game.campaign.resolve_gates(from,wanted)
 
 func perform_attack(direction: Vector3) -> void:
+	# Fire along the locked, telegraphed direction — never a fresh aim.
+	if charge_direction.length_squared() > 0.001:
+		direction = charge_direction
+	hit_direction = -direction
+	hit_reaction = maxf(hit_reaction, 0.45)
 	if kind == "gunner":
 		game.fire_volley(position, direction, 5, 7.8)
 	elif kind == "charger":
@@ -203,6 +259,11 @@ func perform_attack(direction: Vector3) -> void:
 	elif kind == "bruiser":
 		game.add_hazard(position + direction * 1.7, 2.3, 0.95)
 		game.fire_volley(position, direction, 3, 5.5)
+	elif kind == "splitter":
+		game.fire_volley(position, direction, 3, 6.5)
+	elif kind == "mite":
+		charge_time = 0.4
+		rotation.y = atan2(charge_direction.x, charge_direction.z)
 	elif kind == "boss":
 		attack_index += 1
 		if attack_index % 3 == 0:
@@ -228,12 +289,12 @@ static func _hit_material(shielded: bool) -> StandardMaterial3D:
 	if shielded and shield_flash_material: return shield_flash_material
 	if not shielded and flash_material: return flash_material
 	var material := StandardMaterial3D.new()
-	material.albedo_color=Color(0.40,0.85,1.0,0.72) if shielded else Color(1.0,0.91,0.65,0.78)
+	material.albedo_color=Color(0.40,0.85,1.0,0.45) if shielded else Color(1.0,0.91,0.65,0.48)
 	material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.emission_enabled=true
 	material.emission=material.albedo_color
-	material.emission_energy_multiplier=1.3
+	material.emission_energy_multiplier=0.9
 	if shielded: shield_flash_material=material
 	else: flash_material=material
 	return material
@@ -263,6 +324,8 @@ func take_hit(amount: float, from_pulse: bool = false, incoming: Vector3 = Vecto
 			if facing.dot((game.player_position - position).normalized()) > 0.1:
 				amount *= 0.25
 				shielded=true
+	if slow > 0 and not from_pulse and game.rules.level("frost") >= 2:
+		amount *= 1.15
 	hp -= amount
 	hurt = 0.15
 	hit_direction=incoming.normalized() if incoming.length_squared()>0.001 else (position-game.player_position).normalized()
@@ -271,13 +334,21 @@ func take_hit(amount: float, from_pulse: bool = false, incoming: Vector3 = Vecto
 	var fx: Node3D = game.get("weapon_fx") as Node3D
 	# Damage-over-time still changes health every tick. Visual impacts are gated
 	# so a burning field cannot create a permanent flash or exhaust the FX pool.
+	if amount>=1.0:
+		var impact_at: Vector3 = global_position+Vector3.UP*(1.5 if kind=="boss" else 0.85)-hit_direction*(0.7 if kind=="boss" else 0.23)
+		if is_instance_valid(fx):
+			fx.impact(impact_at,hit_direction,"kinetic" if shielded else mode,0.55 if shielded else clampf(amount/20.0,0.75,1.8))
+		else: game.hit_spark(impact_at,Color(1,0.8,0.5))
+		if kind != "boss" and not shielded:
+			var flat_dir: Vector3 = Vector3(hit_direction.x,0,hit_direction.z)
+			if flat_dir.length_squared()>0.001:
+				if charge_time <= 0: knockback = (knockback + flat_dir.normalized() * clampf(amount*0.16, 1.0, 5.5) * (0.35 if kind=="bruiser" else 1.0)).limit_length(6.0)
 	if amount>=1.0 and impact_cooldown<=0.0:
 		impact_cooldown=0.075
 		hit_reaction=maxf(hit_reaction,clampf(amount/24.0,0.45,1.0))
 		_flash(shielded)
-		var impact_at: Vector3 = global_position+Vector3.UP*(1.5 if kind=="boss" else 0.85)-hit_direction*(0.7 if kind=="boss" else 0.23)
-		if is_instance_valid(fx): fx.impact(impact_at,hit_direction,"kinetic" if shielded else mode,0.55 if shielded else clampf(amount/20.0,0.75,1.8))
-		else: game.hit_spark(impact_at,Color(1,0.8,0.5))
+		var number_at: Vector3 = global_position+Vector3.UP*(1.5 if kind=="boss" else 0.85)
+		if is_instance_valid(fx) and fx.has_method("damage_number"): fx.damage_number(number_at,amount,shielded)
 	if hp <= 0:
 		dead = true
 		_restore_flash()

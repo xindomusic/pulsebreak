@@ -45,9 +45,24 @@ func _initialize() -> void:
 	for i in range(5):
 		var options: Array = r.upgrade_options(rng)
 		check(options.size() == 3, "three upgrade offers")
-		check(not r.upgrades.has(options[0]), "no selected duplicate")
+		check(not r.upgrades.has(options[0]), "first offer is always a new system while new systems remain")
+		check(options.count(options[0]) == 1, "offers never repeat a card")
 		r.apply_upgrade(options[0])
 	check(r.upgrades.size() == 5, "five distinct upgrades")
+	# Marks: raising one system three times caps at Mk III without duplicating it.
+	r.reset()
+	for i in range(4): r.apply_upgrade("echo")
+	check(r.level("echo") == 3 and r.upgrades.size() == 1, "marks cap at three on one distinct upgrade")
+	for id in r.UPGRADE_DATA:
+		for i in range(3): r.apply_upgrade(id)
+	check(r.upgrade_options(rng).is_empty(), "27 total picks exhaust the reactor pool")
+	check(r.family_complete("ECHO") and r.family_complete("HARVEST"), "family resonance detects complete families")
+	# Combo: kills build a decaying score multiplier; damage breaks it.
+	r.reset()
+	r.register_kill(100); r.register_kill(100)
+	check(r.combo == 2 and r.score > 200, "combo multiplies kill score")
+	r.tick(10.0)
+	check(r.combo == 0, "combo decays after its window")
 	r.reset()
 	check(r.upgrades.is_empty() and r.health == 100 and r.dash_charges == 2, "restart reset")
 	print("Combat rules: %d checks, %d failures" % [count, failures])

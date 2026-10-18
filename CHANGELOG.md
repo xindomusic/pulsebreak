@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — Reforge (branch `feat/lifelike-reforge`)
+
+- Lifelike pass: per-surface PBR (clearcoat ceramic, titanium, copper, rubber), procedural roughness grain with planar UVs on chamfered armor, sky ambient/reflections, ACES + bloom, three-point lighting, contact shadows, pulsing reactor cores, higher-fidelity round meshes.
+- One color-token set (`scripts/palette.gd`): mint = player, amber = harvest economy, coral = threat; the purple family is gone from models, FX, HUD and lighting.
+- Combat juice: hitstop that slows only its own window, knockback, per-hit sparks, dash ghosts sorted by size, pooled damage numbers, combo counter with score multiplier, camera punch, boss camera, landing dust, windup anticipation with authoritative telegraphs (chargers commit; shooters lock aim halfway), hazard fill timers, stretched projectiles.
+- Progression for hours: 9 reactor upgrades x 3 marks (27 picks) with scaled tradeoffs and family resonances; Splitter + mites and elite affixes (swift/armored/volatile); salvage cores earned every run; Hangar with 6 permanent perks x 3 ranks plus repeatable Overcharge prestige cells.
+- Fifteen test suites pass (new `reforge` suite, 31 checks); simulated Classic win and 4-sector Skybound run recorded under `qa/reforge/`.
+- See [the Reforge design record](docs/REFORGE.md) and [agent review loops](qa/reforge-review.md).
+
 ## 1.2.0 — 2026-09-13 — Prism Drive Mac release
 
 - Replaced the background track with original ElevenLabs half-time festival dubstep, with growling bass, heavy drums and sharp synth stabs.

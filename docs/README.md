@@ -4,7 +4,7 @@
 
 [Game grade and review](../qa/release-1.2-review.md) · [Changelog](../CHANGELOG.md) · [Verification index](../qa/README.md). The source is on `main`, tagged `v1.2.0`; `v1.1.0` marks the previous verified release revision.
 
-[Resonance](RESONANCE.md) records the earlier visual and procedural-music iteration. [Overdrive](OVERDRIVE.md) records evolving weapons and continuous levels. Those reports retain their original measurements and audio versions.
+[Resonance](RESONANCE.md) records the earlier visual and procedural-music iteration. [Overdrive](OVERDRIVE.md) records evolving weapons and continuous levels. [Reforge](REFORGE.md) records the lifelike/PBR, combat-juice and deep-progression redesign with its agent review loops. Those reports retain their original measurements and audio versions.
 
 **Earlier Skybound update:** [Player/developer guide](SKYBOUND.md) · [Research](SKYBOUND_RESEARCH.md) · [Independent review](../qa/skybound-review.md).
 

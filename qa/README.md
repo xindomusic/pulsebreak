@@ -4,6 +4,7 @@
 
 [Release notes](../docs/RELEASE_1_2.md) · [Independent game grade](release-1.2-review.md) · [Final distribution package](release-1.2-package.json) · [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0).
 
+- Reforge: [review loops](reforge-review.md) and run metrics under `reforge/` — **632 checks in fifteen suites**, simulated Classic win and 4-sector Skybound completion, final independent weighted grade 7.4/10 on the `feat/lifelike-reforge` branch.
 - [Regression log](prism-tests.log): 591 checks in fourteen suites, including 91 audio checks and 768 generated layouts. [Generator safety log](prism-generator-tests.log): nine offline tests.
 - [Audio review](prism-review.md) and [manifest](prism-music.json): 102.426-second original Prism Drive track; existing combat effects retained, no decoded clipping.
 - [Native audio capture](prism-native-audio/release-engine-audio.json): 36 seconds of CoreAudio output and a verified live loop wrap. This is a staged audio demonstration.

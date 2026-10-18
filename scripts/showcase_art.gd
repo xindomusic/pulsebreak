@@ -4,7 +4,7 @@ extends RefCounted
 
 const Art = preload("res://scripts/art.gd")
 const SECTOR_ACCENTS: Array[String] = ["cyan", "solar", "storm"]
-const SECTOR_NAMES: Array[String] = ["SKYPORT", "SOLAR FOUNDRY", "STORM CORE"]
+const SECTOR_NAMES: Array[String] = ["SKYPORT", "SOLAR FOUNDRY", "TEMPEST CORE"]
 const SECTOR_INLAYS: Array[String] = ["sky_inlay", "solar_inlay", "storm_inlay"]
 const SECTOR_LAMPS: Array[String] = ["sky_lamp", "solar_lamp", "storm_lamp"]
 const MAX_GENERATED_PAINT := 160
@@ -114,7 +114,7 @@ static func _build_sector_deck(stage: Node3D, sector: int) -> void:
 			Art._batch(deck, "RadialArmor", "armor", "edge", panels, false)
 			Art._batch(deck, "ContainmentConduits", "box", "storm_dim", hatching, false)
 			Art._label(deck, "CONTAINMENT / 03", Vector3(0, 0.058, 7.0), 50, "storm_dim")
-			Art._label(deck, "STORM CORE", Vector3(0, 0.058, -7.0), 40, "storm_dim")
+			Art._label(deck, "TEMPEST CORE", Vector3(0, 0.058, -7.0), 40, "storm_dim")
 
 
 static func _build_navigation(stage: Node3D, sector: int, accent: String) -> void:

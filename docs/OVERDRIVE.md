@@ -39,7 +39,7 @@ Generated decks also receive route-specific floor inlays, muted navigation marki
 
 ![A generated sector with its route-specific deck inlays](images/overdrive-generated.png)
 
-Generated routes preserve landing and recharge space, safe entry, reachable base-kit relays, usable shutter windows, and a clear center lane around shock pads. Enemy counts, spawn cadence, health scaling, hazard density and checkpoint history are bounded. Once all nine reactor upgrades are installed, that reward becomes hull/energy service, so later checkpoints remain usable. Levels continue until death, banking, or quitting; generated content reuses this game's three environment themes rather than promising unlimited new art.
+Generated routes preserve landing and recharge space, safe entry, reachable base-kit relays, usable shutter windows, and a clear center lane around shock pads. Enemy counts, spawn cadence, health scaling, hazard density and checkpoint history are bounded. Once all 27 reactor marks are installed (nine upgrades at Mk III), that reward becomes hull/energy service, so later checkpoints remain usable. See the [player guide](GAMEPLAY.md#upgrades) for marks and resonances. Levels continue until death, banking, or quitting; generated content reuses this game's three environment themes rather than promising unlimited new art.
 
 ## Verification and limits
 

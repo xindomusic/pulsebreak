@@ -10,6 +10,10 @@ Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**.
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
 
+## Unreleased — Reforge
+
+The [`feat/lifelike-reforge`](https://github.com/xindomusic/pulsebreak/tree/feat/lifelike-reforge) branch reworks presentation and progression: a per-surface PBR/lighting pass, one shared color-token system, hitstop/knockback/dash-ghost combat feedback, nine reactor upgrades grown to three marks each with family resonances, a Splitter enemy with mites, elite affixes, and salvage cores spent in a permanent Hangar. Fifteen suites (**632 checks**) pass; five independent agent review rounds reached a final weighted **7.4/10**. See [the Reforge record](docs/REFORGE.md) and [review loops](qa/reforge-review.md). The released download below remains 1.2.0.
+
 ## Release 1.2.0
 
 Prism Drive adds a full 102-second half-time dubstep arrangement with growling bass and sharp synth stabs. Music volume responds to battle intensity and briefly drops around major blasts. The game includes four weapon families with five ranks, jump/glide traversal, moving gates, three environment styles, recurring Guardians, animated hit/destruction effects and Quit controls.
@@ -62,7 +66,7 @@ Choose **Begin Skybound** for continuous generated sectors across three environm
 3. **Choose upgrades** at Skybound checkpoints, or at minutes one through five in Classic.
 4. **Read enemy warnings.** Charged lanes and ground hazards demand different evasive moves.
 
-The Vector Carbine, Shatter Cannon, Arc Relay and Nova Lance offer different combat styles. Nine reactor upgrades, three regular enemy roles, repair cores and two-phase Guardians add progression and threats. **Practice the Heist** teaches the core dash-and-pulse move. See the [Overdrive guide](docs/OVERDRIVE.md) for continuous progression and weapon details.
+The Vector Carbine, Shatter Cannon, Arc Relay and Nova Lance offer different combat styles. Nine reactor upgrades — three marks each on the Reforge branch, with family resonances — five enemy roles including the splitting Splitter, elite affixes in deep sectors, repair cores and two-phase Guardians add progression and threats. Runs also earn salvage cores for permanent Hangar perks. **Practice the Heist** teaches the core dash-and-pulse move. See the [Overdrive guide](docs/OVERDRIVE.md) for continuous progression and weapon details.
 
 ![Staged combat scene showing a charger warning and orange projectiles](docs/images/combat.png)
 
@@ -116,7 +120,8 @@ The original above-9 target was not reached. Read the [experiment protocol](docs
 | [Release 1.2](docs/RELEASE_1_2.md) | Mac download, original soundtrack, verification, grade and known limits |
 | [Experiment](docs/EXPERIMENT.md) | GPT-6 Astra inside Codex, user involvement, delegation, review cap, evidence limits |
 | [Getting started](docs/GETTING_STARTED.md) | Fresh clone, editor setup, running, local saves, troubleshooting |
-| [Gameplay](docs/GAMEPLAY.md) | Controls, combat rules, enemies, all nine upgrades, practice, difficulty |
+| [Gameplay](docs/GAMEPLAY.md) | Controls, combat rules, enemies, upgrade marks and resonances, the Hangar, practice, difficulty |
+| [Reforge](docs/REFORGE.md) | Lifelike/PBR pass, color tokens, combat juice, deep progression, agent review scores |
 | [Architecture](docs/ARCHITECTURE.md) | Scene ownership, state transitions, collision, persistence, extension points |
 | [Testing and reproduction](docs/TESTING.md) | All suites, driver flags, visual captures, performance methodology |
 | [Mac export](docs/MACOS_EXPORT.md) | Matching templates, local app creation, signing, distribution limits |

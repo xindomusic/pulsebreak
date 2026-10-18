@@ -2,11 +2,12 @@ extends Node3D
 ## Four distinct auto-targeted weapons. Projectiles travel through shared cover.
 const Art = preload("res://scripts/art.gd")
 const Traversal = preload("res://scripts/traversal.gd")
+const Palette = preload("res://scripts/palette.gd")
 const PROFILES := {
-	"kinetic":{"name":"VECTOR CARBINE","short":"CARBINE","role":"RAPID FIRE","damage":14.0,"interval":0.28,"speed":29.0,"range":10.0,"color":Color("a5edff"),"description":"Fast focused slugs. Rank III adds penetration; rank V fires paired rounds."},
-	"scatter":{"name":"SHATTER CANNON","short":"SHATTER","role":"CLOSE-RANGE SPREAD","damage":9.0,"interval":0.75,"speed":22.0,"range":8.5,"color":Color("ffca79"),"description":"Five heavy pellets in a wide cone. Rank III fires seven; rank V adds explosive pellet impacts."},
-	"arc":{"name":"ARC RELAY","short":"ARC RELAY","role":"CHAIN DISCHARGE","damage":24.0,"interval":0.62,"speed":24.0,"range":10.0,"color":Color("c7a5ff"),"description":"An ion bolt chains to nearby machines. Ranks III and V add targets and longer jump reach."},
-	"plasma":{"name":"NOVA LANCE","short":"NOVA LANCE","role":"PIERCING PLASMA","damage":55.0,"interval":0.95,"speed":19.0,"range":13.0,"color":Color("76ffd7"),"description":"A heavy plasma core pierces a line of machines. Rank III adds blast damage; rank V widens the blast."}
+	"kinetic":{"name":"VECTOR CARBINE","short":"CARBINE","role":"RAPID FIRE","damage":14.0,"interval":0.28,"speed":29.0,"range":10.0,"color":Palette.WEAPON_ICE,"description":"Fast focused slugs. Rank III adds penetration; rank V fires paired rounds."},
+	"scatter":{"name":"SHATTER CANNON","short":"SHATTER","role":"CLOSE-RANGE SPREAD","damage":9.0,"interval":0.75,"speed":22.0,"range":8.5,"color":Palette.WEAPON_AMBER,"description":"Five heavy pellets in a wide cone. Rank III fires seven; rank V adds explosive pellet impacts."},
+	"arc":{"name":"ARC RELAY","short":"ARC RELAY","role":"CHAIN DISCHARGE","damage":24.0,"interval":0.62,"speed":24.0,"range":10.0,"color":Palette.WEAPON_ELECTRIC,"description":"An ion bolt chains to nearby machines. Ranks III and V add targets and longer jump reach."},
+	"plasma":{"name":"NOVA LANCE","short":"NOVA LANCE","role":"PIERCING PLASMA","damage":55.0,"interval":0.95,"speed":19.0,"range":13.0,"color":Palette.WEAPON_PLASMA,"description":"A heavy plasma core pierces a line of machines. Rank III adds blast damage; rank V widens the blast."}
 }
 const MAX_PROJECTILES := 80
 var game: Node3D
@@ -60,7 +61,7 @@ func install(id: String) -> bool:
 	if not PROFILES.has(id): return false
 	if int(ranks[id])<5: ranks[id]=int(ranks[id])+1
 	elif overclocks<10: overclocks+=1
-	else: game.rules.health=minf(100,game.rules.health+30)
+	else: game.rules.health=minf(game.rules.heal_ceiling(),game.rules.health+30)
 	mode=id
 	cooldown=0
 	refresh_model()
