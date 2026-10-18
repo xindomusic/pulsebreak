@@ -2,7 +2,7 @@
 
 **Current release: [Pulsebreak 1.2](RELEASE_1_2.md).** The [regression log](../qa/prism-tests.log), [audio review](../qa/prism-review.md), [game grade](../qa/release-1.2-review.md) and [distribution package report](../qa/release-1.2-package.json) describe the current version. The [packaged M4 progression run](../qa/release-native/active-metrics.json) remains 1.1 evidence.
 
-**Current checks:** run `sh tools/test.sh` for fourteen suites (**591 checks**). Add `--qa-campaign --qa-sectors=6` to exercise a finite six-sector slice of continuous play. Record native release audio with `tools/release_audio_capture.gd`; it writes separate release evidence and verifies music-loop transport before a 36-second staged recording.
+**Current checks:** run `sh tools/test.sh` for fifteen suites (**632 checks** on the Reforge branch; release 1.2 recorded 591 in fourteen). Add `--qa-campaign --qa-sectors=6` to exercise a finite six-sector slice of continuous play. Record native release audio with `tools/release_audio_capture.gd`; it writes separate release evidence and verifies music-loop transport before a 36-second staged recording.
 
 **Historical Skybound follow-up:** seven suites recorded **261 passing checks** at that revision. Use `tests/skybound_visuals.gd` for its historical staged screens; the current `tests/native_controls_check.gd` includes weapon switching and records new captures under `qa/overdrive-controls`. See [Skybound](SKYBOUND.md), [native controls evidence](../qa/skybound-controls.md), and [independent review](../qa/skybound-review.md). Counts and results in the original experiment sections below are historical.
 
@@ -21,7 +21,7 @@ Run commands from the repository root after the import step in [Getting started]
 
 | Suite | Recorded checks | Coverage |
 |---|---:|---|
-| Combat rules | 25 | Charges/recharge, harvesting caps, pulse threshold, damage recovery, unique upgrades |
+| Combat rules | 35 | Charges/recharge, harvesting caps, pulse threshold, damage recovery, upgrade marks, resonances, combo |
 | Save store | 84 | Missing/corrupt input, clamping, bindings, atomic replacement and isolated fixtures |
 | Integration | 39 | Combat, pause, progression, practice, input and restart behavior |
 | Traversal | 34 | Jump, glide, fuel and landing rules |
@@ -35,7 +35,8 @@ Run commands from the repository root after the import step in [Getting started]
 | Audio | 44 | Imported effects, voice priority, cooldown, volume and ducking |
 | Release audio | 47 | Selected soundtrack, loop, smoothing, production callbacks and limiter |
 | Native keyboard controls | 36 | Injected movement/menu/weapon controls; headless suite run has no native captures |
-| **Total** | **591** | All passed on release 1.2 |
+| Reforge | 31 | Marks, combo, Splitter/mites, elites, salvage cores, Hangar perks/prestige, bounded new FX |
+| **Total** | **632** | All passed on the Reforge branch (release 1.2: 591) |
 
 Each suite counts failures and exits nonzero when assertions fail. Read the Godot log as well as the shell exit status: resource import and script errors deserve investigation even when an unrelated process exits successfully. The save and integration suites redirect persistence to isolated test fixtures and clean them up; they do not replace the player's settings file.
 

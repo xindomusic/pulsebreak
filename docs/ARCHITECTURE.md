@@ -29,7 +29,8 @@ flowchart TD
 | File | Responsibility | Main boundary |
 |---|---|---|
 | [game.gd](../scripts/game.gd) | Input, run state, timing, spawning, targeting, upgrades, tutorial, QA driver | Coordinates other modules |
-| [rules.gd](../scripts/rules.gd) | Hull, charge, energy, cooldown, recovery, score, upgrade definitions | `RefCounted`; no scene or rendering dependency |
+| [rules.gd](../scripts/rules.gd) | Hull, charge, energy, cooldown, recovery, score, combo, upgrade marks/resonances | `RefCounted`; no scene or rendering dependency |
+| [palette.gd](../scripts/palette.gd) | The single color-token set (mint/amber/coral, weapon hues) | Constants referenced by HUD, weapons and combat FX |
 | [enemy.gd](../scripts/enemy.gd) | Role-specific movement, windups, attacks, shield and boss phase | `setup`, `update`, `take_hit`, director callbacks |
 | [combat_field.gd](../scripts/combat_field.gd) | Pooled bullets, swept collision, hazards, fields, effects and delayed attacks | Uses director position/rules and emits consequences |
 | [art.gd](../scripts/art.gd) | Arena and actor mesh construction | Static factories returning nodes |

@@ -22,7 +22,7 @@ Your cyan ground marker shows where you will land. Jumping changes actual collis
 |---|---|
 | **01 / Skyport** | Cross three numbered aerial relays and break four machines. Learn takeoff and clear one timed shutter. Enter the unlocked north gate. |
 | **02 / Solar Foundry** | Cross three relays and break eight machines. Relay 02 requires deployed glide; its marker and near-miss message explain the hold action. Two offset shutters and alternating shock pads test route timing. |
-| **03 / Storm Core** | Break the three aerial locks while navigating faster shutters and paired shock pads. The center lane stays clear. The locks summon the Guardian; the shutters retract for the duel. |
+| **03 / Tempest Core** | Break the three aerial locks while navigating faster shutters and paired shock pads. The center lane stays clear. The locks summon the Guardian; the shutters retract for the duel. |
 
 Each relay grants 18 charge, 8 hull, and 300 points. Between sectors, choose an upgrade and repair 20 hull. The final encounter restores up to 25 hull and ensures at least 40 charge. Runs are continuous; sector transition screens are not disk-save checkpoints.
 
