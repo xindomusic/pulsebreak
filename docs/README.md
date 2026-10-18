@@ -14,7 +14,7 @@ Pulsebreak has two stories: a playable native Mac game, and an experiment in bui
 
 | You want to… | Read in this order |
 |---|---|
-| Play on your Mac | [Release 1.2](RELEASE_1_2.md) → [Getting started](GETTING_STARTED.md) → [Gameplay](GAMEPLAY.md) |
+| Play on your Mac | [Release 1.3](RELEASE_1_3.md) → [Getting started](GETTING_STARTED.md) → [Gameplay](GAMEPLAY.md) |
 | See what shipped and what passed | [Release notes](RELEASE_1_2.md) → [QA index](../qa/README.md) → [Package evidence](../qa/release-1.2-package.json) |
 | Understand the AI development experiment | [Experiment](EXPERIMENT.md) → [Lessons learned](LESSONS_LEARNED.md) → [Final review](../qa/review-round-3.md) |
 | Modify the game | [Architecture](ARCHITECTURE.md) → [Testing](TESTING.md) → [Contributing](../CONTRIBUTING.md) |

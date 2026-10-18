@@ -1,14 +1,14 @@
 # Getting started on a Mac
 
-**Current release: [Pulsebreak 1.2.0](RELEASE_1_2.md).** Choose **Begin Skybound** for continuous generated levels, evolving weapons, jump/glide and moving gates. Prism Drive and all game effects are bundled for offline play.
+**Current release: [Pulsebreak 1.3.0](RELEASE_1_3.md).** Choose **Begin Skybound** for continuous generated levels, evolving weapons, jump/glide and moving gates. Prism Drive and all game effects are bundled for offline play.
 
 ## Play the download
 
-1. Download **Pulsebreak-1.2.0-macOS-universal.zip** from the [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.2.0).
+1. Download **Pulsebreak-1.3.0-macOS-universal.zip** from the [GitHub release](https://github.com/xindomusic/pulsebreak/releases/tag/v1.3.0).
 2. Unzip it and move **Pulsebreak.app** to Applications.
 3. Open the app and choose **Begin Skybound** or **Practice the Heist**.
 
-The app is ad-hoc signed, without Apple notarization. If macOS blocks a trusted download from this repository, follow [Apple's instructions for opening an app from an unknown developer](https://support.apple.com/en-ca/guide/mac-help/mh40616/mac), including the per-app option in System Settings → Privacy & Security. The release also supplies **Pulsebreak-1.2.0-SHA256SUMS.txt**; with both files in the same folder, verify the ZIP using `shasum -a 256 -c Pulsebreak-1.2.0-SHA256SUMS.txt`.
+The app is ad-hoc signed, without Apple notarization. If macOS blocks a trusted download from this repository, follow [Apple's instructions for opening an app from an unknown developer](https://support.apple.com/en-ca/guide/mac-help/mh40616/mac), including the per-app option in System Settings → Privacy & Security. The release also supplies **Pulsebreak-1.3.0-SHA256SUMS.txt**; with both files in the same folder, verify the ZIP using `shasum -a 256 -c Pulsebreak-1.3.0-SHA256SUMS.txt`.
 
 The editor and Git instructions below are for working from source. The downloadable app requires neither.
 

@@ -1,0 +1,22 @@
+{
+  "release": "1.3.0",
+  "tag": "v1.3.0",
+  "date": "2026-10-18",
+  "branch_merged": "feat/lifelike-reforge",
+  "zip": {
+    "file": "Pulsebreak-1.3.0-macOS-universal.zip",
+    "bytes": 61912534,
+    "sha256": "e818c3bf5b9c55c919a6811beff1821ecb41a12ce59d1ab8053085691b655fd2"
+  },
+  "pck": {
+    "bytes": 2473876,
+    "sha256": "2354056348cd790015303196b9de54ff55ef2c84ac8d21ca2a00ed12a5ab1cc7"
+  },
+  "architectures": "x86_64 arm64",
+  "signature": "ad-hoc, codesign --verify --deep --strict passed",
+  "tests": "632 checks in 15 suites, all passed (sh tools/test.sh)",
+  "packaged_run": "Exported app simulated Classic win: 284 kills, score 18678, 376.9s, 0 script errors (qa/reforge/packaged)",
+  "grade": "Final independent weighted review 7.4/10 (qa/reforge-review.md)",
+  "hardware": "Apple M5 Max, macOS 27.0.1; Intel untested",
+  "notarization": "none (ad-hoc local signing)"
+}

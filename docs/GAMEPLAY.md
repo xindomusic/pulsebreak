@@ -1,6 +1,6 @@
 # Player guide
 
-**Current release: [Pulsebreak 1.2.0](RELEASE_1_2.md).** **Begin Skybound** starts continuous generated sectors: clear enemies, reach airborne relays, cross moving gates, upgrade at checkpoints and fight recurring Guardians. At checkpoints you can continue or bank the score. See [Overdrive](OVERDRIVE.md) for the four weapons, five ranks and endless progression.
+**Current release: [Pulsebreak 1.3.0](RELEASE_1_3.md).** **Begin Skybound** starts continuous generated sectors: clear enemies, reach airborne relays, cross moving gates, upgrade at checkpoints and fight recurring Guardians. At checkpoints you can continue or bank the score. See [Overdrive](OVERDRIVE.md) for the four weapons, five ranks and endless progression.
 
 **F** jumps; hold through the apex to glide. **Q** cycles unlocked weapons. Flight is available in Classic too. [Skybound](SKYBOUND.md) records the earlier authored three-sector campaign and explains relays, moving shutters and wing fuel. The six-minute survival and timed-upgrade sections below describe **Classic**.
 

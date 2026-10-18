@@ -1,6 +1,6 @@
 # Art, audio, and asset provenance
 
-**Current release: [Pulsebreak 1.2](RELEASE_1_2.md).** The release retains the procedural art and richer Resonance palette and uses original ElevenLabs-generated Prism Drive dubstep and combat effects. [Overdrive](OVERDRIVE.md) and [Resonance](RESONANCE.md) describe earlier visual/audio iterations; their audio inventories are historical.
+**Current release: [Pulsebreak 1.3](RELEASE_1_3.md).** The release carries the Reforge PBR/palette pass over the procedural art and uses original ElevenLabs-generated Prism Drive dubstep and combat effects. [Overdrive](OVERDRIVE.md) and [Resonance](RESONANCE.md) describe earlier visual/audio iterations; their audio inventories are historical.
 
 Pulsebreak's visuals are constructed in source with Codex assistance; no external model or texture pack was imported. Release audio includes ElevenLabs-generated recordings as described below. Earlier procedural audio remains in the checkout as development history.
 

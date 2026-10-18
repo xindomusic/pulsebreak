@@ -2,7 +2,7 @@
 
 **Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-**[Download Pulsebreak 1.2.0 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.2.0/Pulsebreak-1.2.0-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_2.md)** · **[Game review](qa/release-1.2-review.md)**
+**[Download Pulsebreak 1.3.0 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.3.0/Pulsebreak-1.3.0-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
 
 Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
@@ -10,9 +10,9 @@ Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**.
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
 
-## Unreleased — Reforge
+## Release 1.3.0 — Reforge
 
-The [`feat/lifelike-reforge`](https://github.com/xindomusic/pulsebreak/tree/feat/lifelike-reforge) branch reworks presentation and progression: a per-surface PBR/lighting pass, one shared color-token system, hitstop/knockback/dash-ghost combat feedback, nine reactor upgrades grown to three marks each with family resonances, a Splitter enemy with mites, elite affixes, and salvage cores spent in a permanent Hangar. Fifteen suites (**632 checks**) pass; five independent agent review rounds reached a final weighted **7.4/10**. See [the Reforge record](docs/REFORGE.md) and [review loops](qa/reforge-review.md). The released download below remains 1.2.0.
+The Reforge redesign reworks presentation and progression: a per-surface PBR/lighting pass, one shared color-token system, hitstop/knockback/dash-ghost combat feedback, nine reactor upgrades grown to three marks each with family resonances, a Splitter enemy with mites, elite affixes, and salvage cores spent in a permanent Hangar. Fifteen suites (**632 checks**) pass, the exported app completed a simulated Classic win, and five independent agent review rounds reached a final weighted **7.4/10**. See [release notes](docs/RELEASE_1_3.md), [the Reforge record](docs/REFORGE.md) and [review loops](qa/reforge-review.md).
 
 ## Release 1.2.0
 
@@ -117,7 +117,8 @@ The original above-9 target was not reached. Read the [experiment protocol](docs
 | Guide | What it covers |
 |---|---|
 | [Documentation index](docs/README.md) | Reading paths for players, developers, and experiment readers |
-| [Release 1.2](docs/RELEASE_1_2.md) | Mac download, original soundtrack, verification, grade and known limits |
+| [Release 1.3](docs/RELEASE_1_3.md) | Mac download, Reforge redesign, verification, grade and known limits |
+| [Release 1.2](docs/RELEASE_1_2.md) | Previous Mac download, original soundtrack, verification, grade and known limits |
 | [Experiment](docs/EXPERIMENT.md) | GPT-6 Astra inside Codex, user involvement, delegation, review cap, evidence limits |
 | [Getting started](docs/GETTING_STARTED.md) | Fresh clone, editor setup, running, local saves, troubleshooting |
 | [Gameplay](docs/GAMEPLAY.md) | Controls, combat rules, enemies, upgrade marks and resonances, the Hangar, practice, difficulty |

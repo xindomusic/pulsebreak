@@ -1,6 +1,6 @@
 # Pulsebreak Reforge — lifelike models, juicy combat, hours of progression
 
-Branch: `feat/lifelike-reforge`. Base: 1.2.0 (independent grade 8.4/10 as an indie arcade demo).
+Shipped as **Pulsebreak 1.3.0** (tag `v1.3.0`, merged via PR #1). Base was 1.2.0 (independent grade 8.4/10 as an indie arcade demo).
 
 ## Design review — initial ratings (evidence from code at base)
 
