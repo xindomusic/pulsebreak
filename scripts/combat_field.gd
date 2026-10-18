@@ -61,6 +61,8 @@ func fire(origin: Vector3, direction: Vector3, count: int, speed: float) -> void
 			node = pool.pop_back()
 		node.visible = true
 		node.position = origin + direction * 0.9 + Vector3(0,0.85,0)
+		node.scale = Vector3(1.15,1.15,3.2)
+		if velocity.length_squared() > 0.001: node.quaternion = Quaternion(Vector3.BACK, velocity.normalized())
 		bullets.append({"node":node,"velocity":velocity,"life":7.0})
 
 func discard_bullet(index: int) -> void:
@@ -118,21 +120,36 @@ func add_hazard(at: Vector3, radius: float, warning: float) -> void:
 	var node := ring(radius,Color(1,0.28,0.39,0.9))
 	add_child(node)
 	node.position = Vector3(clampf(at.x,-12,12),0.10,clampf(at.z,-12,12))
-	hazards.append({"node":node,"radius":radius,"timer":warning,"warning":warning,"active":false})
+	var fill := MeshInstance3D.new()
+	var fill_mesh := CylinderMesh.new()
+	fill_mesh.top_radius = radius; fill_mesh.bottom_radius = radius; fill_mesh.height = 0.02; fill_mesh.radial_segments = 28
+	fill.mesh = fill_mesh
+	fill.material_override = glow_material(Color(1,0.3,0.36,0.20),true)
+	fill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(fill)
+	fill.position = node.position + Vector3(0,-0.02,0)
+	hazards.append({"node":node,"fill":fill,"radius":radius,"timer":warning,"warning":warning,"active":false})
 
-func add_field(at: Vector3, burning: bool) -> void:
+func add_field(at: Vector3, burning: bool, life_override: float = -1.0) -> void:
 	if fields.size() >= 22: return
 	var color := Color(0.3,0.85,1,0.5) if not burning else Color(1,0.62,0.22,0.7)
 	var node := ring(0.8,color)
 	add_child(node)
 	node.position = Vector3(at.x,0.12,at.z)
-	fields.append({"node":node,"timer":2.0,"burning":burning})
+	var life: float = life_override if life_override>0.0 else ([2.0,2.0,3.0,4.0][game.rules.level("wake")] if burning else 2.0)
+	fields.append({"node":node,"timer":life,"burning":burning,"kind":"ring" if life_override>0.0 else ("wake" if burning else "frost")})
 
-func update(delta: float) -> void:
+func update(delta: float, fx_delta: float = -1.0) -> void:
+	if fx_delta < 0.0: fx_delta = delta
 	for i in range(bullets.size()-1,-1,-1):
 		var b: Dictionary = bullets[i]
 		var node: MeshInstance3D = b.node
 		var previous := node.position
+		if game.rules.dash_time > 0 and game.rules.level("collector") >= 2:
+			var to_player: Vector3 = (game.player_position + Vector3(0,0.85,0)) - node.position
+			if to_player.length() < 4.2 and to_player.length_squared() > 0.01:
+				var speed: float = b.velocity.length()
+				b.velocity = b.velocity.normalized().lerp(to_player.normalized(), 0.35).normalized() * speed
 		node.position += b.velocity * delta
 		var player_end: Vector3 = game.player_position
 		var gate_hit := false
@@ -146,11 +163,11 @@ func update(delta: float) -> void:
 				var fraction := clampf((blocked.z-previous.z)/travel_z,0.0,1.0) if absf(travel_z)>0.00001 else 0.0
 				node.position = previous.lerp(node.position,fraction)
 				player_end = game.player_previous.lerp(game.player_position,fraction)
-		node.rotate_y(delta * 5)
+		if b.velocity.length_squared() > 0.001: node.quaternion = Quaternion(Vector3.BACK, b.velocity.normalized())
 		b.life -= delta
 		# Match horizontal AND vertical overlap at the swept crossing. Flight
 		# above a low volley must avoid both damage and free remote harvesting.
-		var reach := 1.55 if game.rules.upgrades.has("collector") else 0.82
+		var reach: float = [0.82,1.55,1.95,2.45][game.rules.level("collector")]
 		var harvest_hit: bool = game.rules.dash_time > 0 and Traversal.swept_body_hit(game.player_previous,player_end,previous,node.position,reach,-0.2,0.2)
 		if harvest_hit and game.campaign_active:
 			# Wide Receiver's radius reaches across a shut door. Require an
@@ -160,7 +177,7 @@ func update(delta: float) -> void:
 			var receiver_at: Vector3 = game.player_previous.lerp(player_end,crossing)+Vector3(0,0.85,0)
 			harvest_hit = game.campaign.resolve_gates(shot_at,receiver_at).is_equal_approx(receiver_at)
 		if harvest_hit:
-			game.rules.harvest(15 if game.rules.upgrades.has("capacitor") else 10)
+			game.rules.harvest([10.0,15.0,18.0,22.0][game.rules.level("capacitor")])
 			line(node.position,game.player_position+Vector3(0,1,0),Color("76f7df"),0.06)
 			game.cue("absorb",0.65)
 			game.harvest_flash = 0.25
@@ -175,7 +192,7 @@ func update(delta: float) -> void:
 			discard_bullet(i)
 	for i in range(effects.size()-1,-1,-1):
 		var e: Dictionary = effects[i]
-		e.life -= delta
+		e.life -= fx_delta
 		if e.life <= 0:
 			e.node.queue_free(); effects.remove_at(i); continue
 		var ratio: float = e.life / e.total
@@ -194,13 +211,18 @@ func update(delta: float) -> void:
 		var active_end := 1.0
 		h.timer -= delta
 		h.node.scale = Vector3.ONE * (1.0 + sin(h.timer*16)*0.03)
+		if not h.active and h.warning>0:
+			var frac: float = clampf(1.0-h.timer/h.warning,0.02,1.0)
+			h.fill.scale = Vector3(frac,1.0,frac)
+		else:
+			h.fill.scale = Vector3.ONE
 		if h.timer <= 0 and not h.active:
 			h.active = true
 			h.timer += 0.45
 			if delta > 0.0:
 				active_start = clampf(timer_before/delta,0.0,1.0)
 				active_end = clampf((timer_before+0.45)/delta,0.0,1.0)
-			add_effect(h.node.position,Color("ff5272"),h.radius,0.45)
+			add_effect(h.node.position,Color("ff5d5d"),h.radius,0.45)
 			game.cue("hit",0.35)
 		elif h.active and delta > 0.0:
 			active_end = clampf(timer_before/delta,0.0,1.0)
@@ -213,27 +235,49 @@ func update(delta: float) -> void:
 			if Traversal.swept_body_hit(from,to,ground,ground,h.radius,0.0,HAZARD_HEIGHT):
 				game.hit_player(20,true)
 			if h.timer<=0:
-				h.node.queue_free(); hazards.remove_at(i)
+				h.node.queue_free(); h.fill.queue_free(); hazards.remove_at(i)
+	var frost_counted: Array = []
 	for i in range(fields.size()-1,-1,-1):
 		var f: Dictionary = fields[i]
 		f.timer -= delta
 		for enemy in game.enemies:
 			if not enemy.dead and enemy.position.distance_to(f.node.position)<1.2:
-				if f.burning: enemy.take_hit(delta*18,true)
-				if game.rules.upgrades.has("frost"): enemy.slow = 0.2
+				if f.burning: enemy.take_hit(delta*float([18.0,18.0,26.0,34.0][game.rules.level("wake")]),true)
+				if game.rules.level("frost")>0 and f.get("kind","wake")!="ring" and enemy.spawning<=0:
+					enemy.slow = 0.2
+					enemy.slow_power = float([0.5,0.5,0.35,0.25][game.rules.level("frost")])
+					if enemy not in frost_counted:
+						frost_counted.append(enemy)
+						enemy.slowed_time += delta
+					if game.rules.level("frost")>=3 and enemy.slowed_time>=1.5:
+						enemy.slowed_time = 0.0
+						enemy.take_hit(30.0,true,Vector3.UP,"plasma")
 		if f.timer<=0:
 			f.node.queue_free(); fields.remove_at(i)
 	for i in range(delayed.size()-1,-1,-1):
 		var d: Dictionary = delayed[i]
-		d.timer -= delta
+		d.timer -= fx_delta if d.kind=="burst" else delta
 		if d.timer<=0:
 			delayed.remove_at(i)
 			if d.kind == "volley": fire(d.origin,d.direction,d.count,d.speed)
-			elif d.kind == "echo": game.pulse_at(d.origin,d.power,true)
+			elif d.kind == "burst":
+				game.weapon_fx.impact(d.origin,Vector3.UP,"plasma",2.0)
+				game.weapon_fx.dust_ring(d.origin,1.6)
+				game.cue("machine_break",0.8)
+			elif d.kind == "echo": game.pulse_at(game.player_position if d.get("follow",false) else d.origin,d.power,true,float(d.get("scale",0.45)))
 
-func clear() -> void:
+func clear(keep_bursts: bool = false) -> void:
+	# Boss-death bursts are queued moments before a deferred clear that opts in.
+	var kept: Array = []
+	if keep_bursts:
+		for d in delayed:
+			if d.kind == "burst": kept.append(d)
 	for i in range(bullets.size()-1,-1,-1): discard_bullet(i)
-	for collection in [effects,hazards,fields]:
+	for entry in hazards:
+		entry.node.queue_free()
+		if entry.has("fill") and is_instance_valid(entry.fill): entry.fill.queue_free()
+	hazards.clear()
+	for collection in [effects,fields]:
 		for entry in collection: entry.node.queue_free()
 		collection.clear()
-	delayed.clear()
+	delayed = kept

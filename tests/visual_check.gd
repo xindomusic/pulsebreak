@@ -22,17 +22,22 @@ func capture_states() -> void:
 	game.state="settings"
 	game.ui.show_settings(game.settings,game.bindings)
 	await game.capture("staged-settings-unlocked")
-	game.ui.show_upgrades(["echo","collector","frost"])
+	game.ui.show_upgrades(["echo","collector","frost"],{"echo":2,"frost":1})
 	await game.capture("staged-upgrades")
 	game.start_run(true)
 	game.ui.show_practice_complete()
 	await game.capture("staged-practice-complete")
 	game.start_run(false)
 	game.rules.energy=85
-	game.rules.upgrades=["echo","radius","wake"]
+	game.rules.apply_upgrade("echo")
+	game.rules.apply_upgrade("echo")
+	game.rules.apply_upgrade("radius")
+	game.rules.apply_upgrade("wake")
+	game.rules.combo=7
+	game.rules.combo_timer=2.0
 	game.ui.hint.text=""
 	game.ui.banner.text=""
-	for item in [["charger",Vector3(6,0,-4)],["gunner",Vector3(-6,0,-6)],["bruiser",Vector3(-6,0,3)]]:
+	for item in [["charger",Vector3(6,0,-4)],["gunner",Vector3(-6,0,-6)],["bruiser",Vector3(-6,0,3)],["splitter",Vector3(7,0,4)],["mite",Vector3(4,0,6)]]:
 		var enemy=game.spawn_enemy(item[0],item[1])
 		enemy.spawning=0
 		enemy.model.scale=Vector3.ONE
@@ -40,6 +45,12 @@ func capture_states() -> void:
 		enemy.update(0.016)
 	game.field.fire(Vector3(-6,0,-6),Vector3(1,0,1).normalized(),5,7.8)
 	game.field.update(0.3)
+	game.pulse_at(Vector3(7,0,7),85)
+	game.weapon_fx.impact(Vector3(6,1,-4),Vector3.BACK,"kinetic",1.4)
+	game.weapon_fx.damage_number(Vector3(6,1,-4),47)
+	game.weapon_fx.damage_number(Vector3(-6,1,3),18,true)
+	game.weapon_fx.dash_ghost(game.player_node)
+	game.weapon_fx.update(0.05)
 	game.ui.update_game(game.rules,195,0,0,false)
 	await game.capture("staged-combat")
 	game.clear_run()
@@ -54,7 +65,11 @@ func capture_states() -> void:
 	game.field.update(0.4)
 	game.ui.update_game(game.rules,395,boss.hp,boss.max_hp,false)
 	await game.capture("staged-boss")
-	game.ui.show_result(true,{"score":12830,"best":12830,"kills":266,"absorbed":373,"pulses":102,"time":405.6,"upgrades":["ignite","echo","capacitor","siphon","chain"],"overdrive":false})
+	game.settings.cores=137
+	game.settings.perks={"hull":2,"combo":1}
+	game.ui.show_hangar(game.settings,game.PERK_DATA)
+	await game.capture("staged-hangar")
+	game.ui.show_result(true,{"score":12830,"best":12830,"kills":266,"absorbed":373,"pulses":102,"time":405.6,"upgrades":["ignite","echo","capacitor","siphon","chain"],"levels":{"echo":3,"ignite":2},"cores_earned":41,"cores":178,"best_combo":14,"overdrive":false})
 	await game.capture("staged-result")
 	game.clear_run()
 	game.queue_free()

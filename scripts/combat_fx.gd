@@ -2,6 +2,7 @@ extends Node3D
 ## Shared, bounded combat visuals. The director advances time explicitly so
 ## hit reactions, debris and discharge effects freeze together while paused.
 const Art = preload("res://scripts/art.gd")
+const Palette = preload("res://scripts/palette.gd")
 const MAX_EFFECTS := 160
 const LOW_EFFECTS_LIMIT := 72
 const DECORATIVE_RESERVE := 20
@@ -9,11 +10,11 @@ const PULSE_GATHER_TIME := 0.075
 const PULSE_FRONT_TIME := 0.22
 const PULSE_MAX_LIFE := 0.82
 const COLORS: Dictionary = {
-	"kinetic": Color("70e5ff"), "scatter": Color("ffd078"),
-	"arc": Color("bb97ff"), "plasma": Color("67ffc5"),
+	"kinetic": Palette.WEAPON_ICE, "scatter": Palette.WEAPON_AMBER,
+	"arc": Palette.WEAPON_ELECTRIC, "plasma": Palette.WEAPON_PLASMA,
 	"white": Color("f3ffff"), "ember": Color("ff8c4b"),
 	"smoke": Color("263545"), "dark": Color("111e2b"),
-	"pulse_cyan": Color("24dcff"), "pulse_violet": Color("9670ff"),
+	"pulse_cyan": Color("24dcff"), "pulse_violet": Color("59b7ff"),
 	"pulse_hot": Color("ffe8bb")
 }
 var low_effects := false:
@@ -33,6 +34,10 @@ var emitted := 0
 var recycled := 0
 var elapsed := 0.0
 var rng := RandomNumberGenerator.new()
+var numbers: Array[Dictionary] = []
+var number_pool: Array[Label3D] = []
+const MAX_NUMBERS := 24
+static var _ghost_material: StandardMaterial3D
 static var _materials: Dictionary = {}
 static var _meshes: Dictionary = {}
 
@@ -432,9 +437,79 @@ func destroy_enemy(model: Node3D, at: Vector3, kind: String, direction: Vector3)
 		if not smoke.is_empty(): smoke.velocity=Vector3(rng.randf_range(-0.3,0.3),rng.randf_range(0.5,1.2),rng.randf_range(-0.3,0.3))
 
 
+static func _ghost_mat() -> StandardMaterial3D:
+	if _ghost_material: return _ghost_material
+	var m := StandardMaterial3D.new()
+	m.albedo_color = Color(0.45,0.95,1.0,0.5)
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.emission_enabled = true
+	m.emission = Color(0.3,0.85,1.0)
+	m.emission_energy_multiplier = 0.8
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	_ghost_material = m
+	return m
+
+
+func dash_ghost(model: Node3D) -> void:
+	if low_effects or not is_instance_valid(model): return
+	var parts: Array[MeshInstance3D] = []
+	_collect_parts(model, parts)
+	parts.sort_custom(func(a: MeshInstance3D,b: MeshInstance3D) -> bool:
+		return a.mesh.get_aabb().size.length_squared()*a.global_basis.get_scale().length_squared()>b.mesh.get_aabb().size.length_squared()*b.global_basis.get_scale().length_squared())
+	for index: int in range(mini(6, parts.size())):
+		var original: MeshInstance3D = parts[index]
+		var ghost := _emit("armor", _ghost_mat(), original.global_position, original.global_basis.get_scale(), 0.28, "ghost")
+		if ghost.is_empty(): break
+		ghost.node.mesh = original.mesh
+		ghost.node.global_transform = original.global_transform
+		ghost.base = ghost.node.scale
+
+
+func dust_ring(at: Vector3, strength: float = 1.0) -> void:
+	var entry := _emit("ring", _material("smoke"), Vector3(at.x, 0.09, at.z), Vector3.ONE*0.3*strength, 0.45, "shock", true)
+	if not entry.is_empty(): entry.node.rotation.x = 0.0
+	_sparks(Vector3(at.x, 0.15, at.z), Vector3.UP, "white", 2 if low_effects else 5, 0.6*strength)
+
+
+func damage_number(at: Vector3, amount: float, shielded: bool = false) -> void:
+	if amount < 4.0: return
+	if numbers.size() >= (8 if low_effects else MAX_NUMBERS): return
+	var label: Label3D
+	if number_pool.is_empty():
+		label = Label3D.new()
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.no_depth_test = true
+		label.pixel_size = 0.006
+		label.font_size = 42
+		label.outline_size = 6
+		label.outline_modulate = Color(0,0,0,0.85)
+		add_child(label)
+	else:
+		label = number_pool.pop_back()
+	label.visible = true
+	label.text = str(int(round(amount)))
+	label.modulate = Color("9fd8ff") if shielded else (Color("ffd078") if amount >= 40.0 else Color("f3ffff"))
+	label.position = at + Vector3(rng.randf_range(-0.25,0.25), 0.55, rng.randf_range(-0.1,0.1))
+	label.scale = Vector3.ONE * (1.35 if amount >= 40.0 else 1.0)
+	numbers.append({"node": label, "life": 0.65, "total": 0.65})
+
+
 func update(delta: float) -> void:
 	if delta<=0.0: return
 	elapsed += delta
+	for index: int in range(numbers.size()-1,-1,-1):
+		var entry: Dictionary = numbers[index]
+		entry.life -= delta
+		var node: Label3D = entry.node
+		if entry.life <= 0.0:
+			node.visible = false
+			number_pool.append(node)
+			numbers.remove_at(index)
+			continue
+		node.position.y += delta * 1.6
+		var ratio: float = entry.life / entry.total
+		node.modulate.a = clampf(ratio * 1.6, 0.0, 1.0)
 	for index: int in range(active.size()-1,-1,-1):
 		var entry: Dictionary = active[index]
 		entry.life -= delta
@@ -470,6 +545,9 @@ func update(delta: float) -> void:
 				node.transparency=progress
 			"arc":
 				node.transparency=clampf(progress*0.9,0.0,1.0)
+			"ghost":
+				node.transparency=progress*0.85
+				node.scale=entry.base*(1.0+progress*0.06)
 			"debris":
 				entry.velocity.y-=delta*11.0
 				node.position+=entry.velocity*delta
@@ -487,6 +565,10 @@ func update(delta: float) -> void:
 
 func clear() -> void:
 	for index: int in range(active.size()-1,-1,-1): _release(index)
+	for entry: Dictionary in numbers:
+		entry.node.visible=false
+		number_pool.append(entry.node)
+	numbers.clear()
 	elapsed = 0.0
 
 

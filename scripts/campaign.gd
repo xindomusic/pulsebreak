@@ -163,7 +163,7 @@ func update(delta: float) -> void:
 			relays += 1
 			total_relays += 1
 			game.rules.energy = minf(100,game.rules.energy+18)
-			game.rules.health = minf(100,game.rules.health+8)
+			game.rules.health = minf(game.rules.heal_ceiling(),game.rules.health+8)
 			game.rules.score += 300
 			game.add_effect(target.position,Color("76f7df"),2.2)
 			game.cue("core")

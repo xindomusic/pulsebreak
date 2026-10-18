@@ -11,14 +11,14 @@ const HISTORY_LIMIT := 32
 const THEMES := [
 	{"name":"SKYPORT","color":Color("76f7df")},
 	{"name":"SOLAR FOUNDRY","color":Color("ffd18a")},
-	{"name":"STORM CORE","color":Color("bfa3ff")}
+	{"name":"TEMPEST CORE","color":Color("7ac7ff")}
 ]
 const ONBOARDING := [
 	{"name":"SKYPORT", "subtitle":"Take the high road.", "color":Color("76f7df"), "kills":4,
 	 "targets":[Vector3(0,2.6,4),Vector3(-7,2.6,-1),Vector3(5,2.6,-7)]},
 	{"name":"SOLAR FOUNDRY", "subtitle":"Ride the current. Thread the shutters.", "color":Color("ffd18a"), "kills":8,
 	 "targets":[Vector3(-7,2.6,4),Vector3(6,2.6,-1),Vector3(-5,2.6,-8)]},
-	{"name":"STORM CORE", "subtitle":"Cut the locks. Steal the storm.", "color":Color("bfa3ff"), "kills":0,
+	{"name":"TEMPEST CORE", "subtitle":"Cut the locks. Steal the storm.", "color":Color("7ac7ff"), "kills":0,
 	 "targets":[Vector3(6,2.6,3),Vector3(-6,2.6,-3),Vector3(0,2.6,-9)]}
 ]
 const ROUTES := [
@@ -84,7 +84,7 @@ static func generate(run_seed: int, stage_index: int) -> Dictionary:
 		"subtitle":modifier.description,"modifier":modifier,"targets":targets,"relay_goal":relay_count,"glide_relays":glide_relays,
 		"gates":gate_specs,"boss":index%3==2,"kills":0 if index%3==2 else mini(MAX_KILLS,6+pressure),
 		"spawn_interval":interval,"spawn_grace":5.0,"enemy_cap":mini(MAX_ENEMIES,12+pressure/2),
-		"enemy_order":["gunner","charger","charger","bruiser","gunner","charger"] if theme!=0 else ["gunner","charger","gunner","bruiser"],
+		"enemy_order":["gunner","charger","splitter","bruiser","gunner","charger"] if theme!=0 else ["gunner","charger","gunner","bruiser"],
 		"hazard_interval":hazard_interval,"hazard_grace":4.5,"hazard_warning":rng.randf_range(1.4,1.75),
 		"hazard_radius":2.6 if paired else 3.0,"hazard_count":2 if paired else 1,"hazard_sites":hazard_sites,
 		"hazard_phase":rng.randi_range(0,3)

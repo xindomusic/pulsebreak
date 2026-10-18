@@ -109,7 +109,8 @@ func run_checks() -> void:
 
 	# Exhaustion is a normal endless-run state, not a reason to show an empty UI.
 	game.start_campaign(991)
-	for id in game.Rules.UPGRADE_DATA: game.rules.apply_upgrade(id)
+	for id in game.Rules.UPGRADE_DATA:
+		for mark in range(3): game.rules.apply_upgrade(id)
 	game.show_weapon_draft()
 	game.rules.health = 50.0
 	game.rules.energy = 10.0

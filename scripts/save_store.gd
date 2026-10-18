@@ -8,6 +8,7 @@ static func default_data() -> Dictionary:
 		"volume": 0.65, "shake": 0.45, "assist": false,
 		"low_effects": false, "best": 0, "practiced": false,
 		"won": false, "overdrive": false,
+		"cores": 0, "runs": 0, "perks": {}, "prestige": 0,
 		"bindings": {"left": KEY_A, "right": KEY_D, "up": KEY_W,
 			"down": KEY_S, "dash": KEY_SPACE, "pulse": KEY_E, "jump": KEY_F, "weapon": KEY_Q}
 	}
@@ -60,6 +61,17 @@ static func _validated(raw: Dictionary) -> Dictionary:
 	var best: Variant = raw.get("best")
 	if _finite_number(best) and floor(float(best)) == float(best):
 		clean.best = int(clampf(float(best), 0.0, 2147483647.0))
+	for name in ["cores", "runs", "prestige"]:
+		var value: Variant = raw.get(name)
+		if _finite_number(value) and floor(float(value)) == float(value):
+			clean[name] = int(clampf(float(value), 0.0, 2147483647.0))
+	if raw.get("perks") is Dictionary:
+		var perks := {}
+		for id in ["hull", "dash", "harvest", "battery", "armory", "combo"]:
+			var rank: Variant = raw.perks.get(id)
+			if _finite_number(rank) and floor(float(rank)) == float(rank):
+				perks[id] = int(clampf(float(rank), 0.0, 3.0))
+		clean.perks = perks
 	if raw.get("bindings") is Dictionary:
 		clean.bindings = _bindings(raw.bindings, clean.bindings)
 	return clean
