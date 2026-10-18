@@ -1,24 +1,42 @@
 extends RefCounted
-## The single color-token set for Pulsebreak. HUD, FX, weapons and sector
-## themes reference these values; art.gd's material palette uses the same hues.
-## Language: mint = player/energy, amber = harvest economy, coral = threat.
+## The single color-token set for Pulsebreak (1.3.1 art direction).
+##
+## "Aerospace instrument": warm off-white type on graphite, ONE accent.
+## Researched across reference game UIs (Destiny's white-on-graphite minimal
+## panels, Hades' gold-on-near-black restraint, Dead Space's restrained
+## hologram lines) and the classic palette rule: two neutrals dark, two
+## neutrals light, one red for danger, one accent for everything else.
+##
+## The accent is SIGNAL ORANGE — the color of the shots you steal. Energy,
+## focus and the primary action all speak orange; gold appears only for
+## money (salvage cores, combo), red only for danger, pale ice only as a
+## thin secondary line. No neon mint, no purple, no solid accent slabs:
+## primary buttons are off-white with ink text.
 
-const INK := Color("08131e")
-const MINT := Color("76f7df")
-const MINT_BRIGHT := Color("40edff")
-const AMBER := Color("ffb477")
-const AMBER_HOT := Color("ffc46b")
-const CORAL := Color("ff5d5d")
+const INK := Color("0b0d0f")
+const PANEL := Color("14181d")
+const PANEL_LINE := Color("394048")
+const SIGNAL := Color("ff7a1a")
+const SIGNAL_SOFT := Color("ffa25e")
+const GOLD := Color("e3b04b")
+const CORAL := Color("e5484d")
 const CORAL_SOFT := Color("ff7467")
-const WHITE := Color("edf6f7")
-const MUTED := Color("9eb5c5")
+const WHITE := Color("eae7de")
+const MUTED := Color("9b978a")
+const ICE := Color("c3d5e0")
 
-const WEAPON_ICE := Color("c8f4ff")
-const WEAPON_AMBER := Color("ffca79")
-const WEAPON_ELECTRIC := Color("4da6ff")
-const WEAPON_PLASMA := Color("3dff9e")
+# Back-compat names (values follow the new direction).
+const MINT := Color("ff7a1a")
+const MINT_BRIGHT := Color("ffa25e")
+const AMBER := Color("e3b04b")
+const AMBER_HOT := Color("ffb35c")
 
-const SHOT_ORANGE := Color("ffb465")
-const SECTOR_SKYPORT := Color("76f7df")
-const SECTOR_FOUNDRY := Color("ffd18a")
-const SECTOR_TEMPEST := Color("7ac7ff")
+const WEAPON_ICE := Color("d7e6ee")
+const WEAPON_AMBER := Color("e8a33d")
+const WEAPON_ELECTRIC := Color("7ea6c4")
+const WEAPON_PLASMA := Color("ffd98a")
+
+const SHOT_ORANGE := Color("ff9a3c")
+const SECTOR_SKYPORT := Color("c3d5e0")
+const SECTOR_FOUNDRY := Color("e0a458")
+const SECTOR_TEMPEST := Color("8fb0c9")

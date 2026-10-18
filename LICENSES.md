@@ -30,4 +30,4 @@ The export script places a copy of this file at `Pulsebreak.app/Contents/Resourc
 
 ## Fonts
 
-The UI references the macOS system fonts **Avenir Next** and **Helvetica Neue** by name. These font files are not copied into or bundled with the project. Their rights remain with their respective owners. Engine-provided fallbacks are covered by Godot's third-party notices above.
+Since 1.3.1 the UI embeds **Barlow**, **Barlow Condensed** and **IBM Plex Mono**, all under the SIL Open Font License 1.1; license texts ship in `assets/fonts/` (`OFL-Barlow.txt`, `OFL-IBMPlexMono.txt`). macOS system fonts (Avenir Next, Helvetica Neue) remain name-only fallbacks and are not bundled.

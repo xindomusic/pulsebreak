@@ -52,6 +52,7 @@ func capture_states() -> void:
 	game.weapon_fx.dash_ghost(game.player_node)
 	game.weapon_fx.update(0.05)
 	game.ui.update_game(game.rules,195,0,0,false)
+	game.ui.update_traversal(game.traversal)
 	await game.capture("staged-combat")
 	game.clear_run()
 	game.player_node.position=Vector3(0,0,7)

@@ -2,13 +2,17 @@
 
 **Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-**[Download Pulsebreak 1.3.0 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.3.0/Pulsebreak-1.3.0-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
+**[Download Pulsebreak 1.3.1 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.3.1/Pulsebreak-1.3.1-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
 
 Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
 ![Staged native title and courier](docs/images/resonance-title.png)
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
+
+## Release 1.3.1 — UI palette overhaul
+
+1.3.1 replaces the neon-mint UI theme with an aerospace-instrument direction: warm off-white on graphite, a single signal-orange accent, embedded Barlow/IBM Plex Mono type, and a strict combat color law. Three agent review loops took the UI/theme grade from ~5 to 6.6/10 with green/purple verified gone. See [the loop record](qa/ui131-review.md). Gameplay matches 1.3.0.
 
 ## Release 1.3.0 — Reforge
 

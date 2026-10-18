@@ -13,7 +13,7 @@ The app is ad-hoc signed and has not been Apple-notarized. See the [first-launch
 ## What's new in 1.3
 
 - **Lifelike pass:** per-surface PBR (clearcoat ceramic, titanium, copper, rubber), procedural roughness grain, sky ambient/reflections, ACES tonemapping with bloom, three-point lighting, contact shadows and pulsing reactor cores.
-- **One color system:** `scripts/palette.gd` tokens shared by HUD, weapons and FX — mint player, amber harvest economy, coral threats. Sector three is now Tempest Core.
+- **One color system:** `scripts/palette.gd` tokens shared by HUD, weapons and FX. Sector three is now Tempest Core. (The 1.3.1 patch replaced this mint scheme with the aerospace-instrument palette.)
 - **Combat feel:** hitstop, knockback, per-hit sparks, dash ghosts, floating damage numbers, a combo counter with score multiplier, camera punch, landing dust, and telegraphs that never lie (chargers commit; shooters lock aim halfway through their windup).
 - **Deep progression:** nine reactor upgrades × three marks with scaled tradeoffs and family resonances; the Splitter enemy and its mites; elite affixes in deep sectors; salvage cores and the Hangar (six permanent perks × three ranks, plus repeatable Overcharge prestige cells).
 

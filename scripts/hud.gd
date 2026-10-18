@@ -10,6 +10,7 @@ const MUTED: Color = Palette.MUTED
 const WHITE: Color = Palette.WHITE
 const AMBER: Color = Palette.AMBER
 const CORAL: Color = Palette.CORAL
+const SIGNAL: Color = Palette.SIGNAL
 var root: Control
 var modal: Control
 var hud: Control
@@ -27,8 +28,9 @@ var boss_bar: ProgressBar
 var boss_name: Label
 var build_text: Label
 var theme_ui: Theme
-var regular: SystemFont
-var heavy: SystemFont
+var regular: Font
+var heavy: Font
+var mono: Font
 var hint_time := 0.0
 var banner_time := 0.0
 var offers: Array = []
@@ -51,22 +53,28 @@ func movement_keys() -> String:
 
 func _ready() -> void:
 	layer = 10
-	regular = SystemFont.new()
-	regular.font_names = PackedStringArray(["Avenir Next", "Helvetica Neue"])
-	heavy = SystemFont.new()
-	heavy.font_names = regular.font_names
-	heavy.font_weight = 800
+	# Embedded OFL type: Barlow for text, Barlow Condensed for display,
+	# IBM Plex Mono for instruments (timer, score, costs).
+	regular = load("res://assets/fonts/Barlow-Medium.ttf") as Font
+	if regular == null:
+		var fallback := SystemFont.new()
+		fallback.font_names = PackedStringArray(["Avenir Next", "Helvetica Neue", "Arial"])
+		regular = fallback
+	heavy = load("res://assets/fonts/BarlowCondensed-SemiBold.ttf") as Font
+	if heavy == null: heavy = regular
+	mono = load("res://assets/fonts/IBMPlexMono-Medium.ttf") as Font
+	if mono == null: mono = regular
 	theme_ui = Theme.new()
 	theme_ui.default_font = regular
 	theme_ui.default_font_size = 18
 	theme_ui.set_color("font_color", "Label", WHITE)
 	theme_ui.set_color("font_color", "Button", WHITE)
-	theme_ui.set_color("font_hover_color", "Button", CYAN)
-	theme_ui.set_color("font_focus_color", "Button", CYAN)
-	theme_ui.set_stylebox("normal", "Button", panel(Color("152939"), Color("325266")))
-	theme_ui.set_stylebox("hover", "Button", panel(Color("214454"), CYAN))
-	theme_ui.set_stylebox("pressed", "Button", panel(Color("296556"), CYAN))
-	theme_ui.set_stylebox("focus", "Button", panel(Color(0,0,0,0), CYAN, 2))
+	theme_ui.set_color("font_hover_color", "Button", SIGNAL)
+	theme_ui.set_color("font_focus_color", "Button", WHITE)
+	theme_ui.set_stylebox("normal", "Button", panel(Color(Palette.PANEL,0.85), Palette.PANEL_LINE))
+	theme_ui.set_stylebox("hover", "Button", panel(Palette.PANEL, SIGNAL))
+	theme_ui.set_stylebox("pressed", "Button", panel(Color("2a2f36"), SIGNAL))
+	theme_ui.set_stylebox("focus", "Button", panel(Color(0,0,0,0), WHITE, 2))
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -81,12 +89,12 @@ func _ready() -> void:
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(modal)
 
-func panel(fill: Color, border: Color = Color("294353"), width: int = 1) -> StyleBoxFlat:
+func panel(fill: Color, border: Color = Palette.PANEL_LINE, width: int = 1) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = fill
 	s.border_color = border
 	s.set_border_width_all(width)
-	s.set_corner_radius_all(8)
+	s.set_corner_radius_all(4)
 	s.content_margin_left = 20
 	s.content_margin_right = 20
 	s.content_margin_top = 14
@@ -117,9 +125,11 @@ func button(text: String, callback: Callable, primary: bool = false) -> Button:
 	b.custom_minimum_size.y = 54
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	if primary:
-		b.add_theme_stylebox_override("normal", panel(CYAN, CYAN))
+		b.add_theme_stylebox_override("normal", panel(WHITE, WHITE))
+		b.add_theme_stylebox_override("hover", panel(WHITE, SIGNAL, 2))
+		b.add_theme_stylebox_override("focus", panel(WHITE, WHITE, 2))
 		b.add_theme_color_override("font_color", INK)
-		b.add_theme_color_override("font_hover_color", WHITE)
+		b.add_theme_color_override("font_hover_color", INK)
 		b.add_theme_color_override("font_focus_color", INK)
 	b.pressed.connect(callback)
 	return b
@@ -129,7 +139,7 @@ func bar_at(parent: Node, pos: Vector2, size: Vector2, color: Color) -> Progress
 	bar.position = pos
 	bar.show_percentage = false
 	var background := StyleBoxFlat.new()
-	background.bg_color = Color("1c303d")
+	background.bg_color = Color("394048")
 	background.set_corner_radius_all(3)
 	var fill := StyleBoxFlat.new()
 	fill.bg_color = color
@@ -145,8 +155,8 @@ func bar_at(parent: Node, pos: Vector2, size: Vector2, color: Color) -> Progress
 func build_hud() -> void:
 	var top_shade := TextureRect.new()
 	var gradient := Gradient.new()
-	gradient.set_color(0,Color(0.018,0.035,0.05,0.84))
-	gradient.set_color(1,Color(0.018,0.035,0.05,0))
+	gradient.set_color(0,Color(0.02,0.02,0.02,0.82))
+	gradient.set_color(1,Color(0.02,0.02,0.02,0))
 	var texture := GradientTexture2D.new()
 	texture.gradient=gradient
 	texture.fill_from=Vector2.ZERO
@@ -156,18 +166,19 @@ func build_hud() -> void:
 	top_shade.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	hud.add_child(top_shade)
 	health_text = label_at(hud, "HULL  /  100", Vector2(35, 26), 17)
-	health_bar = bar_at(hud, Vector2(35, 58), Vector2(238, 7), CYAN)
+	health_bar = bar_at(hud, Vector2(35, 58), Vector2(238, 7), WHITE)
 	status_text = label_at(hud, "SKYFORGE   /   SECTOR 07", Vector2(35, 82), 13, MUTED)
 	time_text = label_at(hud, "00:00", Vector2(662, 20), 34)
-	time_text.add_theme_font_override("font", heavy)
+	time_text.add_theme_font_override("font", mono)
 	score_text = label_at(hud, "000000  /  SCORE", Vector2(1180, 32), 18)
-	combo_text = label_at(hud, "", Vector2(1180, 92), 20, AMBER)
-	combo_text.add_theme_font_override("font", heavy)
+	score_text.add_theme_font_override("font", mono)
+	combo_text = label_at(hud, "", Vector2(1180, 92), 20, WHITE)
+	combo_text.add_theme_font_override("font", mono)
 	label_at(hud, "ESC  PAUSE", Vector2(1260, 66), 13, MUTED)
 	var reactor := Panel.new()
 	reactor.position = Vector2(500, 785)
 	reactor.size = Vector2(440, 91)
-	reactor.add_theme_stylebox_override("panel", panel(Color(0.025,0.07,0.1,0.9)))
+	reactor.add_theme_stylebox_override("panel", panel(Color(Palette.PANEL,0.92)))
 	reactor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(reactor)
 	energy_text = label_at(reactor, "E  PULSE  /  0", Vector2(22, 12), 16, CYAN)
@@ -175,7 +186,7 @@ func build_hud() -> void:
 	threshold_tick = label_at(reactor, "|", Vector2(22 + 250*0.30 - 3, 38), 14, AMBER)
 	dash_text = label_at(reactor, "SPACE  DASH\n●  ●", Vector2(302, 12), 16, WHITE)
 	harvest_guide=label_at(reactor, "DASH THROUGH ORANGE SHOTS TO CHARGE", Vector2(22, 62), 10, MUTED)
-	weapon_text=label_at(hud,"VECTOR CARBINE / I",Vector2(35,766),18,CYAN)
+	weapon_text=label_at(hud,"VECTOR CARBINE / I",Vector2(35,766),18,WHITE)
 	weapon_detail=label_at(hud,"RAPID FIRE",Vector2(35,796),11,MUTED)
 	build_text = label_at(hud, "", Vector2(35, 826), 11, MUTED)
 	build_text.size = Vector2(400, 60)
@@ -184,7 +195,7 @@ func build_hud() -> void:
 	hint.size = Vector2(720, 58)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	banner = label_at(hud, "", Vector2(310, 170), 28, CYAN)
+	banner = label_at(hud, "", Vector2(310, 170), 28, WHITE)
 	banner.size = Vector2(820, 100)
 	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	banner.add_theme_font_override("font", heavy)
@@ -192,7 +203,7 @@ func build_hud() -> void:
 	boss_bar = bar_at(hud, Vector2(430, 120), Vector2(580, 8), CORAL)
 	boss_bar.visible = false
 	boss_name.visible = false
-	objective_text = label_at(hud,"",Vector2(280,142),16,CYAN)
+	objective_text = label_at(hud,"",Vector2(280,142),16,WHITE)
 	objective_text.size = Vector2(880,52)
 	objective_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	objective_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -200,11 +211,11 @@ func build_hud() -> void:
 	var flight := Panel.new()
 	flight.position = Vector2(983,785)
 	flight.size = Vector2(305,91)
-	flight.add_theme_stylebox_override("panel",panel(Color(0.025,0.07,0.1,0.9)))
+	flight.add_theme_stylebox_override("panel",panel(Color(Palette.PANEL,0.92)))
 	flight.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(flight)
-	flight_text = label_at(flight,"F  JUMP / HOLD TO GLIDE",Vector2(18,12),14,CYAN)
-	flight_bar = bar_at(flight,Vector2(18,44),Vector2(268,7),Palette.WEAPON_ELECTRIC)
+	flight_text = label_at(flight,"F  JUMP / HOLD TO GLIDE",Vector2(18,12),14,WHITE)
+	flight_bar = bar_at(flight,Vector2(18,44),Vector2(268,7),Palette.ICE)
 	altitude_text = label_at(flight,"WINGS READY",Vector2(18,62),11,MUTED)
 
 func clear_modal() -> void:
@@ -214,9 +225,9 @@ func clear_modal() -> void:
 	modal.visible = true
 	offers.clear()
 
-func shade(alpha: float = 0.82) -> void:
+func shade(alpha: float = 0.92) -> void:
 	var bg := ColorRect.new()
-	bg.color = Color(0.018,0.035,0.05,alpha)
+	bg.color = Color(0.02,0.02,0.02,alpha)
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(bg)
 
@@ -242,11 +253,11 @@ func show_title(best: int, practiced: bool, cores: int = 0) -> void:
 	veil.texture = tex
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(veil)
-	label_at(modal, "O V E R D R I V E     /     THE ENDLESS SKY HEIST", Vector2(65, 60), 13, CYAN)
+	label_at(modal, "O V E R D R I V E     /     THE ENDLESS SKY HEIST", Vector2(65, 60), 13, SIGNAL)
 	var title := label_at(modal, "PULSE\nBREAK", Vector2(58, 115), 104)
 	title.add_theme_font_override("font", heavy)
 	title.add_theme_constant_override("line_spacing", -25)
-	label_at(modal, "STEAL THE STORM.", Vector2(65, 394), 25, CYAN)
+	label_at(modal, "STEAL THE STORM.", Vector2(65, 394), 25, SIGNAL)
 	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nBuild your arsenal. Break the next horizon.", Vector2(65, 428), 19, MUTED)
 	desc.size.x = 490
 	var box := column(Vector2(65, 482), 385)
@@ -264,10 +275,12 @@ func show_title(best: int, practiced: bool, cores: int = 0) -> void:
 		controls.add_child(control)
 	box.add_child(controls)
 	play.grab_focus()
-	label_at(modal, "PERSONAL BEST  /  %06d   ·   SALVAGE CORES  /  %d" % [best, cores], Vector2(65, 786), 14, AMBER)
+	label_at(modal, "PERSONAL BEST  /  %06d" % best, Vector2(65, 786), 14, MUTED)
+	var best_mono := label_at(modal, "SALVAGE CORES  /  %d" % cores, Vector2(330, 786), 14, AMBER)
+	best_mono.add_theme_font_override("font", mono)
 	label_at(modal, "%s  MOVE    %s  DASH    %s  PULSE    %s  JUMP / GLIDE" % [movement_keys(),key_names.dash.to_upper(),key_names.pulse.to_upper(),key_names.jump.to_upper()], Vector2(65, 846), 12, MUTED)
-	label_at(modal, "03 SECTORS. THEN THE UNKNOWN.\nNEW ROUTES / EVOLVING WEAPONS", Vector2(945, 790), 14, CYAN)
-	label_at(modal,"COURIER / MK.III\nVECTOR WING SYSTEM",Vector2(612,84),14,CYAN)
+	label_at(modal, "03 SECTORS. THEN THE UNKNOWN.\nNEW ROUTES / EVOLVING WEAPONS", Vector2(945, 790), 14, MUTED)
+	label_at(modal,"COURIER / MK.III\nVECTOR WING SYSTEM",Vector2(612,84),14,MUTED)
 	if not practiced:
 		label_at(modal, "FIRST RUN? PRACTICE TEACHES HARVESTING. SKYBOUND TEACHES FLIGHT.", Vector2(65, 814), 10, MUTED)
 
@@ -278,7 +291,7 @@ func show_game() -> void:
 func show_pause() -> void:
 	clear_modal(); shade()
 	var box := column(Vector2(500, 238), 440)
-	box.add_child(text_line("TAKE A BREATH", 40, CYAN))
+	box.add_child(text_line("TAKE A BREATH", 40, WHITE))
 	box.add_child(text_line("The foundry can wait.", 19, MUTED))
 	var resume_button := button("RESUME", func(): action.emit("resume", null), true)
 	box.add_child(resume_button)
@@ -289,9 +302,10 @@ func show_pause() -> void:
 	resume_button.grab_focus()
 
 func show_practice_complete() -> void:
-	clear_modal(); shade(0.9)
+	clear_modal(); shade(0.94)
+	hud.visible = false
 	var box := column(Vector2(455,240),530)
-	box.add_child(text_line("READY FOR THE HEIST",38,CYAN))
+	box.add_child(text_line("READY FOR THE HEIST",38,WHITE))
 	box.add_child(text_line("You have the core move: harvest, reposition, pulse.\nTake flight, build an arsenal, and dive into endless sectors.",21,MUTED))
 	var start := button("BEGIN SKYBOUND    →",func():action.emit("campaign",false),true)
 	box.add_child(start)
@@ -304,18 +318,19 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 	hud.visible = false
 	var cores: int = int(settings.get("cores",0))
 	var perks: Dictionary = settings.get("perks",{})
-	label_at(modal, "THE HANGAR", Vector2(65, 58), 44, CYAN)
+	label_at(modal, "THE HANGAR", Vector2(65, 58), 44, WHITE)
 	label_at(modal, "Salvage cores are earned on every run and never lost. Permanent perks apply to every future run.", Vector2(65, 122), 16, MUTED)
-	label_at(modal, "YOU HOLD %d CORES" % cores, Vector2(1050, 70), 22, AMBER)
+	var hold := label_at(modal, "YOU HOLD %d CORES" % cores, Vector2(1050, 70), 22, AMBER)
+	hold.add_theme_font_override("font", mono)
 	var ids: Array = perk_data.keys()
 	for i in range(ids.size()):
 		var id: String = ids[i]
 		var data: Dictionary = perk_data[id]
 		var rank: int = int(perks.get(id,0))
 		var card := PanelContainer.new()
-		card.position = Vector2(65 + (i%3)*440, 175 + (i/3)*300)
-		card.size = Vector2(424, 284)
-		card.add_theme_stylebox_override("panel", panel(Color("122736"), Color("3a6471")))
+		card.position = Vector2(65 + (i%3)*440, 175 + (i/3)*258)
+		card.size = Vector2(424, 242)
+		card.add_theme_stylebox_override("panel", panel(Palette.PANEL, Palette.PANEL_LINE))
 		modal.add_child(card)
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 12)
@@ -329,27 +344,35 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 			box.add_child(text_line("MASTERED", 16, AMBER))
 		else:
 			var cost: int = int(data.cost[rank])
-			box.add_child(text_line("%d SALVAGE CORES" % cost, 15, AMBER))
-			var buy := button("INSTALL RANK %d" % (rank+1), func(): action.emit("buy_perk", id), cores >= cost)
+			var price := text_line("%d SALVAGE CORES" % cost, 15, AMBER)
+			price.add_theme_font_override("font", mono)
+			box.add_child(price)
+			var buy := button("INSTALL RANK %d" % (rank+1), func(): action.emit("buy_perk", id))
 			buy.disabled = cores < cost
 			box.add_child(buy)
 	var prestige: int = int(settings.get("prestige",0))
 	var prestige_cost: int = int(40 * pow(1.5, prestige))
-	var prestige_button := button("OVERCHARGE CELL %d  /  +%d%% SCORE FOREVER  /  %d CORES" % [prestige+1, prestige+1, prestige_cost], func(): action.emit("buy_prestige", null), cores >= prestige_cost)
+	var prestige_button := button("OVERCHARGE CELL %d  /  +%d%% SCORE FOREVER  /  %d CORES" % [prestige+1, prestige+1, prestige_cost], func(): action.emit("buy_prestige", null))
 	prestige_button.position = Vector2(505, 800); prestige_button.size = Vector2(640, 52)
 	prestige_button.disabled = cores < prestige_cost
 	modal.add_child(prestige_button)
-	var back := button("BACK TO TITLE", func(): action.emit("title", null), true)
+	var back := button("BACK TO TITLE", func(): action.emit("title", null))
 	back.position = Vector2(65, 800); back.size = Vector2(320, 52)
 	modal.add_child(back)
-	back.grab_focus()
+	var first_buy: Button = null
+	for child in modal.get_children():
+		if child is PanelContainer:
+			for sub in child.get_children():
+				for node in sub.get_children():
+					if node is Button and not node.disabled and first_buy == null: first_buy = node
+	(first_buy if first_buy else back).grab_focus()
 
 
 func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	clear_modal(); shade(0.94)
 	var box := column(Vector2(370, 84), 700)
 	box.add_theme_constant_override("separation", 10)
-	box.add_child(text_line("MAKE IT YOURS", 38, CYAN))
+	box.add_child(text_line("SETTINGS", 38, WHITE))
 	box.add_child(text_line("Settings save automatically.", 16, MUTED))
 	for item in [["volume", "VOLUME"], ["shake", "SCREEN SHAKE"]]:
 		var row := HBoxContainer.new()
@@ -362,24 +385,30 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 		slider.custom_minimum_size = Vector2(360,40)
 		slider.value_changed.connect(func(value): action.emit("setting", {"key":item[0],"value":value}))
 		row.add_child(slider)
+		var readout := text_line(str(int(round(slider.value*100.0))), 14, MUTED)
+		readout.add_theme_font_override("font", mono)
+		readout.custom_minimum_size.x = 40
+		slider.value_changed.connect(func(value): readout.text = str(int(round(value*100.0))))
+		row.add_child(readout)
 		box.add_child(row)
 	var assist := CheckButton.new()
 	assist.text = "ASSIST  /  slower enemy attacks"
+	assist.text += "  ·  ON" if settings.get("assist", false) else "  ·  OFF"
 	assist.button_pressed = settings.get("assist", false)
 	assist.toggled.connect(func(value): action.emit("setting", {"key":"assist","value":value}))
 	box.add_child(assist)
 	if settings.get("won",false):
 		var overdrive:=CheckButton.new()
-		overdrive.text="OVERDRIVE  /  tougher enemies + waves, next run"
+		overdrive.text="OVERDRIVE  /  tougher enemies + waves, next run" + ("  ·  ON" if settings.get("overdrive",false) else "  ·  OFF")
 		overdrive.button_pressed=settings.get("overdrive",false)
 		overdrive.toggled.connect(func(value):action.emit("overdrive",value))
 		box.add_child(overdrive)
 	var low := CheckButton.new()
-	low.text = "LOW EFFECTS  /  reduced particles and shadows"
+	low.text = "LOW EFFECTS  /  reduced particles and shadows" + ("  ·  ON" if settings.get("low_effects", false) else "  ·  OFF")
 	low.button_pressed = settings.get("low_effects", false)
 	low.toggled.connect(func(value): action.emit("setting", {"key":"low_effects","value":value}))
 	box.add_child(low)
-	box.add_child(text_line("KEYBOARD  /  select an action, then press a key", 15, AMBER))
+	box.add_child(text_line("KEYBOARD  /  select an action, then press a key", 15, MUTED))
 	var keys := GridContainer.new()
 	keys.columns = 2
 	keys.add_theme_constant_override("h_separation", 12)
@@ -391,20 +420,20 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 		keys.add_child(key_button)
 	box.add_child(keys)
 	box.add_child(button("RESET CONTROLS", func(): action.emit("reset_controls", null)))
-	var back := button("BACK", func(): action.emit("back", null), true)
+	var back := button("BACK", func(): action.emit("back", null))
 	box.add_child(back)
 	back.grab_focus()
 
 func show_rebind(id: String) -> void:
 	clear_modal(); shade(0.95)
 	var box := column(Vector2(470, 290), 500)
-	box.add_child(text_line("BIND " + id.to_upper(), 40, CYAN))
+	box.add_child(text_line("BIND " + id.to_upper(), 40, WHITE))
 	box.add_child(text_line("Press a keyboard key.\nEsc cancels. Reserved menu keys cannot be assigned.", 22))
 
 func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 	clear_modal(); shade(0.94)
 	offers = ids.duplicate()
-	label_at(modal, "REACTOR EVOLUTION", Vector2(485, 172), 34, CYAN)
+	label_at(modal, "REACTOR EVOLUTION", Vector2(485, 172), 34, WHITE)
 	label_at(modal, "Choose an upgrade + repair 20 hull. Combat is paused.", Vector2(463, 223), 17, MUTED)
 	for i in range(ids.size()):
 		var id: String = ids[i]
@@ -412,14 +441,14 @@ func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 		var card := PanelContainer.new()
 		card.position = Vector2(176 + i * 368, 308)
 		card.size = Vector2(352, 360)
-		card.add_theme_stylebox_override("panel", panel(Color("122736"), Color("3a6471")))
+		card.add_theme_stylebox_override("panel", panel(Palette.PANEL, Palette.PANEL_LINE))
 		modal.add_child(card)
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 18)
 		card.add_child(box)
 		var current: int = int(levels.get(id,0))
 		var mark_names := ["MK I","MK II","MK III"]
-		box.add_child(text_line("0%d  /  %s  /  %s" % [i+1,data.family,mark_names[mini(current,2)]], 13, AMBER))
+		box.add_child(text_line("0%d  /  %s  /  %s" % [i+1,data.family,mark_names[mini(current,2)]], 13, MUTED))
 		box.add_child(text_line(data.icon, 46, CYAN))
 		box.add_child(text_line(data.name + ("  " + "●".repeat(current) + "○".repeat(3-current) if current>0 else ""), 23))
 		var fam_owned := 0
@@ -430,14 +459,14 @@ func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 		var desc := text_line(data.marks[mini(current,2)], 17, MUTED)
 		desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		box.add_child(desc)
-		var choose := button("[%d]  %s" % [i+1, "INSTALL" if current==0 else "RAISE TO " + mark_names[mini(current,2)]], func(): action.emit("upgrade", id), true)
+		var choose := button("[%d]  %s" % [i+1, "INSTALL" if current==0 else "RAISE TO " + mark_names[mini(current,2)]], func(): action.emit("upgrade", id))
 		box.add_child(choose)
 		if i == 0: choose.grab_focus()
 	label_at(modal, "EACH SYSTEM HAS THREE MARKS  /  OWN ALL THREE OF A FAMILY FOR ITS RESONANCE", Vector2(380, 724), 12, MUTED)
 
 func show_weapon_upgrades(ids: Array, data: Array) -> void:
 	clear_modal(); shade(0.95)
-	label_at(modal,"THE ARMORY",Vector2(558,115),40,CYAN)
+	label_at(modal,"THE ARMORY",Vector2(558,115),40,WHITE)
 	label_at(modal,"New hardware. New ways to break the storm.",Vector2(486,173),19,MUTED)
 	for i in range(ids.size()):
 		var id: String=ids[i]
@@ -493,17 +522,18 @@ func show_result(won: bool, data: Dictionary) -> void:
 	hud.visible = false
 	var box := column(Vector2(420,100),600)
 	box.add_theme_constant_override("separation",10)
-	box.add_child(text_line("RUN BANKED" if data.get("retired",false) else "REACTOR SECURED" if won else "SIGNAL LOST",42,CYAN if won or data.get("retired",false) else AMBER))
+	box.add_child(text_line("RUN BANKED" if data.get("retired",false) else "REACTOR SECURED" if won else "SIGNAL LOST",42,WHITE if won or data.get("retired",false) else CORAL))
 	box.add_child(text_line("The storm keeps moving. So will you.",20,MUTED))
 	box.add_child(text_line("%06d" % data.score,64,WHITE))
-	box.add_child(text_line("SCORE  /  BEST %06d" % data.best,14,AMBER))
+	box.add_child(text_line("BEST  /  %06d" % data.best,14,MUTED))
 	box.add_child(text_line("%d machines broken · %d shots stolen · %d pulses" % [data.kills,data.absorbed,data.pulses],17))
-	box.add_child(text_line("BEST COMBO ×%d  ·  +%d SALVAGE CORES (HOLD %d)" % [data.get("best_combo",0),data.get("cores_earned",0),data.get("cores",0)],15,AMBER))
+	box.add_child(text_line("BEST COMBO ×%d" % data.get("best_combo",0),15,WHITE))
+	box.add_child(text_line("+%d SALVAGE CORES  (HOLD %d)" % [data.get("cores_earned",0),data.get("cores",0)],15,AMBER))
 	box.add_child(text_line("TIME  %02d:%02d" % [int(data.time)/60,int(data.time)%60],16,MUTED))
 	if data.get("campaign",false):
 		box.add_child(text_line("SECTOR %02d · %d AIR RELAYS · %d GUARDIANS" % [data.sector,data.relays,data.get("guardians",0)],15,CYAN))
 		box.add_child(text_line("ROUTE SEED  %s" % str(data.get("seed",0)),12,MUTED))
-	box.add_child(text_line("%s  /  RANK %s" % [data.get("weapon","VECTOR CARBINE"),data.get("rank","I")],16,CYAN))
+	box.add_child(text_line("%s  /  RANK %s" % [data.get("weapon","VECTOR CARBINE"),data.get("rank","I")],16,SIGNAL))
 	if won: box.add_child(text_line("OVERDRIVE UNLOCKED  /  Enable it in Settings for a tougher heist.",13,CYAN))
 	var names: PackedStringArray = []
 	var result_levels: Dictionary = data.get("levels",{})
@@ -559,12 +589,12 @@ func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practi
 	health_bar.max_value = rules.max_health
 	health_bar.value = rules.health
 	health_text.text = "HULL  /  %03d" % ceili(rules.health)
-	health_bar.get_theme_stylebox("fill").bg_color = CYAN if rules.health > 0.3*rules.max_health else CORAL
+	health_bar.get_theme_stylebox("fill").bg_color = WHITE if rules.health > 0.3*rules.max_health else CORAL
 	energy_bar.value = rules.energy
 	var charged: bool = rules.energy >= 85
 	var pulse_color := Palette.AMBER_HOT if charged else CYAN
 	energy_bar.get_theme_stylebox("fill").bg_color = pulse_color
-	energy_text.add_theme_color_override("font_color",pulse_color)
+	energy_text.add_theme_color_override("font_color",Palette.SIGNAL_SOFT if charged else WHITE)
 	energy_text.text = "%s  PULSE  /  %03d%s" % [key_names.pulse.to_upper(),int(rules.energy), "  OVERLOAD" if charged else "  READY" if rules.energy >= rules.pulse_threshold() else ""]
 	if threshold_tick: threshold_tick.position.x = 22 + 250*(rules.pulse_threshold()/100.0) - 3
 	var dash_cap: int = rules.max_dash_charges + (1 if rules.family_complete("HARVEST") else 0)

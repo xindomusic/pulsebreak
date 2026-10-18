@@ -122,7 +122,7 @@ func create_target() -> void:
 	number.font_size = 52
 	number.pixel_size = 0.011
 	number.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	number.modulate = Color("aaffee")
+	number.modulate = Color("ff8a2a")
 	target.add_child(number)
 	refresh_target_label()
 
@@ -165,7 +165,7 @@ func update(delta: float) -> void:
 			game.rules.energy = minf(100,game.rules.energy+18)
 			game.rules.health = minf(game.rules.heal_ceiling(),game.rules.health+8)
 			game.rules.score += 300
-			game.add_effect(target.position,Color("76f7df"),2.2)
+			game.add_effect(target.position,Color("ff8a2a"),2.2)
 			game.cue("core")
 			game.ui.show_hint("RELAY %d / %d  ·  +18 CHARGE  +8 HULL" % [relays,relay_goal()],2.5)
 			create_target()
