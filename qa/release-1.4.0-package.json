@@ -1,0 +1,23 @@
+{
+  "release": "1.4.0",
+  "tag": "v1.4.0",
+  "date": "2026-10-21",
+  "change": "Four switchable UI themes (runtime palette tokens), level generator v2 anti-repeat (9 routes, coprime cycles, stacked modifiers), in-app self-update (GitHub Releases check, SHA-256-verified download, bundle swap + relaunch), UI loops 1-5 polish on top of 1.3.2",
+  "zip": {
+    "file": "Pulsebreak-1.4.0-macOS-universal.zip",
+    "bytes": 62330291,
+    "sha256": "cdb1f723004ccf3a95f11adba95b7494fcf94da2391e361f6a339fa742dec565"
+  },
+  "pck": {
+    "bytes": 2892976,
+    "sha256": "2a65a28c67370714232349bc1c892483a1a8886c826d5f50542eaba642364a88"
+  },
+  "architectures": "x86_64 arm64",
+  "signature": "ad-hoc, codesign --verify --deep --strict passed (export script)",
+  "tests": "651 checks in 16 suites, all passed (incl. new update suite, 13 checks)",
+  "packaged_run": "Exported app simulated Classic win (376.3s game time, 292 kills, 111 absorbed, 53 pulses, 100 hull), 0 script errors (qa/ui14/packaged)",
+  "self_update_live": "Disposable copy of the packaged app run with --qa-version=1.3.0 --qa-update-install: detected 1.3.2 via GitHub API, downloaded zip, SHA-256 verified against release sums, swapped its own bundle (plist 1.4.0 -> 1.3.2, no .old/staging leftovers) and relaunched; relaunched process verified then terminated; production build untouched",
+  "themes": "aerospace (default), foundry, abyss, blueprint captured via tests/visual_check.gd --qa-theme (qa/ui14/{abyss,foundry,blueprint})",
+  "grade": "UI loops 1-5 of 10 budget: averages 7.2 -> 6.5 -> 6.4 -> 6.6 -> 6.6 (best single verdict 7.8); plateau with all named defects fixed; 9/10 not reached and loops closed early on evidence (qa/ui14-review.md)",
+  "built_from": "main commit ffeaaef"
+}
