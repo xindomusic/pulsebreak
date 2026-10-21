@@ -326,7 +326,7 @@ func pulse(at: Vector3, power: float, radius: float, echo: bool = false) -> void
 	front.opacity=lerpf(0.62,0.94,strength)*(0.54 if echo else 1.0)
 	front.arrival=PULSE_FRONT_TIME*speed
 	var boundary := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(ground_radius,0.08,ground_radius),0.30*speed,"pulse_boundary",0.0,true)
-	boundary.opacity=0.10 if echo else lerpf(0.18,0.28,strength)
+	boundary.opacity=0.08 if echo else lerpf(0.12,0.18,strength)
 	var gather := _pulse_layer("pulse_sparse" if low_effects or echo else "pulse_gather","pulse_cyan",energy_origin,Vector3.ONE*radius*0.60,PULSE_GATHER_TIME*speed,"pulse_gather")
 	if not gather.is_empty(): gather.opacity=0.90*weight
 	var shards := _pulse_layer("pulse_shards","pulse_cyan",energy_origin,Vector3(radius*0.94,radius*0.5,radius*0.94),0.34*speed,"pulse_shards",0.035*speed)
@@ -334,7 +334,7 @@ func pulse(at: Vector3, power: float, radius: float, echo: bool = false) -> void
 		shards.opacity=0.88*weight
 		shards.rotation=rng.randf_range(-0.18,0.18)
 	var aftermath := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(ground_radius*0.87,0.08,ground_radius*0.87),lifetime-0.16*speed,"pulse_after",0.16*speed)
-	if not aftermath.is_empty(): aftermath.opacity=0.26*weight
+	if not aftermath.is_empty(): aftermath.opacity=0.18*weight
 	if not low_effects and not echo:
 		var halo := _pulse_layer("ring","pulse_cyan",energy_origin,Vector3(radius*0.26,minf(0.28,radius),radius*0.26),0.23,"pulse_halo",0.015)
 		if not halo.is_empty(): halo.opacity=0.52*weight

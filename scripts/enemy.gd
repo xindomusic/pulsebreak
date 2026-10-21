@@ -200,7 +200,7 @@ func update(delta: float) -> void:
 		game.hit_player(18 if kind != "boss" else 24)
 	if kind == "boss" and phase == 1 and hp < max_hp * 0.5:
 		phase = 2
-		game.announce("GUARDIAN // OVERDRIVE", "Offset volleys. Watch the marked ground.")
+		game.announce("GUARDIAN OVERDRIVE", "Offset volleys. Watch the marked ground.")
 		game.cue("boss", 1.0)
 		game.shake = maxf(game.shake, 0.45)
 		game.camera_punch = maxf(game.camera_punch, 0.8)

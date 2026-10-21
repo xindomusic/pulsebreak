@@ -2,13 +2,17 @@
 
 **Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-**[Download Pulsebreak 1.4.0 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.4.0/Pulsebreak-1.4.0-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
+**[Download Pulsebreak 1.4.1 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.4.1/Pulsebreak-1.4.1-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
 
 Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
 ![Staged native title and courier](docs/images/resonance-title.png)
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
+
+## Release 1.4.1 — UI loops 6–10
+
+The remaining five loops of the 10-loop UI budget: numbered stat meters, a de-plated boss announcement, theme buttons that preview themselves, sheet backdrop marks, hangar affordability borders, glyph redraws, and focus as its own offset ring. Final average ~6.5 across the series (best verdict 7.8); **9/10 was not reached in the full cap** — see [the loop record](qa/ui14-review.md). Installed 1.4.0 copies receive this release through the in-app updater.
 
 ## Release 1.4.0 — Themes, no-repeat sectors, self-update
 

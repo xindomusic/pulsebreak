@@ -34,6 +34,7 @@ var heavy: Font
 var mono: Font
 var hint_time := 0.0
 var banner_time := 0.0
+var boss_active := false
 var offers: Array = []
 var key_names: Dictionary = {"left":"A","right":"D","up":"W","down":"S","dash":"Space","pulse":"E","jump":"F","weapon":"Q"}
 var harvest_guide: Label
@@ -80,7 +81,7 @@ class Glyph:
 			# Three offset crescents: the blast and its two repeats.
 			for i in range(3):
 				var cc := c + Vector2(-r * 0.45 + float(i) * r * 0.45, r * 0.3 - float(i) * r * 0.3)
-				var rr := r * (0.62 - float(i) * 0.13)
+				var rr := r * (0.74 - float(i) * 0.15)
 				draw_circle(cc, rr, color)
 				draw_circle(cc + Vector2(rr * 0.45, -rr * 0.25), rr * 0.78, cut if cut.a > 0.0 else Color(0.05, 0.06, 0.07))
 			return
@@ -98,13 +99,10 @@ class Glyph:
 					draw_line(c + Vector2(0, -r * 0.42), c + Vector2(0, r * 0.42), cutc, w * 1.1, true)
 					return
 				"frost":
-					var hex := PackedVector2Array()
-					for i in range(6):
-						hex.append(c + Vector2.RIGHT.rotated(TAU * float(i) / 6.0 - PI * 0.5) * r * 0.98)
-					draw_colored_polygon(hex, color)
-					for i in range(2):
-						var yy := c.y - r * 0.3 + float(i) * r * 0.44
-						draw_polyline(PackedVector2Array([Vector2(c.x - r * 0.36, yy), Vector2(c.x, yy + r * 0.28), Vector2(c.x + r * 0.36, yy)]), cutc, w, true)
+					for i in range(3):
+						var yy := c.y - r * 0.78 + float(i) * r * 0.5
+						var ww := r * (0.98 - float(i) * 0.16)
+						draw_polyline(PackedVector2Array([Vector2(c.x - ww, yy), Vector2(c.x, yy + r * 0.4), Vector2(c.x + ww, yy)]), color, maxf(5.0, r * 0.26), true)
 					return
 				"ignite":
 					draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r * 0.92, r * 0.78), c + Vector2(-r * 0.92, r * 0.78)]), color)
@@ -116,9 +114,18 @@ class Glyph:
 					draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r * 0.38), c + Vector2(r * 0.3, r * 0.08), c + Vector2(0, r * 0.52), c + Vector2(-r * 0.3, r * 0.08)]), cutc)
 					return
 				"battery":
-					draw_rect(Rect2(c - Vector2(r * 0.88, r * 0.62), Vector2(r * 1.76, r * 1.24)), color)
-					draw_rect(Rect2(c + Vector2(-r * 0.3, -r * 0.92), Vector2(r * 0.6, r * 0.3)), color)
-					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.18, -r * 0.44), c + Vector2(-r * 0.34, r * 0.08), c + Vector2(-r * 0.02, r * 0.08), c + Vector2(-r * 0.18, r * 0.44), c + Vector2(r * 0.34, -r * 0.08), c + Vector2(r * 0.02, -r * 0.08)]), cutc)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.34, -r * 0.98), c + Vector2(-r * 0.52, r * 0.18), c + Vector2(-r * 0.04, r * 0.18), c + Vector2(-r * 0.34, r * 0.98), c + Vector2(r * 0.52, -r * 0.18), c + Vector2(r * 0.04, -r * 0.18)]), color)
+					draw_rect(Rect2(c + Vector2(-r * 0.85, r * 0.78), Vector2(r * 0.34, r * 0.16)), color)
+					draw_rect(Rect2(c + Vector2(r * 0.51, r * 0.78), Vector2(r * 0.34, r * 0.16)), color)
+					return
+				"harvest":
+					for i in range(3):
+						var bx := c.x - r * 0.84 + float(i) * r * 0.56
+						draw_arc(Vector2(bx, c.y), r * 0.3, PI, TAU, 20, color, maxf(4.0, r * 0.24), true)
+						draw_arc(Vector2(bx, c.y), r * 0.3, 0, PI, 20, color, maxf(4.0, r * 0.24), true)
+					draw_line(c + Vector2(-r * 0.98, 0), c + Vector2(-r * 0.96, 0), color, maxf(4.0, r * 0.2), true)
+					draw_line(c + Vector2(r * 0.96, 0), c + Vector2(r * 0.98, 0), color, maxf(4.0, r * 0.2), true)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.62, -r * 0.62), c + Vector2(r * 0.95, -r * 0.3), c + Vector2(r * 0.3, -r * 0.3)]), color)
 					return
 		if ringed:
 			# Reactor seal: every system glyph sits inside the broken sigil ring.
@@ -339,9 +346,9 @@ class Blueprint:
 			"arc":
 				draw_line(Vector2(132, 40), Vector2(204, 40), detail, 2.0, true)
 				draw_line(Vector2(132, 56), Vector2(204, 56), detail, 2.0, true)
-				for cx in [148.0, 172.0]:
+				for cx in [148.0, 172.0, 196.0]:
 					draw_line(Vector2(cx, 34), Vector2(cx, 62), detail, 2.4, true)
-				draw_polyline(PackedVector2Array([Vector2(136, 48), Vector2(156, 38), Vector2(166, 52), Vector2(182, 40), Vector2(198, 48)]), detail, 2.0, true)
+				draw_colored_polygon(PackedVector2Array([Vector2(172, 41), Vector2(179, 48), Vector2(172, 55), Vector2(165, 48)]), detail)
 				draw_circle(Vector2(86, 46), 4, detail)
 			"plasma":
 				draw_line(Vector2(152, 48), Vector2(254, 48), detail, 2.0, true)
@@ -407,14 +414,20 @@ func _ready() -> void:
 	theme_ui.set_color("font_hover_color", "Button", WHITE)
 	theme_ui.set_color("font_focus_color", "Button", WHITE)
 	theme_ui.set_color("font_pressed_color", "Button", Palette.SIGNAL_SOFT)
-	theme_ui.set_color("font_disabled_color", "Button", Color(Palette.MUTED, 0.9))
+	theme_ui.set_color("font_disabled_color", "Button", Color(WHITE, 0.55))
 	theme_ui.set_font("font", "Button", heavy)
 	theme_ui.set_font_size("font_size", "Button", 20)
 	theme_ui.set_stylebox("normal", "Button", panel(Color(Palette.PANEL_RAISED,0.92), Color(WHITE, 0.24)))
 	theme_ui.set_stylebox("hover", "Button", panel(Palette.PANEL_RAISED, Color(WHITE, 0.55)))
 	theme_ui.set_stylebox("pressed", "Button", panel(Color("2a2f36"), SIGNAL))
-	theme_ui.set_stylebox("disabled", "Button", panel(Color(Palette.PANEL_INSET,0.7), Color(Palette.PANEL_LINE,0.5)))
-	theme_ui.set_stylebox("focus", "Button", panel(Color(0,0,0,0), SIGNAL, 2))
+	theme_ui.set_stylebox("disabled", "Button", panel(Color(Palette.PANEL_RAISED,0.85), Color(Palette.PANEL_LINE,0.6)))
+	var focus_ring := panel(Color(0,0,0,0), SIGNAL, 2)
+	focus_ring.expand_margin_left = 3.0
+	focus_ring.expand_margin_right = 3.0
+	focus_ring.expand_margin_top = 3.0
+	focus_ring.expand_margin_bottom = 3.0
+	focus_ring.shadow_size = 0
+	theme_ui.set_stylebox("focus", "Button", focus_ring)
 	# Sliders: thin track, signal fill, drawn ring grabber (no default Godot chrome).
 	var track := StyleBoxLine.new()
 	track.color = Palette.PANEL_LINE
@@ -479,9 +492,9 @@ func pill_texture(on: bool) -> ImageTexture:
 			var nearest := Vector2(clampf(p.x, 13.0, 33.0), 13.0)
 			var body := p.distance_to(nearest)
 			if body <= 12.0:
-				var col: Color = WHITE if on else Palette.PANEL_RAISED
-				if body > 10.5: col = WHITE if on else Palette.PANEL_LINE
-				if p.distance_to(knob) <= 8.0: col = Palette.INK if on else Palette.MUTED
+				var col: Color = WHITE if on else Palette.PANEL_INSET
+				if body > 10.5: col = WHITE if on else Color(WHITE, 0.4)
+				if p.distance_to(knob) <= 8.0: col = Palette.INK if on else Color(WHITE, 0.6)
 				img.set_pixel(x, y, col)
 	return ImageTexture.create_from_image(img)
 
@@ -566,6 +579,16 @@ func frame_over(card: Control, accent: Color) -> void:
 		frame.queue_redraw()
 	card.resized.connect(sync)
 	sync.call_deferred()
+
+func sheet_mark(glyph_kind: String = "sigil", big_text: String = "") -> void:
+	if not big_text.is_empty():
+		var ghost_num := label_at(modal, big_text, Vector2(1010, 300), 190, Color(WHITE, 0.08))
+		ghost_num.add_theme_font_override("font", heavy)
+		return
+	var mark := Glyph.new(glyph_kind, Color(SIGNAL, 0.20), 340)
+	mark.set("ringed", true)
+	mark.position = Vector2(950, 250)
+	modal.add_child(mark)
 
 func sheet(pos: Vector2, width: float, accent: Color = Color(0,0,0,0)) -> VBoxContainer:
 	if accent.a == 0.0: accent = SIGNAL
@@ -706,7 +729,7 @@ func build_hud() -> void:
 	health_text.add_theme_font_override("font", mono)
 	health_bar = bar_at(hud, Vector2(35, 58), Vector2(260, 10), WHITE)
 	(health_bar.get_node("Ticks") as Control).set("divisions", 5)
-	status_text = label_at(hud, "SKYFORGE   /   SECTOR 07", Vector2(35, 82), 13, Color(WHITE, 0.65))
+	status_text = label_at(hud, "SKYFORGE   /   SECTOR 07", Vector2(35, 82), 14, Color(WHITE, 0.85))
 	time_text = label_at(hud, "00:00", Vector2(640, 14), 34)
 	time_text.size = Vector2(160, 44)
 	time_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -743,7 +766,7 @@ func build_hud() -> void:
 	dash_pips.position = Vector2(302, 40)
 	dash_pips.size = Vector2(90, 16)
 	reactor.add_child(dash_pips)
-	harvest_guide=label_at(reactor, "DASH THROUGH ORANGE SHOTS TO CHARGE", Vector2(22, 62), 12, MUTED)
+	harvest_guide=label_at(reactor, "DASH THROUGH ORANGE SHOTS TO CHARGE", Vector2(22, 62), 12, Color(WHITE, 0.75))
 	var armory := Panel.new()
 	armory.position = Vector2(35, 785)
 	armory.size = Vector2(420, 91)
@@ -770,6 +793,9 @@ func build_hud() -> void:
 	hud.add_child(banner_plate)
 	add_frame(banner_plate, SIGNAL)
 	banner = label_at(hud, "", Vector2(450, 152), 24, WHITE)
+	banner.add_theme_color_override("font_shadow_color", Color(Palette.INK, 0.92))
+	banner.add_theme_constant_override("shadow_offset_x", 1)
+	banner.add_theme_constant_override("shadow_offset_y", 2)
 	banner.size = Vector2(540, 72)
 	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	banner.add_theme_font_override("font", heavy)
@@ -852,7 +878,7 @@ func show_title(best: int, practiced: bool, cores: int = 0) -> void:
 	var title := label_at(modal, "PULSE\nBREAK", Vector2(58, 115), 104)
 	title.add_theme_font_override("font", heavy)
 	title.add_theme_constant_override("line_spacing", -25)
-	label_at(modal, "STEAL THE STORM.", Vector2(65, 386), 25, SIGNAL)
+	label_at(modal, "STEAL THE STORM.", Vector2(65, 386), 23, SIGNAL)
 	var desc := label_at(modal, "Leap the gates. Unfold your wings.\nBuild your arsenal. Break the next horizon.", Vector2(65, 418), 19, MUTED)
 	desc.size.x = 490
 	var box := column(Vector2(65, 478), 385)
@@ -873,10 +899,10 @@ func show_title(best: int, practiced: bool, cores: int = 0) -> void:
 	add_frame(play, SIGNAL)
 	var captions := ["ENDLESS GENERATED SECTORS", "LEARN TO HARVEST SHOTS", "ONE ARENA, ONE GUARDIAN", "SPEND CORES ON PERMANENT PERKS"]
 	for i in range(captions.size()):
-		var tick := Lines.new([Vector2(456, 505 + i * 63), Vector2(470, 505 + i * 63)], Color(WHITE, 0.5), true)
+		var tick := Lines.new([Vector2(456, 505 + i * 63), Vector2(470, 505 + i * 63)], Color(WHITE, 0.8), true)
 		tick.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		modal.add_child(tick)
-		var cap := label_at(modal, captions[i], Vector2(478, 496 + i * 63), 13, Color(WHITE, 0.82))
+		var cap := label_at(modal, captions[i], Vector2(478, 496 + i * 63), 14, WHITE)
 		cap.add_theme_color_override("font_shadow_color", Color(Palette.INK, 0.9))
 		cap.add_theme_constant_override("shadow_offset_x", 1)
 		cap.add_theme_constant_override("shadow_offset_y", 1)
@@ -889,7 +915,7 @@ func show_title(best: int, practiced: bool, cores: int = 0) -> void:
 	rail.size = Vector2(400, 48)
 	rail.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	label_at(modal,"COURIER MK.III\nVECTOR WING SYSTEM",Vector2(612,84),14,MUTED)
-	var leader := Lines.new([Vector2(612, 128), Vector2(880, 128), Vector2(972, 282)], Color(WHITE, 0.45), true)
+	var leader := Lines.new([Vector2(612, 128), Vector2(860, 128), Vector2(885, 258)], Color(WHITE, 0.45), true)
 	leader.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(leader)
 	if not practiced:
@@ -926,9 +952,10 @@ func show_pause() -> void:
 	animate_modal()
 
 func show_practice_complete() -> void:
-	clear_modal(); shade(0.86)
+	clear_modal(); shade(0.84)
 	hud.visible = false
-	var box := sheet(Vector2(65, 170), 590)
+	sheet_mark("core")
+	var box := sheet(Vector2(65, 170), 680)
 	var p_lockup := HBoxContainer.new()
 	p_lockup.add_theme_constant_override("separation", 12)
 	var p_sigil := Glyph.new("sigil", SIGNAL, 30)
@@ -1004,7 +1031,7 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 		var pip_row := HBoxContainer.new()
 		pip_row.add_theme_constant_override("separation", 10)
 		pip_row.add_child(Pips.new(rank, 3, SIGNAL))
-		pip_row.add_child(nowrap(mono_line("RANK %d / 3" % rank, 11, MUTED), 90))
+		pip_row.add_child(nowrap(mono_line("RANK %d OF 3" % rank, 11, MUTED), 90))
 		head_text.add_child(pip_row)
 		head_row.add_child(head_text)
 		box.add_child(head_row)
@@ -1015,10 +1042,13 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 			box.add_child(nowrap(mono_line(perk_line(id, rank), 12, WHITE), 340))
 		if rank >= 3:
 			box.add_child(nowrap(mono_line("ACTIVE  ·  " + perk_line(id, 3).split("→")[0].strip_edges().trim_prefix("NOW "), 12, WHITE), 340))
-			var mastered_band := button("◆ MASTERED — ALWAYS ON", func(): pass)
-			mastered_band.disabled = true
-			mastered_band.focus_mode = Control.FOCUS_NONE
-			mastered_band.add_theme_color_override("font_disabled_color", AMBER)
+			var mastered_band := PanelContainer.new()
+			mastered_band.add_theme_stylebox_override("panel", panel(Color(Palette.PANEL_INSET, 0.85), Color(AMBER, 0.45)))
+			mastered_band.custom_minimum_size.y = 50
+			var mastered_text := mono_line("◆ MASTERED — ALWAYS ON", 14, AMBER)
+			mastered_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			mastered_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			mastered_band.add_child(mastered_text)
 			box.add_child(mastered_band)
 		else:
 			var cost: int = int(data.cost[rank])
@@ -1029,6 +1059,7 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 			box.add_child(price_row)
 			var buy := button("INSTALL RANK %d" % (rank+1) if cores >= cost else "NEED %d MORE CORES" % (cost - cores), func(): action.emit("buy_perk", id))
 			buy.disabled = cores < cost
+			if cores >= cost: buy.add_theme_stylebox_override("normal", panel(Color(Palette.PANEL_RAISED,0.92), SIGNAL))
 			box.add_child(buy)
 		frame_over(card, AMBER if rank >= 3 else SIGNAL)
 	var prestige: int = int(settings.get("prestige",0))
@@ -1036,6 +1067,7 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 	var prestige_button := button("OVERCHARGE CELL %d · +%d%% SCORE FOREVER · %d CORES" % [prestige+1, prestige+1, prestige_cost], func(): action.emit("buy_prestige", null))
 	prestige_button.position = Vector2(505, 694); prestige_button.size = Vector2(864, 52)
 	prestige_button.disabled = cores < prestige_cost
+	prestige_button.add_theme_stylebox_override("normal", panel(Color(Palette.PANEL_RAISED,0.92), Color(AMBER, 0.7)))
 	modal.add_child(prestige_button)
 	var back := button("BACK TO TITLE", func(): action.emit("title", null))
 	back.position = Vector2(65, 694); back.size = Vector2(424, 52)
@@ -1068,19 +1100,25 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	for item in [["volume", "VOLUME"], ["shake", "SCREEN SHAKE"]]:
 		var row := HBoxContainer.new()
 		var label := text_line(item[1], 16)
-		label.custom_minimum_size.x = 210
+		label.custom_minimum_size.x = 196
 		row.add_child(label)
+		var lo := text_line("0%", 12, MUTED)
+		lo.add_theme_font_override("font", mono)
+		row.add_child(nowrap(lo, 26))
 		var slider := HSlider.new()
 		slider.min_value = 0; slider.max_value = 1; slider.step = 0.05
 		slider.value = settings.get(item[0], 0.6)
-		slider.custom_minimum_size = Vector2(360,34)
+		slider.custom_minimum_size = Vector2(284,34)
 		slider.value_changed.connect(func(value): action.emit("setting", {"key":item[0],"value":value}))
 		row.add_child(slider)
-		var readout := text_line(str(int(round(slider.value*100.0))), 14, MUTED)
+		var readout := text_line(str(int(round(slider.value*100.0))) + "%", 14, MUTED)
 		readout.add_theme_font_override("font", mono)
 		readout.custom_minimum_size.x = 40
-		slider.value_changed.connect(func(value): readout.text = str(int(round(value*100.0))))
+		slider.value_changed.connect(func(value): readout.text = str(int(round(value*100.0))) + "%")
+		var hi := text_line("100%", 12, MUTED)
+		hi.add_theme_font_override("font", mono)
 		row.add_child(readout)
+		row.add_child(nowrap(hi, 40))
 		box.add_child(row)
 	var assist := CheckButton.new()
 	assist.text = "ASSIST · slower enemy attacks"
@@ -1117,18 +1155,15 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	theme_row.add_theme_constant_override("separation", 8)
 	var active_theme: String = str(settings.get("theme", "aerospace"))
 	for theme_id in Palette.theme_ids():
-		var cell := HBoxContainer.new()
-		cell.add_theme_constant_override("separation", 8)
-		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var mark := Glyph.new("core", Palette.THEMES[theme_id]["SIGNAL"], 18)
-		mark.set("bold", true)
-		mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		cell.add_child(mark)
-		var tb := button(str(Palette.THEME_NAMES[theme_id]), func(): action.emit("theme", theme_id), theme_id == active_theme)
+		var th: Dictionary = Palette.THEMES[theme_id]
+		var tb := button(("◆ " if theme_id == active_theme else "") + str(Palette.THEME_NAMES[theme_id]), func(): action.emit("theme", theme_id))
 		tb.custom_minimum_size = Vector2(0, 40)
 		tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		cell.add_child(tb)
-		theme_row.add_child(cell)
+		tb.add_theme_stylebox_override("normal", panel(th["PANEL"], th["WHITE"] if theme_id == active_theme else th["SIGNAL"], 2 if theme_id == active_theme else 1))
+		tb.add_theme_stylebox_override("hover", panel(th["PANEL_RAISED"], th["SIGNAL"]))
+		tb.add_theme_color_override("font_color", th["WHITE"])
+		tb.add_theme_color_override("font_hover_color", th["WHITE"])
+		theme_row.add_child(tb)
 	box.add_child(theme_row)
 	box.add_child(text_line("KEYBOARD · select an action, then press a key", 15, MUTED))
 	var keys := GridContainer.new()
@@ -1137,7 +1172,18 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 	keys.add_theme_constant_override("v_separation", 6)
 	for id in ["left","right","up","down","dash","pulse","jump","weapon"]:
 		var key_name := OS.get_keycode_string(int(bindings[id]))
-		var key_button := button(id.to_upper() + "   [" + key_name + "]", func(): action.emit("rebind", id))
+		var key_button := button(id.to_upper(), func(): action.emit("rebind", id))
+		var chip := Label.new()
+		chip.text = "[" + key_name + "]"
+		chip.add_theme_font_override("font", mono)
+		chip.add_theme_font_size_override("font_size", 13)
+		chip.add_theme_color_override("font_color", Color(WHITE, 0.75))
+		chip.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+		chip.position = Vector2(-86, -10)
+		chip.size = Vector2(72, 20)
+		chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		key_button.add_child(chip)
 		key_button.custom_minimum_size = Vector2(336,34)
 		key_button.add_theme_font_override("font", mono)
 		key_button.add_theme_font_size_override("font_size", 13)
@@ -1230,7 +1276,7 @@ func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 		card.add_child(box)
 		var current: int = int(levels.get(id,0))
 		var mark_names := ["MK I","MK II","MK III"]
-		box.add_child(mono_line("0%d · %s · %s" % [i+1,data.family,mark_names[mini(current,2)]], 12, MUTED))
+		box.add_child(mono_line("0%d · %s" % [i+1,data.family], 12, MUTED))
 		var glyph := Glyph.new(id, fam, 88)
 		glyph.set("bold", true)
 		glyph.set("cut", Palette.PANEL)
@@ -1263,36 +1309,31 @@ func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 		var choose := button("[%d]  %s" % [i+1, "INSTALL" if current==0 else "RAISE TO " + mark_names[mini(current,2)]], func(): action.emit("upgrade", id))
 		box.add_child(choose)
 		if i == 0: choose.grab_focus()
-		var ghost := Glyph.new(id, Color(fam, 0.06), 168)
-		ghost.set("ringed", true)
-		ghost.set("width_scale", 0.55)
-		ghost.position = card.position + Vector2(184, 104)
-		modal.add_child(ghost)
 		card_hit_area(card, fam, func(): action.emit("upgrade", id))
 	centered_label("EACH SYSTEM HAS THREE MARKS · OWN ALL THREE OF A FAMILY FOR ITS RESONANCE", 738, 12, MUTED, mono)
 	animate_modal()
 
 func show_weapon_upgrades(ids: Array, data: Array) -> void:
 	clear_modal(); shade(0.88)
-	centered_label("CHECKPOINT ARMORY  /  NEW HARDWARE", 96, 12, SIGNAL, mono)
+	centered_label("CHECKPOINT ARMORY · NEW HARDWARE", 96, 12, SIGNAL, mono)
 	centered_label("THE ARMORY", 120, 42, WHITE, heavy)
 	hairline(modal, Vector2(560, 182), Vector2(880, 182), Color(SIGNAL, 0.7))
 	centered_label("New hardware. New ways to break the storm.", 196, 18, MUTED)
-	stage(Rect2(146, 222, 1148, 552))
+	stage(Rect2(146, 224, 1148, 508))
 	for i in range(ids.size()):
 		var id: String=ids[i]
 		var item: Dictionary=data[i]
 		var card:=PanelContainer.new()
-		card.position=Vector2(176+i*368,240)
-		card.size=Vector2(352,516)
+		card.position=Vector2(176+i*368,242)
+		card.size=Vector2(352,470)
 		card.add_theme_stylebox_override("panel",panel(Palette.PANEL,Palette.PANEL_LINE))
 		modal.add_child(card)
 		var box:=VBoxContainer.new()
 		box.add_theme_constant_override("separation",10)
 		card.add_child(box)
-		box.add_child(mono_line("0%d  /  %s" % [i+1,item.family],12,item.color))
+		box.add_child(mono_line("0%d · %s" % [i+1,item.family],12,item.color))
 		var preview:=Control.new()
-		preview.custom_minimum_size=Vector2(300,88)
+		preview.custom_minimum_size=Vector2(300,96)
 		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		box.add_child(preview)
 		weapon_blueprint(preview,id,item.color)
@@ -1300,21 +1341,23 @@ func show_weapon_upgrades(ids: Array, data: Array) -> void:
 		var rank_row:=HBoxContainer.new()
 		rank_row.add_theme_constant_override("separation",10)
 		rank_row.add_child(Pips.new(int(item.get("rank",0)),5,item.color))
-		rank_row.add_child(nowrap(mono_line("NOT OWNED" if int(item.get("rank",0))==0 else "RANK %s OF V" % ["","I","II","III","IV","V"][clampi(int(item.get("rank",0)),0,5)],11,MUTED), 110))
+		rank_row.add_child(nowrap(mono_line("RANK %s OF V" % ["0","I","II","III","IV","V"][clampi(int(item.get("rank",0)),0,5)],11,MUTED), 110))
 		box.add_child(rank_row)
-		box.add_child(text_line(item.action,16,SIGNAL))
-		box.add_child(mono_line(item.benefit,12,WHITE))
-		meter_row(box,"DMG",float(item.get("damage",10.0))/60.0,WHITE)
-		meter_row(box,"RATE",(1.1-float(item.get("interval",0.6)))/0.95,WHITE)
-		meter_row(box,"RANGE",float(item.get("range",10.0))/14.0,WHITE)
+		if int(item.get("rank",0)) > 0:
+			box.add_child(mono_line(item.benefit,12,WHITE))
+		meter_row(box,"DMG",float(item.get("damage",10.0))/60.0,WHITE,"%.1f" % float(item.get("damage",10.0)))
+		meter_row(box,"RATE",(1.1-float(item.get("interval",0.6)))/0.95,WHITE,"%.2fs" % float(item.get("interval",0.6)))
+		meter_row(box,"RANGE",float(item.get("range",10.0))/14.0,WHITE,"%.0f" % float(item.get("range",10.0)))
 		var desc:=text_line(item.description,16,MUTED)
 		desc.size_flags_vertical=Control.SIZE_EXPAND_FILL
 		box.add_child(desc)
-		var choose:=button("[%d]  EQUIP & EVOLVE" % (i+1),func():action.emit("weapon_upgrade",id))
+		var act: String = str(item.action)
+		var verb := "UNLOCK & EQUIP" if int(item.get("rank",0))==0 else "OVERCLOCK & EQUIP" if act.begins_with("OVERCLOCK") else "SERVICE & EQUIP" if act.begins_with("SERVICE") else "EVOLVE TO %s & EQUIP" % ["","I","II","III","IV","V"][clampi(int(item.get("rank",0))+1,0,5)]
+		var choose:=button("[%d]  %s" % [i+1, verb],func():action.emit("weapon_upgrade",id))
 		box.add_child(choose)
 		if i==0: choose.grab_focus()
 		card_hit_area(card,item.color,func():action.emit("weapon_upgrade",id))
-	centered_label("KEEP EVERY UNLOCK  /  %s SWITCHES WEAPONS DURING COMBAT  /  RANKS III & V TRANSFORM YOUR GUN" % key_names.weapon.to_upper(),790,12,MUTED,mono)
+	centered_label("Unlocks are permanent · %s switches weapons in combat · Ranks III & V transform your gun" % key_names.weapon.to_upper(),748,13,MUTED)
 	animate_modal()
 
 func weapon_blueprint(parent: Control, id: String, color: Color) -> void:
@@ -1335,7 +1378,7 @@ func stat_row(grid: GridContainer, name: String, value: String, value_color: Col
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(v)
 
-func meter_row(box: VBoxContainer, name: String, ratio: float, color: Color) -> void:
+func meter_row(box: VBoxContainer, name: String, ratio: float, color: Color, value_text: String = "") -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	row.add_child(nowrap(mono_line(name, 11, MUTED), 56))
@@ -1354,12 +1397,17 @@ func meter_row(box: VBoxContainer, name: String, ratio: float, color: Color) -> 
 	bar.add_theme_stylebox_override("background", bg)
 	bar.add_theme_stylebox_override("fill", fl)
 	row.add_child(bar)
+	if not value_text.is_empty():
+		var v := nowrap(mono_line(value_text, 12, WHITE), 52)
+		v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		row.add_child(v)
 	box.add_child(row)
 
 func show_result(won: bool, data: Dictionary) -> void:
-	clear_modal(); shade(0.86)
+	clear_modal(); shade(0.84)
 	hud.visible = false
-	var box := sheet(Vector2(65, 18), 660, SIGNAL if won or data.get("retired",false) else CORAL)
+	sheet_mark()
+	var box := sheet(Vector2(65, 18), 720, SIGNAL if won or data.get("retired",false) else CORAL)
 	box.add_theme_constant_override("separation",10)
 	var lockup := HBoxContainer.new()
 	lockup.add_theme_constant_override("separation", 12)
@@ -1391,7 +1439,7 @@ func show_result(won: bool, data: Dictionary) -> void:
 	stat_row(grid, "SALVAGE CORES", "+%d  (HOLD %d)" % [data.get("cores_earned",0),data.get("cores",0)], AMBER)
 	stat_row(grid, "WEAPON", "%s · RANK %s" % [data.get("weapon","VECTOR CARBINE"),data.get("rank","I")], WHITE)
 	if data.get("campaign",false):
-		stat_row(grid, "CAMPAIGN", "SECTOR %02d · %d RELAYS · %d GUARDIANS" % [data.sector,data.relays,data.get("guardians",0)])
+		stat_row(grid, "CAMPAIGN", "SECTOR %02d · %d RELAYS · %d GUARDIAN%s" % [data.sector,data.relays,data.get("guardians",0),"" if int(data.get("guardians",0))==1 else "S"])
 		stat_row(grid, "ROUTE SEED", str(data.get("seed",0)))
 	box.add_child(grid)
 	if won: box.add_child(text_line("OVERDRIVE UNLOCKED  /  Enable it in Settings for a tougher heist.",13,SIGNAL))
@@ -1427,9 +1475,10 @@ func show_result(won: bool, data: Dictionary) -> void:
 	animate_modal()
 
 func show_sector_complete(index: int, sector_name: String, elapsed: float, relays: int, data: Dictionary = {}) -> void:
-	clear_modal(); shade(0.86)
+	clear_modal(); shade(0.84)
 	hud.visible = false
-	var box := sheet(Vector2(65, 116), 700)
+	sheet_mark("sigil", "%02d" % (index + 2))
+	var box := sheet(Vector2(65, 116), 740)
 	box.add_theme_constant_override("separation",13)
 	var s_lockup := HBoxContainer.new()
 	s_lockup.add_theme_constant_override("separation", 12)
@@ -1442,21 +1491,21 @@ func show_sector_complete(index: int, sector_name: String, elapsed: float, relay
 	box.add_child(s_lockup)
 	box.add_child(display_line(sector_name,48,WHITE))
 	box.add_child(text_line("The next horizon is yours to take.",20,MUTED))
-	box.add_child(mono_line("%d AIR RELAYS · %d GUARDIANS · %02d:%02d" % [relays,data.get("guardians",0),int(elapsed)/60,int(elapsed)%60],15,WHITE))
+	box.add_child(mono_line("%d AIR RELAYS · %d GUARDIAN%s · %02d:%02d" % [relays,data.get("guardians",0),"" if int(data.get("guardians",0))==1 else "S",int(elapsed)/60,int(elapsed)%60],15,WHITE))
 	var route_row := HBoxContainer.new()
 	route_row.add_theme_constant_override("separation", 8)
-	route_row.add_child(nowrap(mono_line("ROUTE", 11, MUTED), 52))
+	route_row.add_child(nowrap(mono_line("ROUTE", 12, Color(WHITE, 0.8)), 56))
 	for node_i in range(maxi(index + 2, 3)):
-		var node := Glyph.new("core", SIGNAL if node_i <= index else Color(WHITE, 0.25), 13)
+		var node := Glyph.new("core", SIGNAL if node_i <= index else WHITE, 15)
 		node.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		route_row.add_child(node)
 		if node_i < maxi(index + 2, 3) - 1:
 			var link := ColorRect.new()
-			link.color = Color(WHITE, 0.25)
+			link.color = Color(WHITE, 0.45)
 			link.custom_minimum_size = Vector2(26, 2)
 			link.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			route_row.add_child(link)
-	route_row.add_child(nowrap(mono_line("SECTOR %02d NEXT" % (index + 2), 11, MUTED), 130))
+	route_row.add_child(nowrap(mono_line("SECTOR %02d NEXT" % (index + 2), 12, Color(WHITE, 0.8)), 140))
 	box.add_child(route_row)
 	box.add_child(mono_line("CARRYING · %s · RANK %s" % [data.get("weapon","VECTOR CARBINE"), data.get("rank","I")], 13, Color(WHITE, 0.8)))
 	box.add_child(HSeparator.new())
@@ -1490,7 +1539,9 @@ func show_banner(title: String, subtitle: String) -> void:
 	banner.text = title + "\n" + subtitle
 	banner_time = 3.5
 	banner.modulate.a = 1
-	banner_plate.visible = true
+	banner_plate.position.y = 146.0
+	banner.position.y = 192.0 if boss_active else 152.0
+	banner_plate.visible = not boss_active
 	banner_plate.modulate.a = 1
 
 func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practice: bool) -> void:
@@ -1504,6 +1555,7 @@ func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practi
 	energy_bar.get_theme_stylebox("fill").bg_color = pulse_color
 	energy_text.add_theme_color_override("font_color",Palette.SIGNAL_SOFT if charged else WHITE)
 	energy_text.text = "%s · PULSE %03d%s" % [key_names.pulse.to_upper(),int(rules.energy), "  OVERLOAD" if charged else "  READY" if rules.energy >= rules.pulse_threshold() else ""]
+	harvest_guide.text = "OVERLOAD READY · FULL BLAST" if charged else "PULSE READY" if rules.energy >= rules.pulse_threshold() else "DASH THROUGH ORANGE SHOTS TO CHARGE"
 	var energy_ticks := energy_bar.get_node("Ticks") as Control
 	var new_ratio: float = rules.pulse_threshold() / 100.0
 	if not is_equal_approx(float(energy_ticks.get("threshold")), new_ratio):
@@ -1522,6 +1574,7 @@ func update_game(rules, run_time: float, boss_hp: float, boss_max: float, practi
 	boss_bar.visible = boss_max > 0
 	boss_name.visible = boss_max > 0
 	boss_plate.visible = boss_max > 0
+	boss_active = boss_max > 0
 	time_text.add_theme_color_override("font_color", Color(WHITE, 0.85) if boss_max > 0 else WHITE)
 	objective_text.position.y = 162 if boss_max > 0 else 142
 	if boss_max > 0: boss_bar.value = boss_hp / boss_max * 100
@@ -1547,6 +1600,9 @@ func _process(delta: float) -> void:
 		banner_time -= delta
 		banner.modulate.a = clampf(banner_time,0,1)
 		banner_plate.modulate.a = banner.modulate.a
+		banner_plate.visible = banner_plate.visible and not boss_plate.visible
+		banner_plate.position.y = 146.0
+		banner.position.y = 192.0 if boss_plate.visible else 152.0
 		if banner_time <= 0: banner_plate.visible = false
 	if banner_plate.visible and banner.text.strip_edges().is_empty():
 		banner_plate.visible = false

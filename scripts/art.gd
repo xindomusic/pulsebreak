@@ -387,7 +387,6 @@ static func build_arena(parent: Node3D) -> void:
 	_build_perimeter(arena)
 	_build_supports(arena)
 	_build_backdrop(arena)
-	_label(deck, "+", Vector3(13.7, 0.042, -12.8), 76, "edge")
 
 
 static func _build_perimeter(arena: Node3D) -> void:

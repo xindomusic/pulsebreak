@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 — 2026-10-21 — UI loops 6–10 (full budget)
+
+- Completes the 10-loop independent-review UI budget begun in 1.4.0. Loops 6–10: micro-label cuts and numbered stat meters, boss announcement de-plated and moved inside the arena, theme buttons that preview their own theme with a distinct selection marker, right-aligned keybind chips, sheet backdrop marks, armory single-verb buttons, affordable-state borders in the Hangar, contextual reactor-pod charge line, coil/ignition glyph redraws, slider end labels, and keyboard focus as its own offset signal ring (cream is CTA-only again).
+- Final scores: averages 6.5 → 6.3 → 6.9 → 7.0 → 6.4 across loops 6–10 (best single verdict in the whole series 7.8, loop 1). **9/10 was not reached in the full 10-loop cap**; the remaining gap is combat-still readability and bespoke art depth, not defects — every concrete defect named in any loop was fixed and later confirmed. Full record: [qa/ui14-review.md](qa/ui14-review.md).
+- Also the first release the 1.4.0 in-app updater can deliver: installed 1.4.0 copies will offer this update in-game (verified live below). All 16 suites pass (651 checks); exported app simulated a Classic win with 0 script errors.
+
 ## 1.4.0 — 2026-10-21 — Themes, no-repeat sectors, self-update
 
 - **Four switchable UI themes** (Settings → UI THEME, applies instantly, saved on this Mac): AEROSPACE (default graphite/orange), FOUNDRY (warm bronze), ABYSS (deep teal), BLUEPRINT (navy drafting). One runtime token system (`scripts/palette.gd`) drives every panel, glyph and meter; sector and hostile-shot colors stay fixed as gameplay language.

@@ -132,9 +132,9 @@ static func _build_navigation(stage: Node3D, sector: int, accent: String) -> voi
 		(stage.get_meta("beacons") as Array).append(beacon)
 	Art._batch(stage, "SectorNavigation", "box", accent, marks, false)
 	Art._batch(stage, "LandingHatching", "box", "titanium", stripes, false)
-	Art._label(stage, "%02d" % (sector + 1), Vector3(12.4, 0.065, 12.8), 136, accent)
+	Art._label(stage, "%02d" % (sector + 1), Vector3(11.2, 0.065, 12.8), 136, accent)
 	stage.get_child(-1).name = "SectorNumber"
-	Art._label(stage, "FLIGHT SYSTEMS / " + SECTOR_NAMES[sector], Vector3(0, 0.065, 13.85), 26, accent)
+	Art._label(stage, "FLIGHT SYSTEMS / " + SECTOR_NAMES[sector], Vector3(0, 0.065, 13.85), 26, "deck_mark")
 	stage.get_child(-1).name = "FlightSystemsLabel"
 
 
