@@ -1,0 +1,22 @@
+{
+  "release": "1.4.1",
+  "tag": "v1.4.1",
+  "date": "2026-10-21",
+  "change": "UI review loops 6-10 (completes the 10-loop budget): micro-label cuts, numbered meters, boss banner de-plated, self-preview theme buttons, keybind chips, sheet backdrop marks, single-verb armory buttons, affordability borders, contextual pod line, glyph redraws, offset focus ring; gameplay unchanged from 1.4.0",
+  "zip": {
+    "file": "Pulsebreak-1.4.1-macOS-universal.zip",
+    "bytes": 62332460,
+    "sha256": "e172c57560901346796792c786f84d7f47af3358d281163fed50839a853f6512"
+  },
+  "pck": {
+    "bytes": 2895152,
+    "sha256": "dadefb56aad57a6ca4687029c7185159370353657853623ca271acd0d6fc75b5"
+  },
+  "architectures": "x86_64 arm64",
+  "signature": "ad-hoc, codesign --verify --deep --strict passed (export script)",
+  "tests": "651 checks in 16 suites, all passed",
+  "packaged_run": "Exported app simulated Classic win, 0 script errors (qa/ui14/packaged)",
+  "self_update_live": "Downloaded the published v1.4.0 zip, ran its app with --qa-update-install: it detected 1.4.1 via GitHub API, downloaded and SHA-256-verified the 1.4.1 zip, swapped its own bundle and relaunched as 1.4.1 (plist verified, relaunched process verified then terminated)",
+  "grade": "UI loops 6-10 averages: 6.5 -> 6.3 -> 6.9 -> 7.0 -> 6.4 (series best single verdict 7.8, loop 1); full 10-loop cap used; 9/10 not reached (qa/ui14-review.md)",
+  "built_from": "main commit 358202e"
+}
