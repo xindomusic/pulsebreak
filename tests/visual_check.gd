@@ -19,6 +19,7 @@ func capture_states() -> void:
 	game.ui.show_title(0,false)
 	await game.capture("staged-title")
 	game.settings.won=true
+	game.settings.assist=true
 	game.state="settings"
 	game.ui.show_settings(game.settings,game.bindings)
 	await game.capture("staged-settings-unlocked")
@@ -66,8 +67,15 @@ func capture_states() -> void:
 	game.field.update(0.4)
 	game.ui.update_game(game.rules,395,boss.hp,boss.max_hp,false)
 	await game.capture("staged-boss")
-	game.settings.cores=137
-	game.settings.perks={"hull":2,"combo":1}
+	game.ui.show_sector_complete(0,"SKYPORT",74.0,3,{"guardians":1,"next":"FOUNDRY","route":"CROSSWINDS","modifier":"NEW HARDWARE","seed":271828})
+	await game.capture("staged-sector")
+	var armory_ids=["scatter","arc","plasma"]
+	var armory_data=[]
+	for wid in armory_ids: armory_data.append(game.weapons.offer(wid))
+	game.ui.show_weapon_upgrades(armory_ids,armory_data)
+	await game.capture("staged-armory")
+	game.settings.cores=52
+	game.settings.perks={"hull":2,"combo":1,"armory":3}
 	game.ui.show_hangar(game.settings,game.PERK_DATA)
 	await game.capture("staged-hangar")
 	game.ui.show_result(true,{"score":12830,"best":12830,"kills":266,"absorbed":373,"pulses":102,"time":405.6,"upgrades":["ignite","echo","capacitor","siphon","chain"],"levels":{"echo":3,"ignite":2},"cores_earned":41,"cores":178,"best_combo":14,"overdrive":false})

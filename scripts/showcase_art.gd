@@ -67,7 +67,7 @@ static func _build_sector_deck(stage: Node3D, sector: int) -> void:
 			Art._part(deck, "octagon", Vector3(0, 0.030, 0), Vector3(7.8, 0.012, 7.8), inlay, Vector3(0, PI * 0.125, 0))
 			var landing: Node3D = Art._group(deck, "LaunchPad", Vector3(0, 0.043, 0))
 			Art._ring(landing, 7.55, 0.052, 0.012, "deck_mark", 48, 0.10)
-			Art._ring(landing, 6.85, 0.11, 0.012, "teal_dim", 12, 0.62)
+			Art._ring(landing, 6.85, 0.11, 0.012, "deck_mark", 12, 0.62)
 			for side: float in [-1.0, 1.0]:
 				for z: float in [-12.5, -10.5, -8.5, 8.5, 10.5, 12.5]:
 					hatching.append(Art._transform(Vector3(side * 3.45, 0.039, z), Vector3(0.075, 0.012, 1.0)))

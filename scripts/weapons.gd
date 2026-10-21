@@ -53,7 +53,7 @@ func offer(id: String) -> Dictionary:
 	var new_damage: float=base*(1.0+0.22*mini(rank,4))*(1.0+0.025*overclocks)
 	var benefit: String="%.1f DAMAGE / %.2fs BETWEEN SHOTS" % [new_damage,float(PROFILES[id].interval)] if rank==0 else "DAMAGE %.1f → %.1f PER HIT" % [old_damage,new_damage] if rank<5 else "ARMORY POWER +%.1f%% → +%.1f%%" % [overclocks*2.5,(overclocks+1)*2.5] if overclocks<10 else "REPAIR 30 HULL & EQUIP THIS WEAPON"
 	if id=="scatter" and rank<5: benefit+=" / PELLET"
-	return {"name":PROFILES[id].name,"family":PROFILES[id].role,"description":PROFILES[id].description,"action":action,"benefit":benefit,"color":PROFILES[id].color,"rank":rank}
+	return {"name":PROFILES[id].name,"family":PROFILES[id].role,"description":PROFILES[id].description,"action":action,"benefit":benefit,"color":PROFILES[id].color,"rank":rank,"damage":new_damage,"interval":float(PROFILES[id].interval),"range":float(PROFILES[id].range)}
 
 static func roman(rank: int) -> String: return ["—","I","II","III","IV","V"][clampi(rank,0,5)]
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.2 — 2026-10-21 — UI/theme loops toward 9/10
+
+- Five independent-review UI loops on top of 1.3.1: a drawn UI kit (reactor-seal glyphs, corner frames, ticked meters, diamond pips), authored card art (family seals, weapon blueprints with stat meters, NOW→NEXT hangar rows), framed modal sheets with a result debrief grid, a stronger combat frame (chunked hull, boss/banner plates, screen corners), grey deck paint so floor orange means telegraph only, and modal/hover motion that Low Effects and QA disable. Scores moved 6.6 → 7.6/7.2 across the loops; **9/10 was not reached in the five-loop cap** — see [the loop record](qa/ui9-review.md) for per-loop verdicts and the remaining gaps. All 15 suites (632 checks) pass; gameplay and saves are unchanged.
+
 ## 1.3.1 — 2026-10-18 — UI palette overhaul
 
 - Killed the neon-mint/purple AI-template look. New "aerospace instrument" direction: warm off-white type on graphite, one signal-orange accent (the color of the shots you steal), gold only for salvage money, red only for danger, ice only for the player marker and glide. Researched against Destiny/Hades/Dead Space UI practice; see [the loop record](qa/ui131-review.md).

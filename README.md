@@ -2,13 +2,17 @@
 
 **Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-**[Download Pulsebreak 1.3.1 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.3.1/Pulsebreak-1.3.1-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
+**[Download Pulsebreak 1.3.2 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.3.2/Pulsebreak-1.3.2-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
 
 Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
 ![Staged native title and courier](docs/images/resonance-title.png)
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
+
+## Release 1.3.2 — UI craft loops
+
+Five independent-review UI loops: a drawn reactor-seal glyph system, ticked instrument meters, authored weapon blueprints with stat bars, framed modal sheets and a result debrief, grey deck paint so floor orange means telegraph only, and modal/hover motion. Scores moved 6.6 → 7.6/7.2 across the loops; **9/10 was not reached in the five-loop cap**. See [the loop record](qa/ui9-review.md). Gameplay matches 1.3.1.
 
 ## Release 1.3.1 — UI palette overhaul
 

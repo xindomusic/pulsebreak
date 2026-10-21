@@ -279,6 +279,7 @@ func apply_settings() -> void:
 	key_light.shadow_enabled = not settings.get("low_effects",false)
 	if world_environment: world_environment.glow_enabled = not settings.get("low_effects",false)
 	if is_instance_valid(weapon_fx): weapon_fx.low_effects=bool(settings.get("low_effects",false))
+	if is_instance_valid(ui): ui.effects_low=bool(settings.get("low_effects",false))
 	if is_instance_valid(pulse_light):
 		pulse_light.visible = pulse_light_time > 0.0 and not settings.get("low_effects",false)
 

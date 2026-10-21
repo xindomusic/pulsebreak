@@ -36,6 +36,13 @@ const WEAPON_AMBER := Color("e8a33d")
 const WEAPON_ELECTRIC := Color("7ea6c4")
 const WEAPON_PLASMA := Color("ffd98a")
 
+const PANEL_RAISED := Color("1c2129")
+const PANEL_INSET := Color("10131a")
+const HAIRLINE := Color("2a3038")
+const FAM_HARVEST := Color("ff7a1a")
+const FAM_ECHO := Color("c3d5e0")
+const FAM_WAKE := Color("eae7de")
+
 const SHOT_ORANGE := Color("ff9a3c")
 const SECTOR_SKYPORT := Color("c3d5e0")
 const SECTOR_FOUNDRY := Color("e0a458")
