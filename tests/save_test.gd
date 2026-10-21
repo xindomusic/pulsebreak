@@ -109,6 +109,13 @@ func _initialize() -> void:
 	restored = store.load_data()
 	check(unique_bindings(restored) and restored.bindings.weapon==KEY_Q, "a reserved weapon binding restores its usable default")
 	data = store.default_data()
+	check(data.theme == "aerospace" and data.update_check, "new profiles default to the aerospace theme with update checks on")
+	data.theme = "abyss"
+	check(store.save_data(data) and store.load_data().theme == "abyss", "chosen UI theme survives roundtrip")
+	write_fixture('{"theme":"neon-rainbow","update_check":"yes"}')
+	var repaired: Dictionary = store.load_data()
+	check(repaired.theme == "aerospace" and repaired.update_check, "unknown theme and mistyped update flag repair to safe defaults")
+	data = store.default_data()
 	data.bindings.jump = KEY_J
 	data.bindings.weapon = KEY_R
 	check(store.save_data(data) and store.load_data().bindings.jump == KEY_J and store.load_data().bindings.weapon == KEY_R, "custom jump and weapon bindings survive roundtrip")

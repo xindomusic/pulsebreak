@@ -2,13 +2,17 @@
 
 **Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-**[Download Pulsebreak 1.3.2 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.3.2/Pulsebreak-1.3.2-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
+**[Download Pulsebreak 1.4.0 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.4.0/Pulsebreak-1.4.0-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
 
 Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
 ![Staged native title and courier](docs/images/resonance-title.png)
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
+
+## Release 1.4.0 — Themes, no-repeat sectors, self-update
+
+Pick your instrument finish: four UI themes (Aerospace, Foundry, Abyss, Blueprint) switch instantly in Settings and persist. Sectors stop feeling like reruns — 9 route grammars on coprime cycles mean no route+modifier repeat within any 5 sectors, with stacked modifiers from sector 7. And the app now keeps itself current: it checks GitHub Releases on launch, downloads with SHA-256 verification, replaces its own bundle and relaunches (verified live against the 1.3.2 release). Five more independent-review UI loops landed on top; scores plateaued ~6.5 average (best verdict 7.8) and **9/10 is still not claimed** — see [the loop record](qa/ui14-review.md) for what remains. 651 checks in 16 suites pass; the exported app won a simulated Classic run.
 
 ## Release 1.3.2 — UI craft loops
 

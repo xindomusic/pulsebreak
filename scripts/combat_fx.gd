@@ -9,7 +9,7 @@ const DECORATIVE_RESERVE := 20
 const PULSE_GATHER_TIME := 0.075
 const PULSE_FRONT_TIME := 0.22
 const PULSE_MAX_LIFE := 0.82
-const COLORS: Dictionary = {
+static var COLORS: Dictionary = {
 	"kinetic": Palette.WEAPON_ICE, "scatter": Palette.WEAPON_AMBER,
 	"arc": Palette.WEAPON_ELECTRIC, "plasma": Palette.WEAPON_PLASMA,
 	"white": Color("f3ffff"), "ember": Color("ff8c4b"),

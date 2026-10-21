@@ -45,6 +45,34 @@ func ring(radius: float, color: Color) -> MeshInstance3D:
 	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return node
 
+func ring_dashed(radius: float, color: Color, arcs: int = 4) -> MeshInstance3D:
+	# Four flat arc segments: the enemy telegraph shape, distinct from the
+	# solid pulse ring, filled hazard disks and the player's ice ring.
+	var verts := PackedVector3Array()
+	var inner := radius - 0.13
+	var outer := radius + 0.13
+	for arc in range(arcs):
+		var center := TAU * float(arc) / float(arcs)
+		var steps := 8
+		for step in range(steps):
+			var a0 := center - 0.46 + 0.92 * float(step) / float(steps)
+			var a1 := center - 0.46 + 0.92 * float(step + 1) / float(steps)
+			var p0 := Vector3(cos(a0) * inner, 0, sin(a0) * inner)
+			var p1 := Vector3(cos(a0) * outer, 0, sin(a0) * outer)
+			var p2 := Vector3(cos(a1) * outer, 0, sin(a1) * outer)
+			var p3 := Vector3(cos(a1) * inner, 0, sin(a1) * inner)
+			verts.append_array([p0, p1, p2, p0, p2, p3])
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.material_override = glow_material(color, color.a < 1)
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return node
+
 func fire(origin: Vector3, direction: Vector3, count: int, speed: float) -> void:
 	for i in range(count):
 		if bullets.size() >= MAX_BULLETS: break

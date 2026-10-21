@@ -122,9 +122,22 @@ func run_checks() -> void:
 	check(bounded_pressure,"enemy density, spawn cadence, gates, kill goals and hazard pressure remain capped")
 	check(visible_hazard_warning and clear_center_lane,"hazards always warn for at least1.35s and preserve the center escape lane")
 	check(synchronized,"synchronized shutters share actual openness across time, not just initial phase")
-	check(routes.size()==6 and modifiers.size()==5 and themes.size()==3,"seed sweep exercises all six route templates, five mechanics modifiers and three themes")
+	check(routes.size()==Generator.ROUTES.size() and modifiers.size()==5 and themes.size()==3,"seed sweep exercises all route templates, five mechanics modifiers and three themes")
 	check(counts.has(3) and counts.has(4) and gate_counts.size()==3,"generated objectives vary relay and shutter counts")
 	check(fingerprints.size()>700,"different seeds produce distinct physical layouts rather than just changed labels")
+	var no_repeat := true
+	var stacked := false
+	for seed_value in range(16):
+		var recent: Array = []
+		for index in range(3, 60):
+			var stage_data: Dictionary = Generator.generate(seed_value, index)
+			var signature := "%s|%s|%s" % [stage_data.route, stage_data.modifier.id, str(stage_data.modifier.get("second_id",""))]
+			if signature in recent: no_repeat = false
+			recent.append(signature)
+			if recent.size() > 4: recent.pop_front()
+			if not str(stage_data.modifier.get("second_id","")).is_empty(): stacked = true
+	check(no_repeat, "no route+modifier signature repeats within any five consecutive generated sectors")
+	check(stacked, "deep generated sectors stack a second mechanics modifier")
 	for index in range(3):
 		var data: Dictionary = Generator.generate(991,index)
 		check(not data.generated and data.targets==Generator.ONBOARDING[index].targets and data.kills==Generator.ONBOARDING[index].kills,"onboarding sector%d retains its authored route and combat goal" % (index+1))

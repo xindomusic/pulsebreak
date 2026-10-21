@@ -77,8 +77,6 @@ static func _build_sector_deck(stage: Node3D, sector: int) -> void:
 				panels.append(Art._transform(Vector3(side * 11.3, 0.023, -6.0), Vector3(4.8, 0.01, 9.8)))
 			Art._batch(deck, "ServiceIslands", "armor", inlay, panels, false)
 			Art._batch(deck, "RunwayMarkings", "box", "deck_mark", hatching, false)
-			Art._label(deck, "VECTOR / 01", Vector3(-10.8, 0.055, -8.5), 58, "deck_mark")
-			Art._label(deck, "LANDING ZONE", Vector3(0, 0.058, 6.0), 34, "deck_mark")
 		1:
 			Art._part(deck, "box", Vector3(0, 0.022, 0), Vector3(28.0, 0.012, 6.2), inlay)
 			Art._part(deck, "box", Vector3(0, 0.024, 0), Vector3(5.7, 0.012, 28.0), inlay)

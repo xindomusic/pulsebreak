@@ -4,6 +4,9 @@ const Art = preload("res://scripts/art.gd")
 const Enemy = preload("res://scripts/enemy.gd")
 const Field = preload("res://scripts/combat_field.gd")
 const HUD = preload("res://scripts/hud.gd")
+const Palette = preload("res://scripts/palette.gd")
+const Updater = preload("res://scripts/updater.gd")
+const APP_VERSION := "1.4.0"
 const Traversal = preload("res://scripts/traversal.gd")
 const Campaign = preload("res://scripts/campaign.gd")
 const Weapons = preload("res://scripts/weapons.gd")
@@ -35,6 +38,9 @@ var state := "title"
 var previous_state := "run"
 var settings_origin := "title"
 var settings: Dictionary = {"volume":0.65,"shake":0.45,"assist":false,"low_effects":false,"best":0,"practiced":false}
+var updater: Node
+var pending_update: Dictionary = {}
+var update_manual := false
 var bindings: Dictionary = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F,"weapon":KEY_Q}
 var rebind_action := ""
 var player_node: Node3D
@@ -159,6 +165,48 @@ func _ready() -> void:
 		await get_tree().create_timer(1.5).timeout
 		capture("title")
 		get_tree().quit()
+	setup_updater(args)
+
+func setup_updater(args: Array) -> void:
+	updater = Updater.new()
+	updater.local_version = APP_VERSION
+	for arg in args:
+		if arg.begins_with("--qa-version="): updater.local_version = arg.trim_prefix("--qa-version=")
+	add_child(updater)
+	updater.update_available.connect(func(info):
+		pending_update = info
+		if state == "title": ui.show_update(info, APP_VERSION)
+		elif state == "settings": ui.show_update(info, APP_VERSION))
+	updater.up_to_date.connect(func():
+		if update_manual:
+			update_manual = false
+			ui.settings_note = "YOU'RE ON THE LATEST VERSION (%s)" % APP_VERSION
+			if state == "settings": ui.show_settings(settings,bindings))
+	updater.check_failed.connect(func(_reason):
+		if update_manual:
+			update_manual = false
+			ui.settings_note = "UPDATE CHECK FAILED — CHECK YOUR CONNECTION"
+			if state == "settings": ui.show_settings(settings,bindings))
+	updater.download_progress.connect(func(fraction): ui.update_download(fraction))
+	updater.download_ready.connect(func(zip_path):
+		var problem: String = updater.install_update(zip_path)
+		if problem.is_empty():
+			save_settings(); get_tree().quit()
+		else:
+			ui.update_download(-1.0, "DOWNLOADED + VERIFIED. AUTO-INSTALL UNAVAILABLE HERE (%s) — GET IT FROM GITHUB RELEASES." % problem.to_upper()))
+	updater.download_failed.connect(func(reason): ui.update_download(-1.0, "DOWNLOAD FAILED (%s) — TRY AGAIN LATER." % str(reason).to_upper()))
+	# QA-only: drive the full detect → download → verify → install flow without UI.
+	var qa_install := args.has("--qa-update-install")
+	if qa_install:
+		updater.update_available.connect(func(info):
+			print("QA_UPDATE available ", info.get("version","?"))
+			updater.download_update(info))
+		updater.up_to_date.connect(func(): print("QA_UPDATE up_to_date"); get_tree().quit())
+		updater.check_failed.connect(func(reason): print("QA_UPDATE check_failed ", reason); get_tree().quit())
+		updater.download_failed.connect(func(reason): print("QA_UPDATE download_failed ", reason); get_tree().quit())
+		updater.download_ready.connect(func(_zip_path): print("QA_UPDATE download_ready"))
+	if (bool(settings.get("update_check",true)) or qa_install) and not qa_mode and not args.has("--capture-title"):
+		updater.check_latest()
 
 func _process(_delta: float) -> void:
 	var now := Time.get_ticks_usec()
@@ -267,6 +315,16 @@ func load_settings() -> void:
 		var data: Dictionary = store.load_data()
 		settings.merge(data,true)
 		if data.has("bindings"): bindings.merge(data.bindings,true)
+	Palette.set_theme(str(settings.get("theme","aerospace")))
+
+func rebuild_ui() -> void:
+	var old = ui
+	remove_child(old)
+	old.queue_free()
+	ui = HUD.new(); add_child(ui)
+	ui.set_bindings(bindings)
+	ui.action.connect(on_ui_action)
+	ui.effects_low=bool(settings.get("low_effects",false))
 
 func save_settings() -> void:
 	if qa_mode: return
@@ -432,6 +490,8 @@ func start_run(is_practice: bool = false) -> void:
 		ui.show_hint("%s dashes through orange shots. %s spends stolen energy." % [key_name("dash"),key_name("pulse")],7)
 
 func perk_rank(id: String) -> int:
+	# QA runs simulate a clean profile so metrics never depend on the local save.
+	if qa_mode: return 0
 	return int(Dictionary(settings.get("perks",{})).get(id,0))
 
 func apply_perks() -> void:
@@ -442,7 +502,7 @@ func apply_perks() -> void:
 	rules.harvest_bonus = float(perk_rank("harvest"))
 	rules.energy = minf(100.0, 10.0*perk_rank("battery"))
 	rules.combo_window = 3.0 + 0.4*perk_rank("combo")
-	rules.score_bonus = 0.01*float(int(settings.get("prestige",0)))
+	rules.score_bonus = 0.0 if qa_mode else 0.01*float(int(settings.get("prestige",0)))
 	weapons.overclocks += perk_rank("armory")
 
 func prestige_cost() -> int:
@@ -520,6 +580,16 @@ func on_ui_action(action: String, value: Variant) -> void:
 		"setting":
 			settings[value.key] = value.value
 			apply_settings(); save_settings()
+		"theme":
+			if Palette.set_theme(str(value)):
+				settings.theme = str(value); save_settings(); rebuild_ui(); ui.show_settings(settings,bindings)
+		"check_update":
+			update_manual = true
+			if updater: updater.check_latest()
+		"update_install":
+			if not pending_update.is_empty() and updater: updater.download_update(pending_update)
+		"update_later":
+			ui.show_title(settings.best,settings.practiced,int(settings.get("cores",0)))
 		"rebind": state = "rebind"; rebind_action = value; ui.show_rebind(value)
 		"reset_controls":
 			bindings = {"left":KEY_A,"right":KEY_D,"up":KEY_W,"down":KEY_S,"dash":KEY_SPACE,"pulse":KEY_E,"jump":KEY_F,"weapon":KEY_Q}

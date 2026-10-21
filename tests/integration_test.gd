@@ -18,6 +18,7 @@ func run_checks() -> void:
 	game.qa_mode=true
 	check(game.ui.health_bar.size.y<=10,"health bar respects thin HUD geometry")
 	print("HUD_BAR_SIZE ",game.ui.health_bar.size," min ",game.ui.health_bar.get_combined_minimum_size())
+	game.settings.perks = {}
 	game.start_run(false)
 	check(game.state=="run" and game.rules.health==100,"start resets state")
 	game.player_node.position=Vector3(4,0,0)

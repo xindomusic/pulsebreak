@@ -3,7 +3,7 @@ extends Node3D
 const Art = preload("res://scripts/art.gd")
 const Traversal = preload("res://scripts/traversal.gd")
 const Palette = preload("res://scripts/palette.gd")
-const PROFILES := {
+static var PROFILES := {
 	"kinetic":{"name":"VECTOR CARBINE","short":"CARBINE","role":"RAPID FIRE","damage":14.0,"interval":0.28,"speed":29.0,"range":10.0,"color":Palette.WEAPON_ICE,"description":"Fast focused slugs. Rank III adds penetration; rank V fires paired rounds."},
 	"scatter":{"name":"SHATTER CANNON","short":"SHATTER","role":"CLOSE-RANGE SPREAD","damage":9.0,"interval":0.75,"speed":22.0,"range":8.5,"color":Palette.WEAPON_AMBER,"description":"Five heavy pellets in a wide cone. Rank III fires seven; rank V adds explosive pellet impacts."},
 	"arc":{"name":"ARC RELAY","short":"ARC RELAY","role":"CHAIN DISCHARGE","damage":24.0,"interval":0.62,"speed":24.0,"range":10.0,"color":Palette.WEAPON_ELECTRIC,"description":"An ion bolt chains to nearby machines. Ranks III and V add targets and longer jump reach."},

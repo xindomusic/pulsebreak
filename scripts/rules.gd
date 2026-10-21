@@ -21,7 +21,7 @@ const UPGRADE_DATA := {
 		"marks": ["Heal 2 hull per stolen shot.", "Heal 3 hull per shot; overheal banks up to 10 spare hull.", "Heal 4 hull per shot; at full hull, healing becomes score and combo time."]},
 	"echo": {"name": "AFTERSHOCK", "family": "ECHO", "icon": "≋",
 		"description": "Your pulse repeats after 0.45s with the same radius and 45% damage.",
-		"marks": ["Pulse repeats at 45% damage after 0.45s. The main blast deals 10% less.", "Repeats at 60% damage and knocks machines back.", "Two echoes: 60% then 35%, each re-centered on you."]},
+		"marks": ["Pulse repeats at 45% damage after 0.45s. The main blast deals 10% less.", "Repeats at 60% damage and knocks machines back.", "Two echoes: 60% then 35%, each centered on you."]},
 	"radius": {"name": "HORIZON RING", "family": "ECHO", "icon": "◯",
 		"description": "Pulse radius grows 35%. Catch an entire formation.",
 		"marks": ["Pulse radius +35%, damage -5% (spread thinner).", "Pulse radius +55%, damage -10%. Enemies near the rim are pulled inward (not the Guardian).", "Pulse radius +80%, damage -15%. The rim lingers as a burning ring for 1.2s."]},

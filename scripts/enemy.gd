@@ -78,7 +78,7 @@ func setup(owner_game: Node3D, enemy_kind: String, at: Vector3) -> void:
 	_cache_flash_parts(model)
 	model.scale = Vector3.ONE * 0.01
 	cooldown += game.rng.randf_range(0, 1.1)
-	telegraph = game.make_ring(radius + 0.5, Color("c47a4a"))
+	telegraph = game.field.ring_dashed(radius + 0.65, Color("c47a4a"))
 	add_child(telegraph)
 	telegraph.position.y = 0.06
 	if kind=="charger":

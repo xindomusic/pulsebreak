@@ -382,16 +382,11 @@ static func build_arena(parent: Node3D) -> void:
 	_batch(deck, "CircuitInlays", "box", "teal_dim", grooves, false)
 	_batch(deck, "NavigationLights", "box", "teal", pips, false)
 	_batch(deck, "FlushFasteners", "octagon", "edge", fasteners, false)
-	for radius: float in [4.0, 8.0]:
-		var circle: Node3D = _group(deck, "EtchedServiceRing", Vector3(0, 0.012, 0))
-		# Deck paint stays grey: orange on the floor means a live telegraph.
-		_ring(circle, radius, 0.024, 0.009, "deck_mark", 48, 0.42)
 	var center: Node3D = _group(deck, "CenterMarker", Vector3(0, 0.014, 0))
 	_ring(center, 0.58, 0.038, 0.012, "edge", 8, 0.28)
 	_build_perimeter(arena)
 	_build_supports(arena)
 	_build_backdrop(arena)
-	_label(deck, "SF", Vector3(-13.7, 0.042, 12.8), 100, "edge")
 	_label(deck, "+", Vector3(13.7, 0.042, -12.8), 76, "edge")
 
 

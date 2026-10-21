@@ -16,6 +16,12 @@ func capture_states() -> void:
 		push_error("Provide -- --qa-dir=/absolute/output/directory for staged captures.")
 		quit(1)
 		return
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--qa-theme="):
+			var palette = load("res://scripts/palette.gd")
+			palette.set_theme(arg.trim_prefix("--qa-theme="))
+			game.settings.theme = arg.trim_prefix("--qa-theme=")
+			game.rebuild_ui()
 	game.ui.show_title(0,false)
 	await game.capture("staged-title")
 	game.settings.won=true
