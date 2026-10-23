@@ -87,12 +87,62 @@ class Glyph:
 				draw_circle(cc + Vector2(rr * 0.45, -rr * 0.25), rr * 0.78, cut if cut.a > 0.0 else Color(0.05, 0.06, 0.07))
 			return
 		if bold:
+			# Bold family: every kind is a filled silhouette on one grid —
+			# primitives sized in r units, at most one negative-space cut,
+			# no hairline strokes. This is the card/hangar icon language.
 			w *= 1.9
 			var cutc: Color = cut if cut.a > 0.0 else Color(0.05, 0.06, 0.07)
 			match kind:
 				"collector":
-					draw_arc(c + Vector2(r * 0.3, 0), r * 0.68, PI * 0.55, PI * 1.45, 28, color, w * 1.15, true)
-					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.5, -r * 0.3), c + Vector2(r * 0.95, 0), c + Vector2(r * 0.5, r * 0.3), c + Vector2(r * 0.15, 0)]), color)
+					draw_arc(c + Vector2(r * 0.3, 0), r * 0.68, PI * 0.55, PI * 1.45, 28, color, w * 1.5, true)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.5, -r * 0.34), c + Vector2(r * 0.98, 0), c + Vector2(r * 0.5, r * 0.34), c + Vector2(r * 0.12, 0)]), color)
+					return
+				"capacitor":
+					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.28, -r), c + Vector2(-r * 0.58, r * 0.18), c + Vector2(-r * 0.06, r * 0.18), c + Vector2(-r * 0.28, r), c + Vector2(r * 0.58, -r * 0.18), c + Vector2(r * 0.06, -r * 0.18)]), color)
+					return
+				"radius":
+					draw_arc(c, r * 0.6, 0, TAU, 40, color, w * 1.5, true)
+					for i in range(4):
+						var a := TAU * float(i) / 4.0
+						draw_line(c + Vector2.RIGHT.rotated(a) * r * 0.78, c + Vector2.RIGHT.rotated(a) * r * 1.04, color, w * 1.5, true)
+					draw_circle(c, r * 0.17, color)
+					return
+				"chain":
+					var nodes := [c + Vector2(-r * 0.92, r * 0.38), c + Vector2(-r * 0.31, -r * 0.34), c + Vector2(r * 0.31, r * 0.34), c + Vector2(r * 0.92, -r * 0.38)]
+					draw_polyline(PackedVector2Array(nodes), color, w * 1.25, true)
+					for n in nodes:
+						draw_colored_polygon(PackedVector2Array([n + Vector2(0, -r * 0.21), n + Vector2(r * 0.21, 0), n + Vector2(0, r * 0.21), n + Vector2(-r * 0.21, 0)]), color)
+					return
+				"wake":
+					var pts := PackedVector2Array()
+					for i in range(25):
+						var t := float(i) / 24.0
+						pts.append(Vector2(lerpf(c.x - r, c.x + r * 0.72, t), c.y + sin(t * TAU * 1.5) * r * 0.42))
+					draw_polyline(pts, color, w * 1.6, true)
+					draw_circle(c + Vector2(r * 0.92, -r * 0.42), r * 0.2, color)
+					return
+				"dash":
+					draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.95, r * 0.55), c + Vector2(-r * 0.25, -r * 0.1), c + Vector2(r * 0.95, -r * 0.9), c + Vector2(r * 0.58, r * 0.02), c + Vector2(r * 0.8, -r * 0.04), c + Vector2(r * 0.28, r * 0.5), c + Vector2(r * 0.4, r * 0.66), c + Vector2(-r * 0.42, r * 0.78)]), color)
+					draw_line(c + Vector2(-r * 0.22, -r * 0.06), c + Vector2(r * 0.3, r * 0.48), cutc, w * 0.85, true)
+					draw_rect(Rect2(c + Vector2(-r * 0.98, r * 0.8), Vector2(r * 0.52, r * 0.17)), color)
+					return
+				"armory":
+					draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.92, -r * 0.22), c + Vector2(r * 0.98, -r * 0.22), c + Vector2(r * 0.98, r * 0.08), c + Vector2(r * 0.14, r * 0.08), c + Vector2(r * 0.02, r * 0.62), c + Vector2(-r * 0.3, r * 0.62), c + Vector2(-r * 0.18, r * 0.08), c + Vector2(-r * 0.92, r * 0.2)]), color)
+					draw_rect(Rect2(c + Vector2(-r * 0.14, -r * 0.42), Vector2(r * 0.3, r * 0.2)), color)
+					return
+				"combo":
+					var hub := c + Vector2(0, r * 0.42)
+					draw_arc(hub, r * 0.88, PI * 1.04, PI * 1.96, 36, color, w * 1.7, true)
+					var na := PI * 1.64
+					var tip := hub + Vector2.RIGHT.rotated(na) * r * 0.82
+					var perp := Vector2.RIGHT.rotated(na + PI * 0.5) * r * 0.11
+					draw_colored_polygon(PackedVector2Array([hub + perp, tip, hub - perp]), color)
+					draw_circle(hub, r * 0.15, color)
+					draw_rect(Rect2(c + Vector2(-r * 0.78, r * 0.66), Vector2(r * 1.56, r * 0.18)), color)
+					return
+				"core":
+					draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r * 0.7, 0), c + Vector2(0, r), c + Vector2(-r * 0.7, 0)]), color)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r * 0.42), c + Vector2(r * 0.3, 0), c + Vector2(0, r * 0.42), c + Vector2(-r * 0.3, 0)]), cutc)
 					return
 				"siphon":
 					draw_circle(c, r * 0.85, color)
@@ -112,7 +162,7 @@ class Glyph:
 				"hull":
 					var plate := PackedVector2Array([c + Vector2(-r * 0.55, -r * 0.88), c + Vector2(r * 0.55, -r * 0.88), c + Vector2(r * 0.92, -r * 0.3), c + Vector2(r * 0.92, r * 0.45), c + Vector2(r * 0.4, r * 0.92), c + Vector2(-r * 0.4, r * 0.92), c + Vector2(-r * 0.92, r * 0.45), c + Vector2(-r * 0.92, -r * 0.3)])
 					draw_colored_polygon(plate, color)
-					draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r * 0.38), c + Vector2(r * 0.3, r * 0.08), c + Vector2(0, r * 0.52), c + Vector2(-r * 0.3, r * 0.08)]), cutc)
+					draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r * 0.28), c + Vector2(r * 0.22, r * 0.06), c + Vector2(0, r * 0.4), c + Vector2(-r * 0.22, r * 0.06)]), cutc)
 					return
 				"battery":
 					draw_colored_polygon(PackedVector2Array([c + Vector2(r * 0.34, -r * 0.98), c + Vector2(-r * 0.52, r * 0.18), c + Vector2(-r * 0.04, r * 0.18), c + Vector2(-r * 0.34, r * 0.98), c + Vector2(r * 0.52, -r * 0.18), c + Vector2(r * 0.04, -r * 0.18)]), color)
