@@ -1078,7 +1078,7 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 			box.add_child(price_row)
 			var buy := button("INSTALL RANK %d" % (rank+1) if cores >= cost else "NEED %d MORE CORES" % (cost - cores), func(): action.emit("buy_perk", id))
 			buy.disabled = cores < cost
-			if cores >= cost: buy.add_theme_stylebox_override("normal", panel(Color(Palette.PANEL_RAISED,0.92), SIGNAL))
+			if cores >= cost: buy.add_theme_color_override("font_color", Palette.SIGNAL_SOFT)
 			box.add_child(buy)
 		frame_over(card, AMBER if rank >= 3 else SIGNAL)
 	var prestige: int = int(settings.get("prestige",0))
@@ -1086,7 +1086,7 @@ func show_hangar(settings: Dictionary, perk_data: Dictionary) -> void:
 	var prestige_button := button("OVERCHARGE CELL %d · +%d%% SCORE FOREVER · %d CORES" % [prestige+1, prestige+1, prestige_cost], func(): action.emit("buy_prestige", null))
 	prestige_button.position = Vector2(505, 694); prestige_button.size = Vector2(864, 52)
 	prestige_button.disabled = cores < prestige_cost
-	prestige_button.add_theme_stylebox_override("normal", panel(Color(Palette.PANEL_RAISED,0.92), Color(AMBER, 0.7)))
+	prestige_button.add_theme_color_override("font_color", AMBER)
 	modal.add_child(prestige_button)
 	var back := button("BACK TO TITLE", func(): action.emit("title", null))
 	back.position = Vector2(65, 694); back.size = Vector2(424, 52)
@@ -1178,8 +1178,8 @@ func show_settings(settings: Dictionary, bindings: Dictionary) -> void:
 		var tb := button(("◆ " if theme_id == active_theme else "") + str(Palette.THEME_NAMES[theme_id]), func(): action.emit("theme", theme_id))
 		tb.custom_minimum_size = Vector2(0, 40)
 		tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		tb.add_theme_stylebox_override("normal", panel(th["PANEL"], th["WHITE"] if theme_id == active_theme else th["SIGNAL"], 2 if theme_id == active_theme else 1))
-		tb.add_theme_stylebox_override("hover", panel(th["PANEL_RAISED"], th["SIGNAL"]))
+		tb.add_theme_stylebox_override("normal", panel(th["PANEL"], th["WHITE"] if theme_id == active_theme else Palette.PANEL_LINE, 2 if theme_id == active_theme else 1))
+		tb.add_theme_stylebox_override("hover", panel(th["PANEL_RAISED"], Palette.PANEL_LINE))
 		tb.add_theme_color_override("font_color", th["WHITE"])
 		tb.add_theme_color_override("font_hover_color", th["WHITE"])
 		theme_row.add_child(tb)

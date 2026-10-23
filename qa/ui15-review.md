@@ -19,6 +19,8 @@ Cards 15, States 10, Not-AI feel 10. Same 10 captures per attempt
 | 4 | 6cb2e89 | Deep-shadow sharp-corner flat panels (material via depth) | 5.9 | 5.8 | 5.85 | REJECTED |
 | 5 | 6cb2e89 | Center result/sector/practice sheets | 6.4 | 5.9 | 6.15 | ACCEPTED → 32f1748 |
 | 6 | 32f1748 | White focus ring + Aftershock copy-contradiction fix | 5.8 | 5.9 | 5.85 | REJECTED |
+| 7 | 32f1748 | Focus as fill-lift wash + footer restructure (FINAL MARK, bottom-aligned) | 6.5 | 6.2 | 6.35 | ACCEPTED → ac1841e |
+| 8 | ac1841e | Title annotation cleanup (hide floor labels on title, drop leader ticks) | 6.3 | 6.3 | 6.30 | REJECTED |
 
 ## Baseline diagnosis (designs attempt 1)
 
@@ -137,3 +139,28 @@ this series.
   footer: spacer moves above the NEXT/RESONANCE block so the block
   bottom-aligns on every card, and max-mark cards show "FINAL
   MARK" so the block height is identical across the row.
+
+## Attempt 7 outcome (accepted, 6.35 > 6.15)
+
+Footer baselines confirmed fixed ("the three resonance lines and
+the three buttons now share common baselines"). Focus verdict
+stayed OPEN but softened — the wash reads, yet affordable orange
+borders still nest against it.
+
+## Attempt 8 diagnosis (rejected, 6.30 < 6.35)
+
+- Changed: title floor labels hidden on the title stage; caption
+  leader ticks removed.
+- Evidence: captions no longer garble (no reviewer re-flagged the
+  collision), but scores moved −0.05 — inside reviewer noise. The
+  title is 1 of 10 captures and was already the strongest screen;
+  cleaning it cannot move the weighted average.
+- Why it failed: effort spent on the best screen instead of the
+  worst axes. Grey platform bars (3D geometry) also remain.
+- Design consequence: remaining attempts must touch the heavy
+  axes. Attempt 9 finishes the state language: affordability moves
+  off borders entirely (signal-colored button text; price stays
+  amber), unselected theme buttons get neutral borders (only the
+  selected theme and keyboard focus may draw a strong border).
+  That directly answers "four orange rectangles" (A a6/a7) and
+  "all four swatches carry a coloured border" (B a7).
