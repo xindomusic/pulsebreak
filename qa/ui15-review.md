@@ -17,6 +17,8 @@ Cards 15, States 10, Not-AI feel 10. Same 10 captures per attempt
 | 2 | a813585 | Remove all corner-tick Frames + sheet backdrop watermarks | 6.0 | 6.0 | 6.00 | ACCEPTED → a319967 |
 | 3 | a319967 | Baked vertical-gradient panel texture (all panel() fills; shadows dropped) | 6.2 | 6.0 | 6.10 | ACCEPTED → 6cb2e89 |
 | 4 | 6cb2e89 | Deep-shadow sharp-corner flat panels (material via depth) | 5.9 | 5.8 | 5.85 | REJECTED |
+| 5 | 6cb2e89 | Center result/sector/practice sheets | 6.4 | 5.9 | 6.15 | ACCEPTED → 32f1748 |
+| 6 | 32f1748 | White focus ring + Aftershock copy-contradiction fix | 5.8 | 5.9 | 5.85 | REJECTED |
 
 ## Baseline diagnosis (designs attempt 1)
 
@@ -103,3 +105,35 @@ the loser is discarded by construction.
   (A attempt 4 defect #2; B every attempt). Center all three
   sheets so the negative space becomes symmetric margins around a
   single composed column.
+
+## Attempt 5 outcome (accepted, 6.15 > 6.10)
+
+Centered sheets landed as composed columns; the practice mech no
+longer peeks from behind a panel edge. Marginal win (+0.05, inside
+reviewer noise, but a strict win per the rule). Sheets still share
+one skeleton — accepted as the system, not a defect to chase further
+this series.
+
+## Attempt 6 diagnosis (rejected, 5.85 < 6.15)
+
+- Changed: focus ring orange → white (orange border reserved for
+  "affordable"); Aftershock card's contradictory fallback text removed.
+- Evidence: A confirmed Aftershock FIXED, but focus stayed OPEN:
+  "Focus on Ion Servos is only a second white hairline inside that
+  orange border. At a glance all four look identical; you have to
+  pixel-peep to find focus… no fill, lift, or card-level emphasis
+  separates the selected purchase." B: focus "inconsistent — single
+  white (armory/upgrades) vs white+orange double (hangar)". B also
+  caught a regression my copy fix caused: card 1 lost its filler
+  line, so "its RESONANCE line floats high above a dead gap while
+  cards 2–3 are dense — baselines across the row don't line up."
+- Why it failed: swapping one hairline color for another does not
+  create a glanceable state; nested hairlines (focus inside
+  affordable) are worse than either alone. And deleting text
+  without restructuring the card footer broke cross-card rhythm.
+- Design consequence: attempt 7 makes focus a *fill lift* (pale
+  wash + white offset ring) instead of another hairline color, and
+  re-enters the Aftershock fix together with a restructured card
+  footer: spacer moves above the NEXT/RESONANCE block so the block
+  bottom-aligns on every card, and max-mark cards show "FINAL
+  MARK" so the block height is identical across the row.

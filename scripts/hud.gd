@@ -423,7 +423,7 @@ func _ready() -> void:
 	theme_ui.set_stylebox("hover", "Button", panel(Palette.PANEL_RAISED, Color(WHITE, 0.55)))
 	theme_ui.set_stylebox("pressed", "Button", panel(Color("2a2f36"), SIGNAL))
 	theme_ui.set_stylebox("disabled", "Button", panel(Color(Palette.PANEL_RAISED,0.85), Color(Palette.PANEL_LINE,0.6)))
-	var focus_ring := panel(Color(0,0,0,0), SIGNAL, 2)
+	var focus_ring := panel(Color(WHITE, 0.16), WHITE, 2)
 	focus_ring.expand_margin_left = 3.0
 	focus_ring.expand_margin_right = 3.0
 	focus_ring.expand_margin_top = 3.0
@@ -1311,20 +1311,22 @@ func show_upgrades(ids: Array, levels: Dictionary = {}) -> void:
 		var split_at := mark_text.find(". ")
 		var lead := text_line(mark_text.substr(0, split_at + 1) if split_at > 0 else mark_text, 18, WHITE)
 		box.add_child(lead)
-		var rest := text_line(mark_text.substr(split_at + 2) if split_at > 0 else data.description, 14, MUTED)
+		var rest := text_line(mark_text.substr(split_at + 2) if split_at > 0 else "", 14, MUTED)
 		box.add_child(rest)
+		var foot_spacer := Control.new()
+		foot_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		box.add_child(foot_spacer)
 		if current < 2:
 			var next_text: String = data.marks[current + 1]
 			var next_end := next_text.find(". ")
 			box.add_child(mono_line("NEXT %s → %s" % [mark_names[current + 1], next_text.substr(0, next_end + 1) if next_end > 0 else next_text], 11, MUTED))
+		else:
+			box.add_child(mono_line("FINAL MARK", 11, MUTED))
 		var fam_owned := 0
 		for fam_id in Rules.FAMILIES[data.family]:
 			if int(levels.get(fam_id,0))>0 or fam_id==id: fam_owned += 1
 		var resonance_text: String = {"HARVEST":"+1 DASH CHARGE","ECHO":"PULSE RADIUS +8%","WAKE":"COMBO WINDOW +25%"}[data.family]
 		box.add_child(mono_line("%s %d/3  ·  RESONANCE: %s" % [data.family, fam_owned, resonance_text], 12, fam if fam_owned>=3 else MUTED))
-		var foot_spacer := Control.new()
-		foot_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		box.add_child(foot_spacer)
 		var choose := button("[%d]  %s" % [i+1, "INSTALL" if current==0 else "RAISE TO " + mark_names[mini(current,2)]], func(): action.emit("upgrade", id))
 		box.add_child(choose)
 		if i == 0: choose.grab_focus()
