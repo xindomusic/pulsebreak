@@ -20,7 +20,8 @@ best checkpoint. Every rejection gets a written diagnosis.
 |---|---|---|---|---|---|---|
 | 0 | baseline (v1.4.2) | 5.6 | 5.6 | 5.60 | — | 9d35e0b |
 | 1 | role-color + filled zones + halo | 5.4 | 5.8 | 5.60 | REJECTED (tie) | — |
-| 2 | floor value restructure | 6.0 | 5.6 | 5.80 | ACCEPTED, best | (this commit) |
+| 2 | floor value restructure | 6.0 | 5.6 | 5.80 | ACCEPTED, best | 9cff6ef |
+| 3 | role-color retry (refined) | 5.6 | 5.9 | 5.75 | REJECTED | — |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -69,3 +70,27 @@ now the worst axis for both (6/15, 5.0).
 Next (per attempt-1 diagnosis): retry role-color + filled zones on the
 quieter floor, refined — pulse loudness reduced (A: "oversized ellipse
 obscures"), telegraph fills/halo stronger since the floor is darker.
+
+## Attempt 3 — role-color retry on quiet floor — REJECTED (5.75 < 5.80)
+Change: attempt-1 system refined — ice pulse with boundary opacity cut
+(.12-.18→.09-.14, aftermath back to .18), deck-inscribed ground FX,
+telegraph fills alpha .22, halo r1.05 alpha .28. Gates passed.
+Scores: A 56/100 (Palette 10, Type 9, Icons 7, Combat 11/20, Not-AI 4),
+B 5.9 (Identity 6, Type 6.5, Icons 4.5, Combat 5.5, Cards 7, Flow 7,
+Originality 5). Avg 5.75 → discarded in full.
+
+Diagnosis:
+- Combat (target): A flat 11/20, B 4.5→5.5. The filled zones likely
+  earned B's point, but A explicitly charged the hue: palette 11→10,
+  "powder-blue dash arcs fracture [the palette] in play". Net −0.05.
+- Two attempts, same lesson: this game's identity is warm (cream/
+  burnt-orange/ochre). Importing a saturated azure family (#a9e3ff/
+  #4fb4ff) to code "player" reads as foreign, and the palette axis
+  bills what the combat axis gains. Role separation here must come
+  from value and shape (cream filled vs orange outline), not hue.
+- Type swung A 11→9 untouched — reviewer noise band confirmed ±2/15.
+Consequence: role-color-by-hue is closed. A future combat attempt may
+test filled zones ALONE (cream pulse untouched). Next: icons — the
+worst axis for both reviewers across all four scorings (A 6-7/15,
+B 4.5-5.0) and named a top-3 problem; independent of combat noise and
+it also feeds the Cards axis.
