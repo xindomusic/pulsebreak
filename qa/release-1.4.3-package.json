@@ -1,0 +1,28 @@
+{
+  "release": "1.4.3",
+  "tag": "v1.4.3",
+  "date": "2026-10-23",
+  "change": "Art-pass hill-climb series ui16 (Direction A from docs/ui-9-design-research.md): accepted floor value restructure, icon family v2 (all-16 bold silhouettes), combat composition (+30% actor visual scale, staged sky, deck-inscribed pulse). Seven attempts rejected/discarded with diagnoses. Gameplay/themes/generator identical to 1.4.2.",
+  "zip": {
+    "file": "Pulsebreak-1.4.3-macOS-universal.zip",
+    "bytes": 62334873,
+    "sha256": "9d04ebfc61d93283054d7bb5871315fcc064658a715d667c81448702c5f6e945"
+  },
+  "sums": {
+    "file": "Pulsebreak-1.4.3-SHA256SUMS.txt",
+    "bytes": 218,
+    "sha256": "e6f1dcd72f05c49c4e377bd4bf2257a16e24fd4fe7092e2325aea7441d50a031",
+    "note": "Uploaded after initial release creation; the in-app updater requires this asset (first smoke correctly reported QA_UPDATE check_failed parse without it)"
+  },
+  "pck": {
+    "bytes": 2897760,
+    "sha256": "83dac25220c9c84f2cd20ed31b8d15d274fd51e7a0847b71b554f8bc6f5cc368"
+  },
+  "architectures": "x86_64 arm64",
+  "signature": "ad-hoc, codesign --verify --deep --strict passed (export script)",
+  "tests": "All sixteen suites passed (tools/test.sh)",
+  "packaged_run": "Exported app simulated Classic win (win=true), 0 script errors (qa/ui16/packaged)",
+  "self_update_live": "Disposable copy of the 1.4.3 build run with --qa-version=1.4.2 --qa-update-install detected the published 1.4.3 release (QA_UPDATE available), downloaded and SHA-256-verified it (QA_UPDATE download_ready), swapped its bundle (plist 1.4.3) and relaunched (process verified, then terminated)",
+  "grade": "Art-pass hill-climb (qa/ui16-review.md): fresh baseline 5.60 -> accepted 5.80 (floor), 5.95 (icons), 6.25 (composition, attempt 8 = best); rejected 1/3/9 zone coding, 5/6 card frames, 7 edge HUD, 10 type floors, each discarded with written diagnosis; 9/10 (>=8.5) not reached at the 10-attempt cap",
+  "built_from": "main commit 43a89ce"
+}
