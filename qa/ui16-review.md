@@ -26,7 +26,8 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 5 | frame-as-data cards | 6.1 | 4.7 | 5.40 | REJECTED | — |
 | 6 | frame rails refined | 5.7 | 6.1 | 5.90 | REJECTED | — |
 | 7 | edge HUD | 5.4 | 5.4 | 5.40 | REJECTED | — |
-| 8 | combat composition (scale/sky/inscribe) | 6.5 | 6.0 | 6.25 | ACCEPTED, best | (prev commit) |
+| 8 | combat composition (scale/sky/inscribe) | 6.5 | 6.0 | 6.25 | ACCEPTED, best | 6102c01 |
+| 9 | filled zones (warm only) | 6.2 | 5.6 | 5.90 | REJECTED | — |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -193,3 +194,18 @@ Avg 6.25 > 5.95 → new best.
 Notes: B still calls combat "under-populated / flat checkerboard" —
 density and zone legibility are the remaining combat levers. Two
 attempts remain in the cap.
+
+## Attempt 9 — filled zones, warm palette only — REJECTED (5.90)
+Change: telegraph filled discs (burnt-orange .22, elite-tinted),
+warm-white player halo; pulse/hues untouched. Scores: A 62/100
+(Palette 11, Type 10, Icons 8, Combat 10/20, Not-AI 5), B 5.6
+(Identity 6, Type 7, Icons 4.5, Combat 4.5, Cards 6.5, Flow 6).
+Avg 5.90 < 6.25 → discarded in full.
+
+Diagnosis: combat went DOWN for both (A 11→10, B 5.5→4.5) — at
+capture scale the discs remain below the reward threshold and add
+mid-tone patches to a floor B already calls muddy. Zone fills have
+now been tested three times (a1 tie, a3 −0.05, a9 −0.35): closed.
+Attempt 8's win came from composition (scale/inscribe/sky), not
+coding. Final attempt (10): type floors — the one complaint present
+in nearly every review (microtype ~10px illegible at thumbnail).
