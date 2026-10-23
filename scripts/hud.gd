@@ -974,7 +974,7 @@ func show_practice_complete() -> void:
 	clear_modal(); shade(0.84)
 	hud.visible = false
 	sheet_mark("core")
-	var box := sheet(Vector2(65, 170), 680)
+	var box := sheet(Vector2(380, 170), 680)
 	var p_lockup := HBoxContainer.new()
 	p_lockup.add_theme_constant_override("separation", 12)
 	var p_sigil := Glyph.new("sigil", SIGNAL, 30)
@@ -1426,7 +1426,7 @@ func show_result(won: bool, data: Dictionary) -> void:
 	clear_modal(); shade(0.84)
 	hud.visible = false
 	sheet_mark()
-	var box := sheet(Vector2(65, 18), 720, SIGNAL if won or data.get("retired",false) else CORAL)
+	var box := sheet(Vector2(360, 18), 720, SIGNAL if won or data.get("retired",false) else CORAL)
 	box.add_theme_constant_override("separation",10)
 	var lockup := HBoxContainer.new()
 	lockup.add_theme_constant_override("separation", 12)
@@ -1497,7 +1497,7 @@ func show_sector_complete(index: int, sector_name: String, elapsed: float, relay
 	clear_modal(); shade(0.84)
 	hud.visible = false
 	sheet_mark("sigil", "%02d" % (index + 2))
-	var box := sheet(Vector2(65, 116), 740)
+	var box := sheet(Vector2(350, 116), 740)
 	box.add_theme_constant_override("separation",13)
 	var s_lockup := HBoxContainer.new()
 	s_lockup.add_theme_constant_override("separation", 12)

@@ -15,6 +15,8 @@ Cards 15, States 10, Not-AI feel 10. Same 10 captures per attempt
 | 0 (baseline) | a813585 (= 1.4.1) | — | 6.1 | 5.4 | 5.75 | checkpoint |
 | 1 | a813585 | Gameplay camera zoom 31.8 → 29.8 (boss 26.6) | 6.1 | 5.4 | 5.75 | REJECTED (tie) |
 | 2 | a813585 | Remove all corner-tick Frames + sheet backdrop watermarks | 6.0 | 6.0 | 6.00 | ACCEPTED → a319967 |
+| 3 | a319967 | Baked vertical-gradient panel texture (all panel() fills; shadows dropped) | 6.2 | 6.0 | 6.10 | ACCEPTED → 6cb2e89 |
+| 4 | 6cb2e89 | Deep-shadow sharp-corner flat panels (material via depth) | 5.9 | 5.8 | 5.85 | REJECTED |
 
 ## Baseline diagnosis (designs attempt 1)
 
@@ -65,3 +67,39 @@ border baked in) replacing flat StyleBoxFlat fills everywhere
 panel() is used. Trade-off accepted upfront: StyleBoxTexture has
 no shadow, so panel drop shadows go away with it; the attempt
 tests whether material beats shadow.
+
+## Attempt 3 outcome (accepted, 6.10 > 6.00)
+
+Small win, but A's verdict on the material blocker stayed OPEN:
+"identical flat gradient + hairline in every still. No panel in
+any capture has cast shadow, edge thickness, texture, or fastening
+detail." The gradient is below perception at still scale while the
+lost shadow was doing real depth work. Design consequence:
+attempt 4 tests the opposite material lever from the same
+checkpoint question — flat fills return, but with sharp (0-radius)
+corners and a much stronger cast shadow (size 9, offset 4), i.e.
+material read through depth and edge instead of surface gradient.
+Whichever of attempt 3/4 scores higher becomes the panel system;
+the loser is discarded by construction.
+
+## Attempt 4 diagnosis (rejected, 5.85 < 6.10)
+
+- Changed: panel() back to StyleBoxFlat, corner radius 3 → 0,
+  shadow 5 → 9 (offset 4, alpha .55); gradient texture removed.
+- Evidence: A improved the material verdict OPEN → PARTIAL
+  ("Buttons now cast a soft bottom shadow… panels themselves
+  remain a single flat fill with a 1px hairline") yet scored the
+  attempt lower overall (5.9 vs 6.2; B 5.8 vs 6.0). Sheet shadows
+  are invisible against the dark shade; only button shadows read.
+- Why it failed: the depth cue lands where it is least needed
+  (buttons on panels) and vanishes where it matters (sheet on
+  black). Sharp corners alone read harsher without the gradient's
+  surface variation. Gradient (attempt 3) is the better panel
+  system of the two; checkpoint 6cb2e89 stands.
+- Design consequence: panel material is settled — further attempts
+  keep the gradient. Attempt 5 attacks the longest-running
+  composition defect instead: result/sector/practice sheets are
+  "one cloned composition" parked at left with a dead right half
+  (A attempt 4 defect #2; B every attempt). Center all three
+  sheets so the negative space becomes symmetric margins around a
+  single composed column.
