@@ -239,6 +239,7 @@ class Frame:
 		color = Color(ac, 0.5)
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	func _draw() -> void:
+		return # ui15 attempt 2: corner-tick kit removed
 		var s := size
 		if s.x < 8.0 or s.y < 8.0: return
 		var l := bracket
@@ -581,6 +582,7 @@ func frame_over(card: Control, accent: Color) -> void:
 	sync.call_deferred()
 
 func sheet_mark(glyph_kind: String = "sigil", big_text: String = "") -> void:
+	return # ui15 attempt 2: backdrop watermarks removed
 	if not big_text.is_empty():
 		var ghost_num := label_at(modal, big_text, Vector2(1010, 300), 190, Color(WHITE, 0.08))
 		ghost_num.add_theme_font_override("font", heavy)
