@@ -68,3 +68,43 @@ score: that lets a late, worse loop ship below an earlier, better one.
 10. **Report scores honestly.** Never claim the target was reached
    unless the recorded best average meets it. Name the best score,
    the checkpoint it lives at, and how many attempts were rejected.
+
+## Art-pass mode (when polish plateaus)
+
+When accepted attempts stop moving an axis — the same dimensions
+capped across 3+ attempts while concrete defects keep getting
+fixed — the gap is structural, not polish. Switch to art-pass
+mode. The keep/revert/score rules above do not change; what
+changes is attempt size and preparation:
+
+1. **Define 10 before touching code.** Rate each design dimension
+   0-10 as it stands, and write what a 10 is for that dimension on
+   this project (reference-backed, pixel-checkable). Pulsebreak's
+   current definitions, teardowns (Hades, Dead Cells, Nova Drift,
+   Vampire Survivors, Geometry Wars), candidate directions, and
+   the recommended direction live in `docs/ui-9-design-research.md`.
+   An art-pass attempt must name which dimension's "10" it aims at.
+2. **One system per attempt, swung big.** Replace a whole system
+   (combat role-coding + filled FX zones, the icon family on one
+   construction grid, HUD pods → edge bars, frame-as-data cards,
+   diegetic settings) instead of tuning values. Tuning-sized
+   attempts are polish-mode; art-pass attempts should be visible
+   in a thumbnail diff.
+3. **Pre-score gates before spending reviewers.** Run the cheap
+   pixel tests first and record results in the series file:
+   grayscale parse (player/threat/pickup identifiable by value),
+   thumbnail squint (role sort at 25% size), 24px black-and-white
+   silhouette test for new icons, and the fixed capture set with
+   zero layout breakage. A failed gate means refine within the
+   same attempt before review, exactly as for photographed
+   regressions.
+4. **Diagnoses cite dimensions.** A rejected art-pass attempt's
+   step-5 diagnosis must say which dimension's definition of 10 it
+   missed and whether the definition or the execution was wrong.
+   If reviewers show axis-level gains but a lower total (noise),
+   the refined retry is allowed — record the axis evidence, since
+   totals alone would have killed a correct direction.
+5. **Motion is unscored; say so.** Screenshot reviewers cannot
+   credit animation, easing, or feel. An art pass may include
+   motion work for the real game, but the series record must flag
+   it as unscored so score movement is never misattributed.
