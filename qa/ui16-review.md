@@ -24,6 +24,7 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 3 | role-color retry (refined) | 5.6 | 5.9 | 5.75 | REJECTED | — |
 | 4 | icon family v2 (bold grid) | 5.8 | 6.1 | 5.95 | ACCEPTED, best | cb70c1f |
 | 5 | frame-as-data cards | 6.1 | 4.7 | 5.40 | REJECTED | — |
+| 6 | frame rails refined | 5.7 | 6.1 | 5.90 | REJECTED | — |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -143,3 +144,19 @@ only (segmented top rail + left bar read as progress/identity, not
 selection); borders return to neutral PANEL_LINE; card content
 regrouped so NEXT/resonance sit under the description and the only
 flex space is a short gap above the button; card height trims to fit.
+
+## Attempt 6 — frame rails refined (neutral borders, regrouped) — REJECTED (5.90)
+Change: attempt-5 rails without border tint; upgrade-card NEXT/
+resonance regrouped under description, spacer only above button,
+height 430. Scores: A 57/100 (Palette 11, Type 10, Icons 7, Combat
+9/20, Cards 9, States 6, Not-AI 5), B 6.1 (Identity 6.5, Type 7,
+Icons 5, Combat 5.5, Cards 7, Flow 6.5). Avg 5.90 < 5.95 → discarded.
+
+Diagnosis: dual-focus complaint is gone, but cards land exactly where
+attempt 4 left them (A 9, B 7.0) — the rail/regroup is below the
+reviewers' reward threshold for this panel language; two attempts say
+cards are at a local plateau. A combat dipped 11→9 on untouched
+pixels (noise). Consequence: stop spending attempts on cards. The
+heaviest remaining lever is combat structure — every B review names
+the three bottom HUD slabs ("exiled boxes", "dashboard") and the
+prototype arena. Attempt 7 = phase 3 edge HUD.
