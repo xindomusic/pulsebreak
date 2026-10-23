@@ -22,7 +22,8 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 1 | role-color + filled zones + halo | 5.4 | 5.8 | 5.60 | REJECTED (tie) | — |
 | 2 | floor value restructure | 6.0 | 5.6 | 5.80 | ACCEPTED, best | 9cff6ef |
 | 3 | role-color retry (refined) | 5.6 | 5.9 | 5.75 | REJECTED | — |
-| 4 | icon family v2 (bold grid) | 5.8 | 6.1 | 5.95 | ACCEPTED, best | (prev commit) |
+| 4 | icon family v2 (bold grid) | 5.8 | 6.1 | 5.95 | ACCEPTED, best | cb70c1f |
+| 5 | frame-as-data cards | 6.1 | 4.7 | 5.40 | REJECTED | — |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -111,3 +112,34 @@ combat/cards. Worst axes now: States (A 5), Not-AI (5/4.5), Combat
 slabs with dead vertical gaps"; combat "prototype-looking".
 Next: phase 5 frame-as-data cards (family-coded frames, cost/state in
 the frame itself, kill dead card space).
+
+## Attempt 5 — frame-as-data cards — REJECTED (5.40 < 5.95)
+Change: CardRail overlay (left family bar + top segmented marks rail)
+on upgrade/weapon/hangar cards, family-tinted card borders (alpha
+.38), upgrade card height 452→430.
+Scores: A 61/100 (Palette 12, Type 10, Icons 7, Combat 10/20, Cards
+11, States 6, Not-AI 5), B 4.7 (Identity 5.5, Type 6, Icons 3.5,
+Combat 4.0, Cards 5.5, Flow 5.0, Originality 3.5). Avg 5.40 →
+discarded in full.
+
+Diagnosis:
+- A rewarded the system (cards 11/15 "strongest system", palette 12
+  series-high) BUT both reviewers independently flagged the same flaw:
+  dual focus cues — "cream [1] button vs. orange border on card 02"
+  (A), "card 1 bone-white button + card 2 orange edge — dual focus"
+  (B). In this game's settled grammar (ui15 attempts 9-10) a colored
+  border MEANS selection; tinting borders by family — HARVEST is the
+  signal orange — manufactures a false selected card. Real defect.
+- B still measured "~150px empty void mid-card above FINAL MARK":
+  height 452→430 did not fix the spacer placement (gap sits between
+  description and the NEXT/resonance block).
+- B's draw was also globally harsh: combat scored 4.0 on pixels
+  unchanged since attempt 2 (B combat history 4.5→5.5→4.0) and icons
+  3.5 vs 5.0 on the same glyphs A scored 7-8. Inter-reviewer noise is
+  ±0.75 on untouched axes; the total cannot be re-rolled, only the
+  design refined.
+Consequence (refined retry, attempt 6): frame data stays in the RAIL
+only (segmented top rail + left bar read as progress/identity, not
+selection); borders return to neutral PANEL_LINE; card content
+regrouped so NEXT/resonance sit under the description and the only
+flex space is a short gap above the button; card height trims to fit.
