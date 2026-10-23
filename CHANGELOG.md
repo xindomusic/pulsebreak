@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.3 — 2026-10-23 — Art-pass hill-climb (ui16, 10 attempts)
+
+- Design-research-led art pass ([docs/ui-9-design-research.md](docs/ui-9-design-research.md), Direction A "Instrument Vector") executed as 10 scored hill-climb attempts under the skill's new art-pass mode: pre-score gates (grayscale parse, 24px B/W icons, thumbnail squint), one whole system per attempt, written diagnosis on every rejection. Full record: [qa/ui16-review.md](qa/ui16-review.md). Fresh baseline for the shipped 1.4.2 UI measured 5.60.
+- Kept (each beat the standing best): floor value restructure (deck darkened 37% by measured luminance, checker flattened, inlays dimmed — actors win by contrast, not size); icon family v2 (bold filled silhouettes completed for all 16 glyphs on one construction grid, 24px B/W gate passed); combat composition (actor models +30% visual scale with collision radii untouched, staged sky gradient instead of flat void, pulse ground layers inscribed to the deck edge).
+- Rejected and discarded with diagnoses: role-color-by-hue twice plus warm-only filled zones (three tests — ice imports fracture the warm identity; zone fills sit below the reviewers' reward threshold), frame-as-data card rails twice (cards at a local plateau; a family-tinted border read as false selection), edge HUD (bare instruments read unfinished), 13px type floors (sub-perceptual).
+- Final measured state: baseline 5.60 → best **6.25** (attempt 8; A reviewer 65/100 is the series high on every axis). **9/10 still not reached** — persistent caps are combat density vs menu polish, fresh-eyes icon craft, and originality; reviewer noise on untouched axes measured ±0.75, so smaller gains are not measurable by this method.
+- All 16 suites pass; exported app simulated a Classic win with 0 script errors. Gameplay rules, themes, generator and saves unchanged from 1.4.2 (actor scale is visual only). Installed copies receive this via the in-app updater (verified live).
+
 ## 1.4.2 — 2026-10-23 — UI hill-climb series (best-of-10 checkpoints)
 
 - The UI loop process itself changed: attempts now hill-climb. Each attempt starts from the best-scoring checkpoint; any attempt that scores lower than the best (two independent screenshot reviewers, fixed rubric) is thrown out entirely, diagnosed in writing, and the next attempt is designed from that diagnosis. Method codified as the project skill [.agents/skills/ui-hill-climb](.agents/skills/ui-hill-climb/SKILL.md); full series record in [qa/ui15-review.md](qa/ui15-review.md).
