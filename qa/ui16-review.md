@@ -28,6 +28,7 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 7 | edge HUD | 5.4 | 5.4 | 5.40 | REJECTED | — |
 | 8 | combat composition (scale/sky/inscribe) | 6.5 | 6.0 | 6.25 | ACCEPTED, best | 6102c01 |
 | 9 | filled zones (warm only) | 6.2 | 5.6 | 5.90 | REJECTED | — |
+| 10 | type floors 13px | 6.0 | 6.2 | 6.10 | REJECTED | — |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -209,3 +210,29 @@ now been tested three times (a1 tie, a3 −0.05, a9 −0.35): closed.
 Attempt 8's win came from composition (scale/inscribe/sky), not
 coding. Final attempt (10): type floors — the one complaint present
 in nearly every review (microtype ~10px illegible at thumbnail).
+
+## Attempt 10 — type floors (13px minimum in text helpers) — REJECTED (6.10)
+Change: maxi(size,13) inside label_at/text_line (all UI text flows
+through them). Zero layout breakage; resonance lines wrap to 2 lines.
+Scores: A 60/100 (Palette 11, Type 11, Icons 7, Combat 11/20, Not-AI
+4), B 6.2 (Identity 6.5, Type 7, Icons 5.5, Combat 5.0, Cards 6.5,
+Flow 7.5). Avg 6.10 < 6.25 → discarded in full.
+Diagnosis: the floor is real but sub-perceptual (11→13px); type axes
+did not move (A 11, B 7 — same as attempt 8) and unrelated axes
+absorbed the noise. Legibility at thumbnail is bounded by text
+AMOUNT and contrast, not 2px of size.
+
+## Final — cap reached (10 attempts)
+Best state = attempt 8 (6102c01), avg 6.25 vs baseline 5.60 (+0.65).
+Accepted: #2 floor value restructure, #4 icon family v2, #8 combat
+composition (+30% actor scale, staged sky, deck-inscribed pulse).
+Rejected with diagnoses: #1/#3/#9 zone coding & hue (below reward
+threshold; ice fractures the warm identity), #5/#6 card frames
+(plateau; tinted border read as false selection), #7 edge HUD (bare
+instruments read unfinished), #10 type floors (sub-perceptual).
+9/10 (and the >=8.5 "close" bar) NOT reached. Persistent caps across
+all 22 reviews: combat scene density/scale vs menus, icon craft as
+seen by fresh eyes (B never above 5.5), originality (never above 6).
+Reviewer noise on untouched axes measured ±0.75 (B) / ±2-of-15 (A);
+gains smaller than that do not exist as far as this method can tell.
+By construction the shipped candidate is the best measured state.
