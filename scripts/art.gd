@@ -6,14 +6,16 @@ static var _materials: Dictionary = {}
 static var _meshes: Dictionary = {}
 
 const PALETTE: Dictionary = {
-	"deck": Color("232a31"),
-	"deck_alt": Color("2a323a"),
+	# Floor values sit well below actor values: the deck must lose every
+	# contrast contest so small actors read by luminance, not size.
+	"deck": Color("171d24"),
+	"deck_alt": Color("1a2029"),
 	"seam": Color("060b1d"),
 	"steel": Color("2b3138"),
 	"edge": Color("4a545e"),
 	"dark": Color("070c1a"),
 	"distant": Color("14181d"),
-	"teal_dim": Color("8a4d1e"),
+	"teal_dim": Color("5f3413"),
 	"teal": Color("ff8a2a"),
 	"cyan": Color("ffb35c"),
 	"white": Color("eef8ff"),
@@ -30,7 +32,7 @@ const PALETTE: Dictionary = {
 	"visor": Color("07182f"),
 	"solar": Color("e0a458"),
 	"storm": Color("8fb0c9"),
-	"deck_deep": Color("171c21"),
+	"deck_deep": Color("10141a"),
 	"deck_mark": Color("5a6a76"),
 	"solar_dim": Color("7d6a52"),
 	"storm_dim": Color("4d6478"),
@@ -112,7 +114,7 @@ static func _material(key: String) -> StandardMaterial3D:
 	if key == "teal_dim":
 		result.emission_enabled = true
 		result.emission = result.albedo_color
-		result.emission_energy_multiplier = 0.35
+		result.emission_energy_multiplier = 0.22
 	if key in ["ceramic", "skin_plate"]:
 		# Glazed armor ceramic: glossy clearcoat over a dielectric shell.
 		result.roughness = 0.24
