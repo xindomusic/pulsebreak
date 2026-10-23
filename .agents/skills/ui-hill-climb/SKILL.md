@@ -31,22 +31,40 @@ score: that lets a late, worse loop ship below an earlier, better one.
    throw the code out: restore the working tree to the best
    checkpoint (`git restore .` plus removing any files the attempt
    added) and verify the tree is clean before the next attempt.
-5. **No silent salvage.** A good idea inside a rejected attempt is
+5. **Diagnose every rejection before designing the next attempt.**
+   A lower score is data, not just a discard. For each rejected
+   attempt, read both full reviews and write a short diagnosis in
+   the series record:
+   - what the attempt changed (the one direction it tried);
+   - which axes and verdicts got worse versus the best checkpoint's
+     reviews, quoted from the reviewers' own pixel evidence;
+   - the hypothesis for why it scored lower (e.g. "new element read
+     as clutter", "fix traded one ambiguity for another",
+     "regression: X now overlaps Y");
+   - the design consequence: the refined variant or different
+     direction the next attempt will take, and why it should not
+     repeat the failure.
+   The next attempt's plan must cite this diagnosis. Never retry
+   the same direction unchanged, and never ignore a regression the
+   reviewers photographed — a regression means the direction itself
+   is suspect, not just its tuning.
+6. **No silent salvage.** A good idea inside a rejected attempt is
    not cherry-picked into the tree unscored; it re-enters as its own
-   scored attempt from the best checkpoint.
-6. **Stop conditions.** Stop early only when the best average reaches
+   scored attempt from the best checkpoint, shaped by the diagnosis.
+7. **Stop conditions.** Stop early only when the best average reaches
    the target (default: target − 0.5 when the user says "close to",
    e.g. ≥ 8.5 for "close to 9"). Otherwise run the full attempt cap.
    A plateau is reported, never used as an excuse to end early.
-7. **Ship the best, not the last.** At the end, the working tree must
+8. **Ship the best, not the last.** At the end, the working tree must
    equal the best checkpoint. Verify that state (test suites,
    packaged build, packaged run) and ship it. If no attempt beat the
    baseline, ship nothing and say so.
-8. **Record everything.** One series file (e.g. `qa/ui<series>-review.md`)
+9. **Record everything.** One series file (e.g. `qa/ui<series>-review.md`)
    with a table: attempt, base checkpoint, direction tried, reviewer
    A, reviewer B, average, accepted or rejected. Rejected attempts
-   stay in the record with their scores and what was tried, so the
-   same direction is not retried blindly.
-9. **Report scores honestly.** Never claim the target was reached
+   stay in the record with their scores, what was tried, and the
+   step-5 diagnosis (why it scored lower + the design consequence),
+   so the next attempt is designed from evidence, not vibes.
+10. **Report scores honestly.** Never claim the target was reached
    unless the recorded best average meets it. Name the best score,
    the checkpoint it lives at, and how many attempts were rejected.
