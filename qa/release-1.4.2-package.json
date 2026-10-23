@@ -1,0 +1,22 @@
+{
+  "release": "1.4.2",
+  "tag": "v1.4.2",
+  "date": "2026-10-23",
+  "change": "UI hill-climb series ui15 (best-of-10 scored attempts with revert-on-drop): corner-tick/watermark removal, gradient panel material, centered sheets, upgrade footer restructure, affordability off borders, one cream focus grammar. Gameplay/themes/generator identical to 1.4.1.",
+  "zip": {
+    "file": "Pulsebreak-1.4.2-macOS-universal.zip",
+    "bytes": 62332927,
+    "sha256": "f68551523b3567990aa608a9b2294d504946166567bb5dcbb3b72a632ddd94f2"
+  },
+  "pck": {
+    "bytes": 2895760,
+    "sha256": "b05d2f1ba3c81c6f30703fdf5dce453c6ba047c1eb06faca057c7321afbe09d9"
+  },
+  "architectures": "x86_64 arm64",
+  "signature": "ad-hoc, codesign --verify --deep --strict passed (export script)",
+  "tests": "651 checks in 16 suites, all passed",
+  "packaged_run": "Exported app simulated Classic win, 0 script errors (qa/ui15/packaged)",
+  "self_update_live": "Disposable copy of the 1.4.2 build run with --qa-version=1.4.1 --qa-update-install detected the published 1.4.2 release, downloaded and SHA-256-verified it, swapped its bundle and relaunched (plist + relaunched process verified, then terminated)",
+  "grade": "Hill-climb series (qa/ui15-review.md): baseline 5.75 -> accepted 6.00, 6.10, 6.15, 6.35, 6.40, 6.50 (attempt 10, last = best by construction); rejected attempts 1 (tie), 4, 6, 8 discarded with written diagnoses; 9/10 (>=8.5) not reached",
+  "built_from": "main commit c874c90"
+}
