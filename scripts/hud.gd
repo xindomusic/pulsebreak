@@ -34,6 +34,7 @@ var heavy: Font
 var mono: Font
 var hint_time := 0.0
 var banner_time := 0.0
+var _panel_cache: Dictionary = {}
 var boss_active := false
 var offers: Array = []
 var key_names: Dictionary = {"left":"A","right":"D","up":"W","down":"S","dash":"Space","pulse":"E","jump":"F","weapon":"Q"}
@@ -427,7 +428,6 @@ func _ready() -> void:
 	focus_ring.expand_margin_right = 3.0
 	focus_ring.expand_margin_top = 3.0
 	focus_ring.expand_margin_bottom = 3.0
-	focus_ring.shadow_size = 0
 	theme_ui.set_stylebox("focus", "Button", focus_ring)
 	# Sliders: thin track, signal fill, drawn ring grabber (no default Godot chrome).
 	var track := StyleBoxLine.new()
@@ -508,21 +508,38 @@ func add_frame(parent: Control, accent: Color) -> Control:
 func family_color(family: String) -> Color:
 	return {"HARVEST": Palette.FAM_HARVEST, "ECHO": Palette.FAM_ECHO, "WAKE": Palette.FAM_WAKE}.get(family, WHITE)
 
-func panel(fill: Color, border: Color = Color(0,0,0,0), width: int = 1) -> StyleBoxFlat:
+func panel(fill: Color, border: Color = Color(0,0,0,0), width: int = 1) -> StyleBox:
 	if border.a == 0.0: border = Palette.PANEL_LINE
-	var s := StyleBoxFlat.new()
-	s.bg_color = fill
-	s.border_color = border
-	s.set_border_width_all(width)
-	s.set_corner_radius_all(3)
+	var key := "%s|%s|%d" % [str(fill), str(border), width]
+	if _panel_cache.has(key):
+		return _panel_cache[key].duplicate()
+	var s := StyleBoxTexture.new()
+	s.texture = _panel_texture(fill, border, width)
+	s.texture_margin_left = 12.0
+	s.texture_margin_right = 12.0
+	s.texture_margin_top = 12.0
+	s.texture_margin_bottom = 12.0
 	s.content_margin_left = 20
 	s.content_margin_right = 20
 	s.content_margin_top = 14
 	s.content_margin_bottom = 14
-	s.shadow_color = Color(0, 0, 0, 0.45)
-	s.shadow_size = 5
-	s.shadow_offset = Vector2(0, 3)
-	return s
+	_panel_cache[key] = s
+	return s.duplicate()
+
+func _panel_texture(fill: Color, border: Color, width: int) -> ImageTexture:
+	var n := 48
+	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var top := fill.lightened(0.08)
+	var bottom := fill.darkened(0.05)
+	var edge := fill.lightened(0.18)
+	for y in range(n):
+		var base: Color = top.lerp(bottom, float(y) / float(n - 1))
+		for x in range(n):
+			var col := base
+			if y == width and width >= 1: col = edge
+			if x < width or x >= n - width or y < width or y >= n - width: col = border
+			img.set_pixel(x, y, col)
+	return ImageTexture.create_from_image(img)
 
 func label_at(parent: Node, text: String, pos: Vector2, font_size: int = 18, color: Color = Color.WHITE) -> Label:
 	if color == Color.WHITE: color = WHITE

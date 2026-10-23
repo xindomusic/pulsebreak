@@ -14,6 +14,7 @@ Cards 15, States 10, Not-AI feel 10. Same 10 captures per attempt
 |---|---|---|---|---|---|---|
 | 0 (baseline) | a813585 (= 1.4.1) | — | 6.1 | 5.4 | 5.75 | checkpoint |
 | 1 | a813585 | Gameplay camera zoom 31.8 → 29.8 (boss 26.6) | 6.1 | 5.4 | 5.75 | REJECTED (tie) |
+| 2 | a813585 | Remove all corner-tick Frames + sheet backdrop watermarks | 6.0 | 6.0 | 6.00 | ACCEPTED → a319967 |
 
 ## Baseline diagnosis (designs attempt 1)
 
@@ -49,3 +50,18 @@ under the HUD. Scored at 29.8.)
   corner-tick frames and the sheet backdrop watermarks (B baseline:
   "cropped watermark… reads as placeholder art") in one pass, a
   change visible on all 10 captures at once.
+
+## Attempt 2 outcome (accepted, 6.00 > 5.75)
+
+Corner ticks gone from all menu panels (A: PARTIAL — remaining
+"ticks" are 3D deck inlays, not UI), watermarks gone. B rose
+5.4 → 6.0; A flat at ~6. B's new #2: title artefacts ("three
+disconnected grey horizontal bars hover beneath the platform").
+A's key line for what comes next: "Removing ornament has not
+replaced it with a distinctive material or frame system."
+Design consequence: attempt 3 gives panels a material — a baked
+vertical-gradient panel texture (lighter top edge → darker base,
+border baked in) replacing flat StyleBoxFlat fills everywhere
+panel() is used. Trade-off accepted upfront: StyleBoxTexture has
+no shadow, so panel drop shadows go away with it; the attempt
+tests whether material beats shadow.
