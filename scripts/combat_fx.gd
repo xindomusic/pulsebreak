@@ -315,6 +315,10 @@ func pulse(at: Vector3, power: float, radius: float, echo: bool = false) -> void
 	# reach the floor, show its boundary in the origin plane instead.
 	var ground_radius := sqrt(maxf(0.0,radius*radius-ground_clearance*ground_clearance)) if touches_ground else radius
 	var ground := Vector3(at.x,ground_y if touches_ground else at.y,at.z)
+	# Ground layers inscribe into the deck (half-extent 15.8) so the pulse
+	# never renders as an icon floating over the void past the arena edge.
+	var deck_rx := minf(ground_radius, 15.8 - absf(ground.x)) if touches_ground else ground_radius
+	var deck_rz := minf(ground_radius, 15.8 - absf(ground.z)) if touches_ground else ground_radius
 	# Keep filaments above the flush deck inlays rather than coincident with
 	# the feet plane. Their radial extents leave room within the damage sphere.
 	var energy_origin := at+Vector3.UP*minf(0.16,radius*0.02)
@@ -322,10 +326,10 @@ func pulse(at: Vector3, power: float, radius: float, echo: bool = false) -> void
 	var core_size := minf(radius*0.17,lerpf(0.40,0.69,strength))*(0.68 if echo else 1.0)
 	var core := _pulse_layer("sphere","pulse_hot" if strength>=0.78 and not echo else "white",energy_origin,Vector3.ONE*core_size,0.17*speed,"pulse_core",0.0,true)
 	core.opacity=0.90 if not echo else 0.52
-	var front := _pulse_layer("pulse_front","pulse_cyan",ground,Vector3(ground_radius,minf(0.16,radius),ground_radius),0.37*speed,"pulse_front",0.0,true)
+	var front := _pulse_layer("pulse_front","pulse_cyan",ground,Vector3(deck_rx,minf(0.16,radius),deck_rz),0.37*speed,"pulse_front",0.0,true)
 	front.opacity=lerpf(0.62,0.94,strength)*(0.54 if echo else 1.0)
 	front.arrival=PULSE_FRONT_TIME*speed
-	var boundary := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(ground_radius,0.08,ground_radius),0.30*speed,"pulse_boundary",0.0,true)
+	var boundary := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(deck_rx,0.08,deck_rz),0.30*speed,"pulse_boundary",0.0,true)
 	boundary.opacity=0.08 if echo else lerpf(0.12,0.18,strength)
 	var gather := _pulse_layer("pulse_sparse" if low_effects or echo else "pulse_gather","pulse_cyan",energy_origin,Vector3.ONE*radius*0.60,PULSE_GATHER_TIME*speed,"pulse_gather")
 	if not gather.is_empty(): gather.opacity=0.90*weight
@@ -333,7 +337,7 @@ func pulse(at: Vector3, power: float, radius: float, echo: bool = false) -> void
 	if not shards.is_empty():
 		shards.opacity=0.88*weight
 		shards.rotation=rng.randf_range(-0.18,0.18)
-	var aftermath := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(ground_radius*0.87,0.08,ground_radius*0.87),lifetime-0.16*speed,"pulse_after",0.16*speed)
+	var aftermath := _pulse_layer("pulse_arcs","pulse_violet",ground,Vector3(deck_rx*0.87,0.08,deck_rz*0.87),lifetime-0.16*speed,"pulse_after",0.16*speed)
 	if not aftermath.is_empty(): aftermath.opacity=0.18*weight
 	if not low_effects and not echo:
 		var halo := _pulse_layer("ring","pulse_cyan",energy_origin,Vector3(radius*0.26,minf(0.28,radius),radius*0.26),0.23,"pulse_halo",0.015)

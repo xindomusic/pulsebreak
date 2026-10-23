@@ -34,7 +34,7 @@ var slow_power := 0.5
 var slowed_time := 0.0
 var elite := ""
 var knockback := Vector3.ZERO
-var base_scale := 1.0
+var base_scale := 1.3
 static var flash_material: StandardMaterial3D
 static var shield_flash_material: StandardMaterial3D
 

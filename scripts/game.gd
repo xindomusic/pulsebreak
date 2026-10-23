@@ -109,6 +109,9 @@ func _ready() -> void:
 	Art.build_arena(self)
 	field = Field.new(); field.game = self; add_child(field)
 	player_node = Art.player(); add_child(player_node)
+	# Actor presence: models render 30% over their gameplay footprint so
+	# they survive thumbnail scale; collision radii are untouched.
+	player_node.scale = Vector3.ONE * 1.3
 	weapon_fx = CombatFX.new(); add_child(weapon_fx)
 	weapons = Weapons.new(); weapons.game = self; add_child(weapons)
 	weapons.reset()
@@ -231,10 +234,12 @@ func setup_world() -> void:
 	var env := Environment.new()
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color("0a0e13")
+	sky_material.sky_top_color = Color("0d1219")
 	sky_material.sky_horizon_color = Color("375667")
-	sky_material.ground_bottom_color = Color("0c0f12")
-	sky_material.ground_horizon_color = Color("375667")
+	# The surround is a dim gradient, not flat void: the deck reads as an
+	# object staged in space.
+	sky_material.ground_bottom_color = Color("1e2a38")
+	sky_material.ground_horizon_color = Color("3d5468")
 	sky_material.sky_curve = 0.2
 	sky.sky_material = sky_material
 	env.background_mode = Environment.BG_SKY
@@ -893,7 +898,7 @@ func spawn_enemy(kind: String, at: Vector3) -> Node3D:
 		enemy.elite=["swift","armored","volatile"][rng.randi_range(0,2)]
 		if enemy.elite=="swift": enemy.speed*=1.45
 		elif enemy.elite=="armored": enemy.hp*=1.8; enemy.max_hp=enemy.hp
-		enemy.base_scale=1.25
+		enemy.base_scale=1.6
 	enemies.append(enemy)
 	return enemy
 
