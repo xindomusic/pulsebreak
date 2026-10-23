@@ -26,6 +26,7 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 5 | frame-as-data cards | 6.1 | 4.7 | 5.40 | REJECTED | — |
 | 6 | frame rails refined | 5.7 | 6.1 | 5.90 | REJECTED | — |
 | 7 | edge HUD | 5.4 | 5.4 | 5.40 | REJECTED | — |
+| 8 | combat composition (scale/sky/inscribe) | 6.5 | 6.0 | 6.25 | ACCEPTED, best | (prev commit) |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -179,3 +180,16 @@ pulse ring runs off the playfield", "decorative side fans compete".
 Consequence: attempt 8 = combat composition — larger actor presence,
 backdrop that stages the deck instead of flat void, pulse inscribed
 to the deck (composition only; no hue change, per attempt-3 closure).
+
+## Attempt 8 — combat composition — ACCEPTED (6.25)
+Change: player/enemy models +30% visual scale (elite 1.6; collision
+radii untouched), sky ground gradient lifted (#0c0f12→#1e2a38,
+horizon #33465a→#3d5468) so the deck sits in staged space, pulse
+ground layers inscribed to deck half-extent 15.8.
+Scores: A 65/100 (Palette 12, Type 11, Icons 8, Combat 11/20, Cards
+11, States 7, Not-AI 5 — series high on every A axis), B 6.0 (Identity
+6.5, Type 7, Icons 5, Combat 5.5, Cards 6.5, Flow 6.5, Originality 5).
+Avg 6.25 > 5.95 → new best.
+Notes: B still calls combat "under-populated / flat checkerboard" —
+density and zone legibility are the remaining combat levers. Two
+attempts remain in the cap.
