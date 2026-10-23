@@ -22,6 +22,7 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 1 | role-color + filled zones + halo | 5.4 | 5.8 | 5.60 | REJECTED (tie) | — |
 | 2 | floor value restructure | 6.0 | 5.6 | 5.80 | ACCEPTED, best | 9cff6ef |
 | 3 | role-color retry (refined) | 5.6 | 5.9 | 5.75 | REJECTED | — |
+| 4 | icon family v2 (bold grid) | 5.8 | 6.1 | 5.95 | ACCEPTED, best | (prev commit) |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -94,3 +95,19 @@ test filled zones ALONE (cream pulse untouched). Next: icons — the
 worst axis for both reviewers across all four scorings (A 6-7/15,
 B 4.5-5.0) and named a top-3 problem; independent of combat noise and
 it also feeds the Cards axis.
+
+## Attempt 4 — icon family v2 (bold construction grid) — ACCEPTED (5.95)
+Change (scripts/hud.gd Glyph): bold set completed from 7 to all kinds —
+new filled silhouettes for capacitor, radius, chain, wake, dash, armory,
+combo, core; collector thickened; armory/hull tuned after the 24px B/W
+gate (all 9 visible glyphs survive as distinct silhouettes;
+qa/ui16/attempt4/gates/icons-24bw.png). Non-bold small marks untouched.
+Scores: A 58/100 (Palette 11, Type 9, Icons 8, Combat 11/20, Cards 9,
+States 5, Not-AI 5), B 6.1 (Identity 6.5, Type 7.5, Icons 5.0, Combat
+5.5, Cards 7, Flow 6.5, Originality 4.5). Avg 5.95 > 5.80 → new best.
+Notes: A rewarded icons +2 (6→8); B held icons at 5.0 but lifted
+combat/cards. Worst axes now: States (A 5), Not-AI (5/4.5), Combat
+(11/20, 5.5). Recurring verbatims: cards are "identical flat slate
+slabs with dead vertical gaps"; combat "prototype-looking".
+Next: phase 5 frame-as-data cards (family-coded frames, cost/state in
+the frame itself, kill dead card space).
