@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.2 — 2026-10-23 — UI hill-climb series (best-of-10 checkpoints)
+
+- The UI loop process itself changed: attempts now hill-climb. Each attempt starts from the best-scoring checkpoint; any attempt that scores lower than the best (two independent screenshot reviewers, fixed rubric) is thrown out entirely, diagnosed in writing, and the next attempt is designed from that diagnosis. Method codified as the project skill [.agents/skills/ui-hill-climb](.agents/skills/ui-hill-climb/SKILL.md); full series record in [qa/ui15-review.md](qa/ui15-review.md).
+- Kept (each scored higher than what it replaced): corner-tick frames and sheet watermarks removed; baked gradient panel material; result/sector/practice sheets centered; upgrade-card footer restructured (bottom-aligned, FINAL MARK, contradiction-free copy); affordability moved off borders to text color with quiet theme borders; one cream focus grammar on every screen.
+- Rejected and discarded: camera zoom (tied, cropped backdrop props), deep-shadow sharp panels (5.85), white-hairline focus (5.85), title annotation cleanup (6.30 — cleaned the best screen, moved nothing).
+- Final measured state: baseline 5.75 → best **6.50** at attempt 10, the last attempt holding the series-highest score by construction. **9/10 still not reached** — remaining blockers are combat-still readability, a non-unified glyph set, and OS-idiom settings controls; those need an art pass, not more scored polish attempts.
+- All 16 suites pass (651 checks); exported app simulated a Classic win with 0 script errors. Gameplay, themes, generator, saves unchanged from 1.4.1. Installed copies receive this via the in-app updater (verified live).
+
 ## 1.4.1 — 2026-10-21 — UI loops 6–10 (full budget)
 
 - Completes the 10-loop independent-review UI budget begun in 1.4.0. Loops 6–10: micro-label cuts and numbered stat meters, boss announcement de-plated and moved inside the arena, theme buttons that preview their own theme with a distinct selection marker, right-aligned keybind chips, sheet backdrop marks, armory single-verb buttons, affordable-state borders in the Hangar, contextual reactor-pod charge line, coil/ignition glyph redraws, slider end labels, and keyboard focus as its own offset signal ring (cream is CTA-only again).
