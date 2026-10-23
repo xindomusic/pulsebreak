@@ -25,6 +25,7 @@ best checkpoint. Every rejection gets a written diagnosis.
 | 4 | icon family v2 (bold grid) | 5.8 | 6.1 | 5.95 | ACCEPTED, best | cb70c1f |
 | 5 | frame-as-data cards | 6.1 | 4.7 | 5.40 | REJECTED | — |
 | 6 | frame rails refined | 5.7 | 6.1 | 5.90 | REJECTED | — |
+| 7 | edge HUD | 5.4 | 5.4 | 5.40 | REJECTED | — |
 
 ## Attempt 1 — role-color law + filled zones + player halo — REJECTED (tie)
 Change: pulse recolored cream→constant ice (a9e3ff/4fb4ff), aftermath
@@ -160,3 +161,21 @@ pixels (noise). Consequence: stop spending attempts on cards. The
 heaviest remaining lever is combat structure — every B review names
 the three bottom HUD slabs ("exiled boxes", "dashboard") and the
 prototype arena. Attempt 7 = phase 3 edge HUD.
+
+## Attempt 7 — edge HUD (bottom slabs dissolved) — REJECTED (5.40)
+Change: armory/reactor/flight panels removed; instruments reparented
+to bare text/bars on a new bottom shade gradient. Scores: A 54/100
+(Palette 10, Type 9, Icons 6, Combat 9/20, Cards 9, States 6, Not-AI
+5), B 5.4 (Identity 6, Type 7, Icons 4.5, Combat 5.0, Cards 6, Flow 6,
+Originality 3.5). Avg 5.40 → discarded in full.
+
+Diagnosis: neither reviewer credited the HUD change; B's headline got
+worse ("combat view that looks unfinished"). Bare instruments on a
+shade read as LESS crafted than boxed ones — the slabs were not the
+problem. Every combat sentence targets the 3D frame itself: "~35% of
+frame is empty black void", "arena occupies only the centre band",
+"player is a ~50px white moth", "enemies <25px specks", "white dashed
+pulse ring runs off the playfield", "decorative side fans compete".
+Consequence: attempt 8 = combat composition — larger actor presence,
+backdrop that stages the deck instead of flat void, pulse inscribed
+to the deck (composition only; no hue change, per attempt-3 closure).
