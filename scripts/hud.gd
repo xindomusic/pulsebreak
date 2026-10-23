@@ -414,7 +414,7 @@ func _ready() -> void:
 	theme_ui.set_color("font_color", "Label", WHITE)
 	theme_ui.set_color("font_color", "Button", WHITE)
 	theme_ui.set_color("font_hover_color", "Button", WHITE)
-	theme_ui.set_color("font_focus_color", "Button", WHITE)
+	theme_ui.set_color("font_focus_color", "Button", Palette.INK)
 	theme_ui.set_color("font_pressed_color", "Button", Palette.SIGNAL_SOFT)
 	theme_ui.set_color("font_disabled_color", "Button", Color(WHITE, 0.55))
 	theme_ui.set_font("font", "Button", heavy)
@@ -423,7 +423,7 @@ func _ready() -> void:
 	theme_ui.set_stylebox("hover", "Button", panel(Palette.PANEL_RAISED, Color(WHITE, 0.55)))
 	theme_ui.set_stylebox("pressed", "Button", panel(Color("2a2f36"), SIGNAL))
 	theme_ui.set_stylebox("disabled", "Button", panel(Color(Palette.PANEL_RAISED,0.85), Color(Palette.PANEL_LINE,0.6)))
-	var focus_ring := panel(Color(WHITE, 0.16), WHITE, 2)
+	var focus_ring := panel(WHITE, WHITE, 2)
 	focus_ring.expand_margin_left = 3.0
 	focus_ring.expand_margin_right = 3.0
 	focus_ring.expand_margin_top = 3.0
@@ -449,7 +449,7 @@ func _ready() -> void:
 	theme_ui.set_stylebox("pressed", "CheckButton", panel(Palette.PANEL_RAISED, Palette.PANEL_LINE))
 	theme_ui.set_color("font_color", "CheckButton", WHITE)
 	theme_ui.set_color("font_hover_color", "CheckButton", WHITE)
-	theme_ui.set_color("font_focus_color", "CheckButton", WHITE)
+	theme_ui.set_color("font_focus_color", "CheckButton", Palette.INK)
 	theme_ui.set_color("font_pressed_color", "CheckButton", WHITE)
 	theme_ui.set_icon("checked", "CheckButton", pill_texture(true))
 	theme_ui.set_icon("unchecked", "CheckButton", pill_texture(false))

@@ -21,6 +21,8 @@ Cards 15, States 10, Not-AI feel 10. Same 10 captures per attempt
 | 6 | 32f1748 | White focus ring + Aftershock copy-contradiction fix | 5.8 | 5.9 | 5.85 | REJECTED |
 | 7 | 32f1748 | Focus as fill-lift wash + footer restructure (FINAL MARK, bottom-aligned) | 6.5 | 6.2 | 6.35 | ACCEPTED → ac1841e |
 | 8 | ac1841e | Title annotation cleanup (hide floor labels on title, drop leader ticks) | 6.3 | 6.3 | 6.30 | REJECTED |
+| 9 | ac1841e | Affordability off borders (signal text), neutral unselected theme borders | 6.2 | 6.6 | 6.40 | ACCEPTED → 475eaf6 |
+| 10 | 475eaf6 | One focus grammar: opaque cream focus fill everywhere | 6.6 | 6.4 | 6.50 | ACCEPTED (final) |
 
 ## Baseline diagnosis (designs attempt 1)
 
@@ -164,3 +166,39 @@ borders still nest against it.
   selected theme and keyboard focus may draw a strong border).
   That directly answers "four orange rectangles" (A a6/a7) and
   "all four swatches carry a coloured border" (B a7).
+
+## Attempt 9 outcome (accepted, 6.40 > 6.35)
+
+Borders quieted; B's 6.6 is the series-best fresh-eyes score. But
+A a9 names the remaining grammar split: "primary actions are
+cream-filled on linear menus but merely white-outlined on card
+screens, so [1] UNLOCK & EQUIP looks less selected than UPGRADE &
+DIVE DEEPER." Design consequence for the final attempt: one focus
+grammar everywhere — keyboard focus becomes the same opaque cream
+fill as primary CTAs (ink text), so "the action Enter will fire"
+wears one uniform on every screen. Affordability stays on text
+color (attempt 9), selection stays on borders — three channels,
+three meanings.
+
+## Attempt 10 outcome (accepted, 6.50 > 6.40) — series complete
+
+Cream focus unified the grammar; A (6.6) is the highest
+history-aware score of the series. The 10-attempt cap is now
+exhausted with the best checkpoint also being the last:
+5.75 (baseline) → 6.00 → 6.10 → 6.15 → 6.35 → 6.40 → **6.50**.
+Four attempts were rejected and thrown out (1, 4, 6, 8), each with
+a diagnosis above that shaped the next accepted attempt.
+
+9/10 (≥8.5) was not reached. The hill-climb guarantees the shipped
+state is the best measured state, not that the target is met: the
+remaining blockers named in the final reviews are the same
+structural three as ui14 — combat stills do not parse (white FX
+over a bare floor), the glyph set is not one authored family, and
+settings uses OS-idiom controls. Those need an art pass
+(combat presentation, authored icons, diegetic settings), which is
+a different kind of project than scored polish attempts. What the
+series demonstrably bought: no layout breakage in any final
+capture, one focus grammar, affordability/selection/focus on
+separate channels, panel material, centered composed sheets, and
+contradiction-free card copy — each kept only because two
+independent reviewers scored it higher than what it replaced.
