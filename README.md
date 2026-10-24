@@ -2,13 +2,17 @@
 
 **Steal the storm. Break the machine.** A native Mac arena roguelite with continuous generated sectors, evolving weapons and an original dubstep soundtrack.
 
-**[Download Pulsebreak 1.4.2 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.4.2/Pulsebreak-1.4.2-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
+**[Download Pulsebreak 1.4.3 for Mac](https://github.com/xindomusic/pulsebreak/releases/download/v1.4.3/Pulsebreak-1.4.3-macOS-universal.zip)** · **[Release notes](docs/RELEASE_1_3.md)** · **[Reforge review](qa/reforge-review.md)**
 
 Unzip **Pulsebreak.app**, move it to Applications and choose **Begin Skybound**. The universal app includes Apple Silicon and Intel binaries and runs offline without Godot, an account or an API key. It is ad-hoc signed and has not been Apple-notarized; see [first-launch guidance](docs/GETTING_STARTED.md#play-the-download).
 
 ![Staged native title and courier](docs/images/resonance-title.png)
 
 *Staged Metal capture of the visual style retained in 1.2. [Hear Prism Drive](docs/audio/prism/prism_drive.mp3) · [Music and combat preview](docs/audio/prism/battle_preview.mp3).*
+
+## Release 1.4.3 — Art-pass hill-climb (ui16)
+
+A design-research-led art pass ([the research](docs/ui-9-design-research.md)) run as 10 scored hill-climb attempts with pre-score gates (grayscale parse, 24px black/white icons, thumbnail squint). Three attempts earned their place: a darker, flatter arena floor so actors read by contrast; all 16 glyphs rebuilt as filled silhouettes on one construction grid; and a combat composition pass (actors +30% visual scale with collision unchanged, staged sky gradient, pulse shockwaves that stop at the deck edge). Seven attempts scored lower and were discarded with written diagnoses. Fresh baseline 5.60 → series-best **6.25**; **9/10 still not claimed**. Full record: [qa/ui16-review.md](qa/ui16-review.md). Gameplay, themes, generator and saves match 1.4.2; installed copies get this via the in-app updater.
 
 ## Release 1.4.2 — UI hill-climb (best-of-10)
 
