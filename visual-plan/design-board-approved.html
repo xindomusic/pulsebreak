@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PULSEBREAK — AAA Realistic 3D Redesign · Design Approval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--deck:#111A21;--deck2:#1E2A34;--ink:#D8E6EA;--mut:#8FA3AB;--org:#FF9A2A;--org2:#FF8A1A;--gold:#DCAC70;--brass:#B08A45;--teal:#2B585F;--teal2:#35E0C8;--white:#E8E6DE;--gun:#24221C;--rust:#9C4028;--red:#E5384A;--hair:rgba(216,230,234,.16);--bg:#060D12}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;letter-spacing:.02em;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .04 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:var(--org);color:#111}
+.top{position:sticky;z-index:40;top:0;height:52px;display:flex;align-items:center;gap:18px;padding:0 22px;background:linear-gradient(180deg,rgba(6,13,18,.92),rgba(6,13,18,.72));backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.logo{font-family:Oswald,"Arial Narrow",sans-serif;font-weight:700;letter-spacing:.22em;font-size:17px}.logo b{color:var(--org);font-weight:700}
+.top nav{display:flex;gap:18px;margin-left:auto}.top a{color:var(--mut);text-decoration:none;font-size:13px;letter-spacing:.18em;text-transform:uppercase}.top a:hover{color:#fff}
+.badge{font-family:"JetBrains Mono",monospace;font-size:10px;color:#FFD9A8;border:1px solid rgba(255,154,42,.5);padding:5px 8px;letter-spacing:.12em}
+.herowrap{background:#03181F}
+.hero{position:relative;width:min(100%,150svh);aspect-ratio:3/2;max-height:100svh;margin:0 auto;background:#03181F;overflow:hidden}
+.hero img.main{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;filter:saturate(1.03) contrast(1) brightness(1.02)}
+.hero-ui{position:absolute;z-index:3;left:3.5%;bottom:37%;max-width:420px}
+.combat-inset{position:absolute;z-index:3;left:3.5%;bottom:4%;width:31%;aspect-ratio:3/2;display:block;border:1px solid rgba(216,230,234,.4);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 4px rgba(3,24,31,.35);overflow:hidden;background:var(--deck)}
+.combat-inset img{display:block;width:100%;height:100%;object-fit:cover}
+.combat-inset:hover{border-color:rgba(255,154,42,.8)}
+.hero-note{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.18em;color:rgba(216,230,234,.9);text-shadow:0 1px 8px #000;margin-top:7px}
+.intro{padding:26px 4vw 6px;max-width:1680px;margin:0 auto}.intro p.lead{font-size:21px;line-height:1.3;color:#EAF3F5;max-width:760px}
+.herocap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 4vw 0;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;color:rgba(216,230,234,.75)}
+.notetoggle{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.18em;padding:6px 9px;background:#0B151C;color:rgba(216,230,234,.85);border:1px solid rgba(216,230,234,.3);cursor:pointer}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;color:#FFD9A8;text-transform:uppercase;display:flex;align-items:center;gap:10px}.eyebrow:before{content:"";width:34px;height:1px;background:var(--org)}
+h1{font-family:Oswald,"Arial Narrow",sans-serif;font-size:clamp(32px,3.4vw,46px);line-height:.92;font-weight:700;letter-spacing:.08em;margin:8px 0 6px;text-shadow:0 2px 12px rgba(0,0,0,.55)}h1 .p{color:var(--org)}h1 .b{color:var(--ink)}
+.rule{height:1px;background:rgba(216,230,234,.35);width:300px;max-width:60vw;margin:10px 0}
+.hero-ui p{font-size:21px;line-height:1.25;color:#EAF3F5;max-width:560px;text-shadow:0 2px 14px #000}
+.pillars{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.pill{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;padding:7px 9px;border:1px solid rgba(216,230,234,.28);background:rgba(17,26,33,.58);backdrop-filter:blur(6px)}
+.cta-row{display:flex;gap:10px;margin-top:20px}.btn{font-family:Oswald,sans-serif;letter-spacing:.16em;text-transform:uppercase;font-size:14px;padding:13px 20px;border:1px solid rgba(255,154,42,.8);color:#181006;background:linear-gradient(180deg,#FFC36B,#FF9A2A);text-decoration:none;cursor:pointer;box-shadow:0 8px 30px rgba(255,138,26,.28)}.btn.ghost{background:rgba(17,26,33,.62);color:var(--ink);border-color:rgba(216,230,234,.35);box-shadow:none;backdrop-filter:blur(6px)}
+.specrail{display:grid;grid-template-columns:repeat(4,auto);gap:6px;text-align:left;margin-top:18px;justify-content:start}
+.specrail div{background:rgba(10,18,24,.5);border:1px solid var(--hair);backdrop-filter:blur(8px);padding:7px 10px}.specrail small{display:block;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.2em;color:var(--mut)}.specrail strong{font-family:Oswald,sans-serif;font-size:15px;letter-spacing:.08em;color:#fff}
+.marker{position:absolute;z-index:4;width:28px;height:28px;opacity:0;pointer-events:none;transition:opacity .18s}.show-notes .marker{opacity:1;pointer-events:auto}.hudlab{opacity:0;transition:opacity .18s}.show-notes .hudlab{opacity:1}.marker{border:1px solid rgba(255,255,255,.85);border-radius:50%;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-size:11px;background:rgba(17,26,33,.55);backdrop-filter:blur(4px);cursor:pointer}.marker:after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--org);box-shadow:0 0 14px var(--org2)}
+.marker em{position:absolute;left:34px;top:50%;transform:translateY(-50%);white-space:nowrap;font-style:normal;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;background:rgba(6,13,18,.86);border:1px solid var(--hair);padding:7px 9px;opacity:0;pointer-events:none;transition:.18s}.marker:hover em,.marker:focus em{opacity:1}
+.captionbar{position:absolute;z-index:3;left:0;right:0;bottom:0;height:34px;display:flex;justify-content:space-between;padding:0 22px;align-items:center;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;color:rgba(216,230,234,.75);border-top:1px solid var(--hair);background:rgba(6,13,18,.55);backdrop-filter:blur(8px)}
+section{padding:72px 4vw 10px;max-width:1680px;margin:0 auto}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:20px;border-top:1px solid var(--hair);padding-top:22px;margin-bottom:22px}
+.sec-head h2{font-family:Oswald,sans-serif;font-size:clamp(30px,4vw,54px);line-height:1;letter-spacing:.1em;text-transform:uppercase}.sec-head h2 span{color:var(--org)}
+.sec-head p{max-width:520px;color:var(--mut);font-size:17px;line-height:1.3}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.26em;color:var(--org);text-transform:uppercase;margin-bottom:8px}
+.panel{position:relative;border:1px solid rgba(216,230,234,.22);background:var(--deck);overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.panel img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+.panel .hudline{position:absolute;left:0;right:0;height:1px;background:rgba(216,230,234,.16);z-index:3}.hudline.top2{top:2.2%}.hudline.bot2{bottom:2.7%}
+.seg{position:absolute;height:2px;top:-.5px}.seg.teal{background:var(--teal2)}.seg.org{background:var(--org)}.seg.wht{background:var(--ink)}
+.hudlab{position:absolute;z-index:4;font-family:"Barlow Condensed",sans-serif;font-size:12px;letter-spacing:.22em;color:rgba(216,230,234,.92);text-transform:uppercase;text-shadow:0 1px 8px #000}
+.callouts{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-top:0}
+.callout{background:#0B151C;padding:14px}.callout b{font-family:Oswald,sans-serif;letter-spacing:.1em;font-size:14px;color:#fff;display:flex;gap:8px;align-items:center}.dot{width:9px;height:9px;border-radius:50%;background:var(--org);box-shadow:0 0 10px var(--org);flex:none}.callout p{color:var(--mut);font-size:15px;line-height:1.25;margin-top:6px}.mono{font-family:"JetBrains Mono",monospace;font-size:11px;color:#FFD9A8}
+.mats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.mat{border:1px solid var(--hair);background:#0B151C;overflow:hidden}.sw{height:132px;position:relative;overflow:hidden}.sw:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.32),transparent 38%,rgba(0,0,0,.28) 78%)}
+.mat .info{padding:12px}.mat b{font-family:Oswald,sans-serif;letter-spacing:.08em}.mat p{color:var(--mut);font-size:14px;line-height:1.35;margin-top:5px}
+.sw.white{background:linear-gradient(145deg,#F0EEE6,#A8B2AE 55%,#64878D)}.sw.gun{background:linear-gradient(145deg,#4A4A48,#24221C 60%,#0E0E0C)}.sw.brass{background:linear-gradient(145deg,#FFE0A6,#DCAC70 45%,#7A5A28)}.sw.rust{background:linear-gradient(145deg,#C05A3A,#9C4028 55%,#4A2116)}.sw.deck{background:linear-gradient(160deg,#3A4E5C,#111A21 55%,#05090D)}.sw.deck:before{content:"";position:absolute;left:-10%;right:-10%;top:56%;height:2px;background:var(--org);box-shadow:0 0 16px var(--org),0 14px 0 rgba(255,154,42,.35)}.sw.emis{background:radial-gradient(circle at 50% 50%,#FDFDF1 0 12%,#FFB03A 28%,#FF8A1A 48%,#3A1800 78%)}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.card{border:1px solid var(--hair);background:linear-gradient(180deg,#0D1820,#081118);padding:20px}
+.card h3{font-family:Oswald,sans-serif;letter-spacing:.12em;text-transform:uppercase;font-size:20px;margin-bottom:12px}.card h3 span{color:var(--org)}
+table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:8px 6px;border-bottom:1px solid var(--hair);text-align:left;vertical-align:top}th{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;color:var(--mut);text-transform:uppercase}td:first-child{color:#fff}
+.loop{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.loopcard{position:relative;border:1px solid var(--hair);overflow:hidden;background:var(--deck);min-height:330px}.loopcard img{position:absolute;inset:0;width:100%;height:62%;object-fit:cover}.loopcard .txt{position:absolute;left:0;right:0;bottom:0;padding:16px;background:linear-gradient(180deg,rgba(8,17,24,.2),#081118 28%)}.num{font-family:Oswald,sans-serif;font-size:44px;color:transparent;-webkit-text-stroke:1px var(--org);line-height:1}.loopcard h3{font-family:Oswald,sans-serif;letter-spacing:.1em;margin:4px 0}.loopcard p{color:var(--mut);line-height:1.3}
+.states{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.state{border:1px solid var(--hair);background:#0B151C;padding:16px;min-height:250px}.state h3{font-family:Oswald,sans-serif;letter-spacing:.1em;text-transform:uppercase}.state p{color:var(--mut);line-height:1.35;margin-top:8px;font-size:15px}
+.cores{display:flex;gap:14px;align-items:start;margin:16px 0 6px}.corewrap{text-align:center}.core{width:58px;height:58px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%);display:grid;place-items:center;background:#24221C}.core i{width:34px;height:34px;border-radius:50%;display:block}.corewrap small{display:block;margin-top:7px;font-family:"JetBrains Mono",monospace;font-size:9px;line-height:1.5;color:var(--mut)}
+.checklist{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 18px;font-size:14px;color:var(--mut)}.checklist label{display:flex;gap:8px;align-items:start;cursor:pointer}.checklist input{accent-color:var(--org);margin-top:3px}
+.approve{border:1px solid rgba(255,154,42,.55);background:linear-gradient(135deg,rgba(255,138,26,.12),rgba(17,26,33,.9) 45%);padding:28px;position:relative;overflow:hidden}
+.stamp{position:absolute;right:28px;top:24px;font-family:Oswald,sans-serif;font-size:28px;letter-spacing:.18em;color:var(--org);border:2px solid var(--org);padding:8px 14px;transform:rotate(-6deg);opacity:0;transition:.2s}.stamp.on{opacity:1}
+footer{padding:34px 4vw 50px;color:#5F737D;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+svg text{font-family:"JetBrains Mono",monospace;fill:#8FA3AB}svg .dim{stroke:#FF9A2A;stroke-width:1}svg .sil{fill:#18262F;stroke:#D8E6EA;stroke-width:1.2}svg .sil2{fill:#3A2018;stroke:#C05A3A;stroke-width:1.2}
+@media(max-width:900px){.top nav{display:none}.specrail{grid-template-columns:repeat(2,auto)}.callouts,.mats,.states{grid-template-columns:repeat(2,1fr)}.grid2,.loop{grid-template-columns:1fr}.checklist{grid-template-columns:1fr}.hero img.main{object-position:62% 50%}.marker em{display:none}.combat-inset{width:52%;bottom:3%}.hero-ui{bottom:62%}}
+@media(max-width:520px){.mats,.callouts,.states{grid-template-columns:1fr}h1{font-size:54px}}
+</style></head>
+<body>
+<!-- HERO / TITLE STATE + COMBAT INSET: both locked cameras in the first viewport -->
+<div class="herowrap"><div class="hero" id="hero">
+<img class="main" src="visual-plan/refs/hero.webp" alt="White and gold courier mech on a wet sky-foundry plinth above a cloud sea at sunset">
+<a class="combat-inset" href="#combat" aria-label="Combat framing — open the full combat panel"><img src="visual-plan/refs/combat.webp" alt="Top-down combat inset: winged white mech releasing a white pulse ring against three rust-red enemies, gold crystals and a red hex danger zone on a wet deck"></a>
+<button class="marker" style="left:70.2%;top:31%" aria-label="Chest core annotation"><em>CHEST CORE Ø0.085H · #FDFDF1 centre · emissive 5 · blooms</em></button>
+<button class="marker" style="left:79%;top:20%" aria-label="Armor annotation"><em>CERAMIC WHITE #E8E6DE · metal .10 · rough .35 · teal shadows</em></button>
+<button class="marker" style="left:56%;top:58%" aria-label="Gun annotation"><em>GUN ARM 0.37H · over-under twins · gunmetal #24221C</em></button>
+<button class="marker" style="left:88.5%;top:34%" aria-label="Vane annotation"><em>1 VISIBLE VANE ≥4 segments · tip 1.02H · 2nd vane inferred / occluded</em></button>
+<button class="marker" style="left:47%;top:36%" aria-label="Arena annotation"><em>ARENA DISC centre 47%,35% · ≥5 rings #FF9A2A · 4–6-line bundles</em></button>
+<div class="hero-ui">
+<h1><span class="p">PULSE</span><span class="b">BREAK</span></h1>
+<div class="rule" style="margin:4px 0 0"></div>
+<div class="hero-note">01 HERO &nbsp;↓ 02 COMBAT INSET · TOP-DOWN 52°</div>
+</div>
+</div></div>
+<div class="herocap"><span>01 · HERO / TITLE (EXACT 3:2, UNCROPPED) — MECH x 52–94% · y 11–93% · HORIZON y≈16% · SUN (15%,11%) → RAYS (35%,30%) · INSET = 02 COMBAT, SAME WORLD · REFERENCE TARGETS — IN-GAME PBR BUILD FOLLOWS APPROVAL</span><span style="display:flex;gap:10px;align-items:center">RAIN ≈75° UL · ~40 EMBERS AT LEGS <button class="notetoggle" data-target="hero" aria-pressed="false">ANNOTATE HERO</button></span></div>
+<header class="top"><div class="logo"><b>PULSE</b>BREAK</div><span class="badge">AAA REDESIGN · FOR APPROVAL</span><nav><a href="#hero">Hero</a><a href="#combat">Combat</a><a href="#materials">Materials</a><a href="#scale">Scale</a><a href="#loop">Loop</a><a href="#approve">Approve</a></nav></header>
+<div class="intro">
+<div class="eyebrow">New visual direction · Realistic 3D · 9/10 target</div>
+<p class="lead" style="margin-top:10px">A winged courier mech steals energy from enemy fire — then turns it into a blast. Painted ceramic armor, wet sky-foundry steel, and a storm-lit cloud sea. Built to read AAA at first glance, and to stay readable in combat.</p>
+<div class="pillars"><span class="pill">PBR HARD-SURFACE</span><span class="pill">ACES FILMIC</span><span class="pill">BLOOM 0.85 / 0.55</span><span class="pill">NO CEL · NO FLAT COLOR</span><span class="pill">CLOUD SEA — NO GROUND</span></div>
+<div class="cta-row"><a class="btn" href="#approve">Review &amp; approve ↓</a><a class="btn ghost" href="#combat">See it in combat</a></div>
+<div class="specrail"><div><small>Grade</small><strong>TEAL × ORANGE · ACES</strong></div><div><small>Camera</small><strong>35 MM · ¾ FRONT-LEFT</strong></div><div><small>Mech height</small><strong>6.0 M = 1.0 H</strong></div><div><small>Surface</small><strong>WHITE 60 · DARK 30 · GOLD 10</strong></div></div>
+</div>
+
+<section id="combat">
+<div class="sec-head"><div><div class="kicker">02 · Gameplay camera — oblique top-down ≈52° · FOV 45° · deck axis −30°</div><h2>Combat <span>reads instantly</span></h2></div><p>White/gold is only you. Rust-red is only the enemy. Saturated red is only danger. Gold diamonds are only pickups. The grade never breaks the code — even mid-pulse, at a glance, at speed.</p></div>
+<div class="panel" id="combatPanel">
+<img src="visual-plan/refs/combat.webp" alt="Top-down combat: winged white mech releasing a white pulse ring against rust-red enemies on a wet deck">
+<div class="hudline top2"><span class="seg teal" style="left:1.8%;width:14.3%"></span></div>
+<div class="hudline bot2"><span class="seg wht" style="left:1.8%;width:4.7%"></span><span class="seg org" style="right:9%;width:9.4%"></span><span class="seg teal" style="right:1.8%;width:7.3%"></span></div>
+<span class="hudlab" style="left:1.8%;top:3.2%">Charge · page-added</span><span class="hudlab" style="right:1.8%;top:3.2%">Sector · page-added</span>
+<span class="hudlab" style="left:1.8%;bottom:4%">Hull · page-added</span><span class="hudlab" style="right:1.8%;bottom:4%">Score · page-added</span>
+<button class="marker" style="left:48%;top:48%" aria-label="Pulse ring"><em>PULSE RING #F2F7FA · Ø11m max · ellipse ratio .80 · brightest in frame</em></button>
+<button class="marker" style="left:65%;top:62%" aria-label="Danger zone"><em>DANGER #E5384A @35% · hex Ø0.4m on SE 40% only · under mechs</em></button>
+<button class="marker" style="left:82%;top:25%" aria-label="Enemy"><em>ENEMY rust #9C4028 only · 1 rectangular visor · triple + single guns</em></button>
+<button class="marker" style="left:9%;top:31%" aria-label="Crystal"><em>CRYSTAL #FFD75E core #FFFBE1 · 5 pads: 4 full + 1 empty inlay</em></button>
+</div>
+<div class="herocap" style="padding:10px 0 0"><span>02 · COMBAT PANEL — MARKERS + HUD LABELS HIDDEN BY DEFAULT</span><button class="notetoggle" data-target="combatPanel" aria-pressed="false">ANNOTATE COMBAT</button></div>
+<div class="callouts">
+<div class="callout"><b><span class="dot"></span>PULSE RING</b><p>Near-white rim <span class="mono">#F2F7FA</span>, expanding from the release point — not snapped to the player. ≥40 radial streaks per quadrant.</p></div>
+<div class="callout"><b><span class="dot" style="background:var(--red);box-shadow:0 0 10px var(--red)"></span>DANGER ZONE</b><p>Translucent crimson sector, ~150px beyond the ring to the SE. Smooth NW, hex grid SE. Flat on deck, under every mech.</p></div>
+<div class="callout"><b><span class="dot"></span>TRACERS ×~15</b><p>Dark-copper slug, dark nose, orange flame at the rear <span class="mono">#E58B38</span>. Readable in a still — no motion cue needed. 4-point muzzle star Ø~60px.</p></div>
+<div class="callout"><b><span class="dot" style="background:#FFD75E;box-shadow:0 0 10px #FFD75E"></span>CRYSTALS ×5 PADS</b><p>4 gold octahedra on 1m pads + 1 empty diamond inlay at (365,670). The only gold-diamond silhouette in the game.</p></div>
+<div class="callout"><b><span class="dot" style="background:var(--rust);box-shadow:0 0 10px var(--rust)"></span>ENEMIES ×3 +1 EDGE</b><p>Boxy rust bruisers, 2 legs, 2 shoulder blocks. Crates stay gunmetal so rust always means enemy. Propeller: 13 blades, top-right, cropped.</p></div>
+</div>
+<p class="mono" style="margin-top:10px;color:var(--mut)">REFERENCE TARGET — IN-GAME PBR BUILD FOLLOWS APPROVAL &nbsp;|&nbsp; HUD = hairlines only · full-width 1px at y≈28 &amp; y≈1245 (1920×1280) · TL teal x35–310 · BR orange ~180px + teal ~140px · BL white ~90px · all labels page-added 11–13px letterspaced caps · no panels, no boxes &nbsp;|&nbsp; TILT PROXY square grate ≈170×95px (0.56) &nbsp;|&nbsp; DASH WAKE ~900×250px toward TL, travel SE, never covers player or ring rim</p>
+</section>
+
+<section id="materials">
+<div class="sec-head"><div><div class="kicker">03 · Materials — every hex from the locked palette</div><h2>Real surfaces, <span>not flat fills</span></h2></div><p>Chipped paint on leading edges. Oil under joints. Wet streak reflections. Panel seams at 2–4px. If a surface has no light response, it does not ship.</p></div>
+<div class="mats">
+<div class="mat"><div class="sw white"></div><div class="info"><b>CERAMIC WHITE ARMOR</b><p><span class="mono">#E8E6DE</span> · metal 0.10 · rough 0.35<br>Lit #A8B2AE–#D8DEDA · shadow teal #5F828A–#7E9AA0</p></div></div>
+<div class="mat"><div class="sw gun"></div><div class="info"><b>GUNMETAL FRAME</b><p><span class="mono">#24221C–#2E2E30</span> · metal 0.85 · rough 0.45<br>Joints, gun, crates — never rust-brown</p></div></div>
+<div class="mat"><div class="sw brass"></div><div class="info"><b>BRASS-GOLD TRIM</b><p><span class="mono">#B08A45</span> lit #DCAC70 · metal 1.0 · rough 0.30<br>Piping, joint discs Ø0.065H, waist hoses</p></div></div>
+<div class="mat"><div class="sw rust"></div><div class="info"><b>ENEMY RUST</b><p><span class="mono">#9C4028</span> · metal 0.40 · rough 0.60<br>Heavy edge wear, scorch — enemies only</p></div></div>
+<div class="mat"><div class="sw deck"></div><div class="info"><b>WET DECK STEEL</b><p><span class="mono">#111A21–#1E2A34</span> · metal 0.70 · rough 0.25<br>Mirror shins + toe contact shadow · ≥6 oil-sheen puddles</p></div></div>
+<div class="mat"><div class="sw emis"></div><div class="info"><b>EMISSIVE ORANGE</b><p><span class="mono">#FF8A1A / #FF9A2A</span> · strength 2.5–5<br>Core, vents, eyes, circuits — every glow is orange/gold</p></div></div>
+</div>
+</section>
+
+<section id="scale">
+<div class="sec-head"><div><div class="kicker">04 · Proportion sheet — the only place enemy height is judged</div><h2>Built to <span>measure</span></h2></div><p>Player 1.0H (6.0m, feet to head-top; vane tip 1.02H excluded). Enemy 0.62H and wider — a walking turret next to a raptor. Drift tolerance: 5%.</p></div>
+<div class="grid2">
+<div class="card"><h3>Player <span>1.0H</span> vs Enemy <span>0.62H</span></h3>
+<svg viewBox="0 0 660 380" width="100%" role="img" aria-label="Proportion diagram player versus enemy">
+<line x1="86" y1="20" x2="86" y2="340" stroke="#2B585F" stroke-width="2"/>
+<text x="4" y="26" font-size="10">1.02H vane tip</text><text x="10" y="50" font-size="10">1.00H head-top</text><text x="10" y="192" font-size="10">0.52H waist</text><text x="34" y="344" font-size="10">0 · feet</text>
+<line class="dim" x1="86" y1="44" x2="250" y2="44"/><line class="dim" x1="86" y1="186" x2="250" y2="186"/><line class="dim" x1="86" y1="340" x2="250" y2="340"/>
+<polygon points="224,18 240,18 250,178 236,178" fill="#8A6B33" stroke="#DCAC70"/>
+<polygon class="sil" points="168,48 196,44 206,58 198,74 214,84 222,120 214,186 226,340 202,340 192,258 180,340 156,340 164,186 150,110 158,76 176,66"/>
+<polygon points="150,110 122,196 134,204 162,140" fill="#24221C" stroke="#8FA3AB"/>
+<circle cx="188" cy="118" r="10" fill="#FF8A1A"/><circle cx="188" cy="118" r="4" fill="#FDFDF1"/>
+<circle cx="166" cy="196" r="6" fill="none" stroke="#DCAC70" stroke-width="2"/><circle cx="212" cy="196" r="6" fill="none" stroke="#DCAC70" stroke-width="2"/>
+<text x="262" y="62" font-size="11">head 0.16H · slit + dot</text><text x="262" y="122" font-size="11">core Ø0.085H</text><text x="262" y="162" font-size="11">chest 0.34H → waist 0.20H</text><text x="262" y="262" font-size="11">legs 0.52H (.26 + .26)</text><text x="262" y="322" font-size="11">gun 0.37H · discs Ø0.065H</text>
+<line class="dim" x1="250" y1="118" x2="260" y2="118"/><line class="dim" x1="232" y1="258" x2="260" y2="258"/>
+<text x="452" y="140" font-size="11">ENEMY 0.62H · wide 0.55H*</text>
+<polygon class="sil2" points="478,150 518,150 524,168 560,168 568,150 596,150 604,214 590,340 564,340 552,272 540,340 514,340 502,216 484,180"/>
+<rect x="522" y="178" width="40" height="11" fill="#FF8A1A"/>
+<line class="dim" x1="452" y1="150" x2="620" y2="150"/><line class="dim" x1="452" y1="340" x2="620" y2="340"/>
+<text x="452" y="362" font-size="10">2 legs · 2 shoulder blocks · 1 visor · *sheet scale</text>
+</svg></div>
+<div class="card"><h3>Anatomy <span>checklist</span></h3><table>
+<tr><th>Part</th><th>Spec</th></tr>
+<tr><td>Head</td><td>Raptor, 0.16H long, ≥4 crest plates, 1 diagonal orange slit + 1 dot — never chibi</td></tr>
+<tr><td>Chest</td><td>≥5 layered plates · brass vent ~0.11H, dark slats, exactly 1 orange dot</td></tr>
+<tr><td>Shoulders</td><td>Asymmetric: right 0.18H angular + brass box vent · left 0.13H rounder</td></tr>
+<tr><td>Arms</td><td>Right = gun only · Left 0.12H shell, dark fingers, small brass knuckle rings</td></tr>
+<tr><td>Wings (combat)</td><td>Left 2 blades + ≥5 feathers · right 2–3 spikes + gold tail fin · gold top / white under · ≈700px ≈2.8× body</td></tr>
+<tr><td>Feet</td><td>3 toe segments · rear heel raised, toe-only contact · front foot flat</td></tr>
+<tr><td>Surface ratio</td><td>White : Dark : Gold ≈ 60 : 30 : 10 (sampled pixels, ±5pts, emissive excluded)</td></tr>
+</table></div>
+</div>
+</section>
+
+<section id="loop">
+<div class="sec-head"><div><div class="kicker">05 · Core loop — steal fire, spend fire</div><h2>Dash. Absorb. <span>Break.</span></h2></div><p>Weapons auto-fire — there is no aim button to learn. Skill is movement: where you dash, when you release, what you risk for one more charge.</p></div>
+<div class="loop">
+<div class="loopcard"><img src="visual-plan/refs/combat.webp" style="object-position:18% 62%" alt="Dash through tracers"><div class="txt"><div class="num">01</div><h3>DASH THROUGH FIRE</h3><p>Shift / Space-tap through orange tracers to absorb them. Each shot becomes charge — <b>12 gold sparks + 120ms core flare</b>.</p></div></div>
+<div class="loopcard"><img src="visual-plan/refs/combat.webp" style="object-position:50% 48%" alt="Pulse release"><div class="txt"><div class="num">02</div><h3>RELEASE THE PULSE</h3><p>Space hold-release. Ring scales with stored charge to Ø11m in <b>450ms ease-out cubic</b> · 6px shake / 200ms · deck flare +150% / 300ms.</p></div></div>
+<div class="loopcard"><img src="visual-plan/refs/hero.webp" style="object-position:62% 30%" alt="Glide and collect"><div class="txt"><div class="num">03</div><h3>GLIDE · COLLECT · PUSH ON</h3><p>Ctrl / A to jump, hold to glide over danger. Bank gold crystals, install upgrades at the checkpoint, push to the next sector — or bank the score.</p></div></div>
+</div>
+<div class="grid2" style="margin-top:12px">
+<div class="card"><h3>Controls <span>· printed on HUD</span></h3><table>
+<tr><th>Action</th><th>Keyboard</th><th>Gamepad</th></tr>
+<tr><td>Move</td><td>WASD</td><td>Left stick</td></tr>
+<tr><td>Dash (absorb)</td><td>Shift / Space-tap → movement</td><td>—</td></tr>
+<tr><td>Pulse</td><td>Space hold-release (charge on core)</td><td>—</td></tr>
+<tr><td>Jump / Glide</td><td>Ctrl, hold to glide</td><td>A, hold to glide</td></tr>
+<tr><td>Fire</td><td colspan="2">Auto-fire — no aim control is ever shown</td></tr></table>
+<p class="mono" style="margin-top:10px;color:var(--mut)">CAMERA follow 0.15s lag · 2m look-ahead · flight pose body ≈35° to deck, arms tucked, 1 leg dangling</p></div>
+<div class="card"><h3>Motion <span>· printed values (AC-18)</span></h3><table>
+<tr><td>Absorb</td><td>12 sparks · core flare 120ms</td></tr>
+<tr><td>Pulse</td><td>450ms ease-out cubic · 6px shake decaying 200ms · deck flare +150% for 300ms</td></tr>
+<tr><td>Dash wake</td><td>fade 250ms</td></tr>
+<tr><td>Enemy hit / Hurt</td><td>white flash 80ms + 20 sparks · red vignette 200ms (edges only)</td></tr>
+<tr><td>Idle</td><td>flight bob 0.04H at 1.2Hz · grounded shift 0.01H at 0.4Hz · wings ±8° banking</td></tr>
+<tr><td>World</td><td>crystal 45°/s + bob 0.1m at 0.8Hz · 1 fan per framing at 6°/s · smoke 1.5m/s → · core full throb 1.2Hz ±15%</td></tr></table></div>
+</div>
+</section>
+
+<section id="states">
+<div class="sec-head"><div><div class="kicker">06 · States — title · combat · checkpoint · game over</div><h2>Every screen, <span>same world</span></h2></div><p>No menu art that lies about the game. Title is the hero framing. Game over is the same deck, the same mech — kneeling, core dark.</p></div>
+<div class="states">
+<div class="state"><div class="kicker">Title</div><h3>Hero framing</h3><p>Wordmark <span class="mono">PULSEBREAK</span> 96px at 1920 wide, <span class="mono">PULSE #FF9A2A</span> + <span class="mono">#D8E6EA</span> at 92%, baseline y≈88%, left edge x=4%, 1px hairline under. No box. Soft scrim behind type only.</p><p class="mono">↑ Section 01 is this state</p></div>
+<div class="state"><div class="kicker">Checkpoint</div><h3>Pylon arch</h3>
+<svg viewBox="0 0 200 120" width="100%"><rect x="35" y="18" width="16" height="88" fill="#2E2E30" stroke="#D8E6EA"/><rect x="149" y="18" width="16" height="88" fill="#2E2E30" stroke="#D8E6EA"/><rect x="35" y="10" width="130" height="12" fill="#24221C" stroke="#B08A45"/><rect x="54" y="34" width="5" height="16" fill="#FF8A1A"/><rect x="54" y="56" width="5" height="16" fill="#FF8A1A"/><rect x="54" y="78" width="5" height="16" fill="#FF8A1A"/><polygon points="100,92 114,104 100,116 86,104" fill="#FFD75E"/></svg>
+<p>1.20H × 0.55H open doorway · white outer cladding, brass trim · <b>3 orange charge slots</b> light as upgrades install · gold-diamond pad below. No other object uses this silhouette.</p></div>
+<div class="state"><div class="kicker">Core charge · 0 / 1 / 2 / 3+</div><h3>Charge you can read</h3>
+<div class="cores">
+<div class="corewrap"><div class="core"><i style="background:#7A3A10"></i></div><small>0<br>#7A3A10 · str 1<br>no bloom</small></div>
+<div class="corewrap"><div class="core"><i style="background:#F5C27A;box-shadow:0 0 14px #FF8A1A"></i></div><small>1<br>#F5C27A · str 3</small></div>
+<div class="corewrap"><div class="core"><i style="background:#FDFDF1;box-shadow:0 0 18px #FFB03A"></i></div><small>2<br>#FDFDF1 · str 4<br>1 pip lit</small></div>
+<div class="corewrap"><div class="core"><i style="background:#FDFDF1;box-shadow:0 0 26px #FFD75E,0 0 50px #FF8A1A"></i></div><small>3+ FULL<br>str 5 · blooms<br>2 pips lit</small></div>
+</div><p style="margin-top:14px">Full = blooming near-white centre, both brass bezel pips lit, 1.2Hz throb ±15%. Try it: <button class="btn ghost" id="chargeBtn" style="padding:7px 12px;font-size:12px">Cycle charge →</button> <span class="mono" id="chargeLab">state 3+ FULL</span></p></div>
+<div class="state"><div class="kicker">Game over</div><h3>Kneeling, core dark</h3><p>Right knee down, left foot flat (3 toes), head bowed. Gun lowered — muzzles 0.05H above deck, pointing frame-left. Left fist on thigh. Vanes drooped to deck level.</p><p>Core centre <span class="mono">#1A0F08</span> at emissive 0 — no bloom. Overlay: SCORE · BEST · <span class="mono">R / Enter to retry</span> in HUD type. No panels.</p></div>
+</div>
+</section>
+
+<section id="approve">
+<div class="sec-head"><div><div class="kicker">07 · Acceptance — AC-01 → AC-19 + AC-final · judge the render, not the code</div><h2>Approve the <span>direction</span></h2></div><p>Compare §01 side-by-side 50/50 with hero.png and §02 with combat.png at 1920 wide. Sign-off requires every box ticked: same mech, same arena, same grade.</p></div>
+<div class="approve"><div class="stamp" id="stamp">APPROVED ✓</div>
+<div class="checklist" id="checks">
+<label><input type="checkbox"> AC-01 Proportions: head .16H · chest .34H→waist .20H · legs 52%</label>
+<label><input type="checkbox"> AC-02 White:Dark:Gold 60:30:10 · ≥5 chest plates · 6 visible discs Ø.065H</label>
+<label><input type="checkbox"> AC-03 Hex core Ø.085H #FDFDF1 blooms · brass vent, 1 dot</label>
+<label><input type="checkbox"> AC-04 Over-under gun .37H · dark-finger fist · no 2nd weapon</label>
+<label><input type="checkbox"> AC-05 Hero 1 vane + inferred 2nd · combat wings ≥5 pts, gold/white</label>
+<label><input type="checkbox"> AC-06 Armor #E8E6DE · lit & teal-shadow bands · no pink</label>
+<label><input type="checkbox"> AC-07 Hero framing x52–94% y11–93% · horizon 16% · disc (47,35)</label>
+<label><input type="checkbox"> AC-08 ≥5 rings in bundles · plinth props · 12-blade fan (66.7,10.9)</label>
+<label><input type="checkbox"> AC-09 Cloud sea ≥40% · sun (15,11) · rain 75° · ~40 embers</label>
+<label><input type="checkbox"> AC-10 Warm L key, long R shadows · wet mirror + toe shadow</label>
+<label><input type="checkbox"> AC-11 Combat cam 52° · grate 170×95 · axis −30° · 13-blade prop</label>
+<label><input type="checkbox"> AC-12 Rust = enemies only · 1 visor · 3 full +1 edge allowed</label>
+<label><input type="checkbox"> AC-13 Ring brightest · ratio .80 · ≥40 streaks / quadrant</label>
+<label><input type="checkbox"> AC-14 Danger sector · hex SE 40% only · under mechs</label>
+<label><input type="checkbox"> AC-15 ~15 slugs + rear flame · muzzle star Ø60px · still-readable</label>
+<label><input type="checkbox"> AC-16 5 pads: 4 crystals + 1 empty inlay (365,670)</label>
+<label><input type="checkbox"> AC-17 HUD hairlines only · exact segments · labels page-added</label>
+<label><input type="checkbox"> AC-18 All motion values printed verbatim (§05)</label>
+<label><input type="checkbox"> AC-19 Checkpoint 1.20×.55H · lockup 96px y88% x4% · kneel · cores 0–3+</label>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:24px">
+<button class="btn" id="approveBtn">Approve this direction</button>
+<button class="btn ghost" id="reviseBtn">Request revision</button>
+<span class="mono" id="signline" style="color:var(--mut)">AC-FINAL · NAMED REVIEWER (PROJECT OWNER): ______________________ &nbsp; DATE: __________ &nbsp; <span id="count">0 / 19 ticked</span></span>
+</div>
+<p id="verdict" style="margin-top:14px;font-size:18px;color:#FFD9A8">Tick the checklist against the two reference panels above, then sign. One viewing, one decision — then we build it in-game.</p>
+</div>
+</section>
+<footer><span>PULSEBREAK · AAA REDESIGN APPROVAL · design-aaa.html · REFS hero.webp 236KB / combat.webp 335KB (PNG ORIGINALS NEVER EMBEDDED)</span><span>ACES · sRGB · BLOOM .85/.55 · ≤250K TRI · ≤40 DRAWS · 60FPS @1440×960 TARGET</span></footer>
+<script>
+const boxes=[...document.querySelectorAll('#checks input')],count=document.getElementById('count'),stamp=document.getElementById('stamp'),verdict=document.getElementById('verdict');
+function upd(){const n=boxes.filter(b=>b.checked).length;count.textContent=n+' / 19 ticked';if(n<19){stamp.classList.remove('on')}}
+boxes.forEach(b=>b.addEventListener('change',upd));
+document.getElementById('approveBtn').addEventListener('click',()=>{const n=boxes.filter(b=>b.checked).length;if(n===19){stamp.textContent='APPROVED ✓';stamp.classList.add('on');verdict.textContent='✓ Approved — all 19 criteria ticked. This direction is locked for the in-game build.'}else{verdict.textContent='Not yet — '+(19-n)+' criteria unticked. AC-final requires every AC-01–AC-19 box ticked before sign-off.';stamp.classList.remove('on')}});
+document.getElementById('reviseBtn').addEventListener('click',()=>{stamp.textContent='REVISE';stamp.classList.add('on');verdict.textContent='Revision requested — note which AC numbers failed and what should change, then this page gets one revision pass.'});
+const states=[['0 · EMPTY','#7A3A10','none'],['1 · CHARGED','#F5C27A','0 0 14px #FF8A1A'],['2 · +1 PIP','#FDFDF1','0 0 18px #FFB03A'],['3+ · FULL','#FDFDF1','0 0 26px #FFD75E,0 0 50px #FF8A1A']];let ci=3;
+document.getElementById('chargeBtn').addEventListener('click',()=>{ci=(ci+1)%4;document.querySelectorAll('.core i').forEach((el,i)=>{el.style.opacity=i<=ci?1:.25});document.getElementById('chargeLab').textContent='state '+states[ci][0]});
+upd();
+document.querySelectorAll('.notetoggle').forEach(b=>b.addEventListener('click',()=>{const host=document.getElementById(b.dataset.target)||b.closest('.hero,.panel');if(!host)return;const on=host.classList.toggle('show-notes');b.setAttribute('aria-pressed',on);b.textContent=on?'HIDE NOTES':(b.dataset.target==='hero'?'ANNOTATE HERO':'ANNOTATE COMBAT')}));
+</script>
+</body></html>
+
+
