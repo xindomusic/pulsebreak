@@ -4,10 +4,10 @@ const Art = preload("res://scripts/art.gd")
 const Traversal = preload("res://scripts/traversal.gd")
 const Palette = preload("res://scripts/palette.gd")
 static var PROFILES := {
-	"kinetic":{"name":"VECTOR CARBINE","short":"CARBINE","role":"RAPID FIRE","damage":14.0,"interval":0.28,"speed":29.0,"range":10.0,"color":Palette.WEAPON_ICE,"description":"Fast focused slugs. Rank III adds penetration; rank V fires paired rounds."},
-	"scatter":{"name":"SHATTER CANNON","short":"SHATTER","role":"CLOSE-RANGE SPREAD","damage":9.0,"interval":0.75,"speed":22.0,"range":8.5,"color":Palette.WEAPON_AMBER,"description":"Five heavy pellets in a wide cone. Rank III fires seven; rank V adds explosive pellet impacts."},
-	"arc":{"name":"ARC RELAY","short":"ARC RELAY","role":"CHAIN DISCHARGE","damage":24.0,"interval":0.62,"speed":24.0,"range":10.0,"color":Palette.WEAPON_ELECTRIC,"description":"An ion bolt chains to nearby machines. Ranks III and V add targets and longer jump reach."},
-	"plasma":{"name":"NOVA LANCE","short":"NOVA LANCE","role":"PIERCING PLASMA","damage":55.0,"interval":0.95,"speed":19.0,"range":13.0,"color":Palette.WEAPON_PLASMA,"description":"A heavy plasma core pierces a line of machines. Rank III adds blast damage; rank V widens the blast."}
+	"kinetic":{"name":"VECTOR CARBINE","short":"CARBINE","role":"RAPID FIRE","damage":14.0,"interval":0.28,"speed":29.0,"range":10.0,"color":Palette.WEAPON_ICE,"description":"Fast focused slugs. Rank III adds penetration; rank V fires paired rounds and every 3rd volley adds a piercing RAIL LANCE at 240% damage."},
+	"scatter":{"name":"SHATTER CANNON","short":"SHATTER","role":"CLOSE-RANGE SPREAD","damage":9.0,"interval":0.75,"speed":22.0,"range":8.5,"color":Palette.WEAPON_AMBER,"description":"Five heavy pellets in a wide cone. Rank III fires seven; rank V pellets explode in wide FLAK bursts."},
+	"arc":{"name":"ARC RELAY","short":"ARC RELAY","role":"CHAIN DISCHARGE","damage":24.0,"interval":0.62,"speed":24.0,"range":10.0,"color":Palette.WEAPON_ELECTRIC,"description":"An ion bolt chains to nearby machines. Rank V becomes the STORM COIL: five jumps, and chain kills refund pulse energy."},
+	"plasma":{"name":"NOVA LANCE","short":"NOVA LANCE","role":"PIERCING PLASMA","damage":55.0,"interval":0.95,"speed":19.0,"range":13.0,"color":Palette.WEAPON_PLASMA,"description":"A heavy plasma core pierces a line of machines. Rank V cores HUNT: they steer into the nearest machine and burst wider."}
 }
 const MAX_PROJECTILES := 80
 var game: Node3D
@@ -53,6 +53,7 @@ func offer(id: String) -> Dictionary:
 	var new_damage: float=base*(1.0+0.22*mini(rank,4))*(1.0+0.025*overclocks)
 	var benefit: String="%.1f DAMAGE · %.2fs BETWEEN SHOTS" % [new_damage,float(PROFILES[id].interval)] if rank==0 else "DAMAGE %.1f → %.1f PER HIT" % [old_damage,new_damage] if rank<5 else "ARMORY POWER +%.1f%% → +%.1f%%" % [overclocks*2.5,(overclocks+1)*2.5] if overclocks<10 else "REPAIR 30 HULL & EQUIP THIS WEAPON"
 	if id=="scatter" and rank<5: benefit+=" · PER PELLET"
+	if rank==4: benefit+=" · EVOLUTION AT RANK V"
 	return {"name":PROFILES[id].name,"family":PROFILES[id].role,"description":PROFILES[id].description,"action":action,"benefit":benefit,"color":PROFILES[id].color,"rank":rank,"damage":new_damage,"interval":float(PROFILES[id].interval),"range":float(PROFILES[id].range)}
 
 static func roman(rank: int) -> String: return ["—","I","II","III","IV","V"][clampi(rank,0,5)]
@@ -109,6 +110,13 @@ func fire(target: Node3D) -> bool:
 		var penetration:=4 if mode=="plasma" and tier()>=5 else 3 if mode=="plasma" else 2 if mode=="kinetic" and tier()>=3 else 1
 		projectiles.append({"node":bolt,"velocity":shot_direction*float(profile.speed),"range":float(profile.range),"damage":float(profile.damage)*damage_scale(),"mode":mode,"tier":tier(),"pierce":penetration,"struck":[]})
 	shots_fired+=1
+	if mode=="kinetic" and tier()>=5 and shots_fired%3==0 and projectiles.size()<MAX_PROJECTILES:
+		var lance: Node3D=game.weapon_fx.create_bolt(mode,tier())
+		add_child(lance)
+		lance.position=at
+		lance.scale=Vector3.ONE*1.75
+		lance.quaternion=Quaternion(Vector3.BACK,direction)
+		projectiles.append({"node":lance,"velocity":direction*float(profile.speed)*1.3,"range":float(profile.range)*1.2,"damage":float(profile.damage)*damage_scale()*2.4,"mode":mode,"tier":tier(),"pierce":99,"struck":[]})
 	Art.recoil_weapon(game.player_node,1.0 if mode in ["plasma","scatter"] else 0.45)
 	game.weapon_fx.muzzle(at,direction,mode)
 	game.cue(mode+"_fire",0.82)
@@ -119,6 +127,17 @@ func update(delta: float) -> void:
 	for index in range(projectiles.size()-1,-1,-1):
 		var shot: Dictionary=projectiles[index]
 		var node: Node3D=shot.node
+		if shot.mode=="plasma" and int(shot.tier)>=5:
+			var hunt: Node3D=null
+			var hunt_d:=9.0
+			for enemy in game.enemies:
+				if not is_instance_valid(enemy) or enemy.dead or enemy.spawning>0 or enemy.get_instance_id() in shot.struck: continue
+				var gap: float=enemy.position.distance_to(node.position)
+				if gap<hunt_d: hunt_d=gap; hunt=enemy
+			if is_instance_valid(hunt):
+				var want: Vector3=((hunt.position+Vector3(0,0.85,0))-node.position).normalized()
+				shot.velocity=shot.velocity.normalized().slerp(want,clampf(delta*4.5,0.0,1.0)).normalized()*shot.velocity.length()
+				node.quaternion=Quaternion(Vector3.BACK,shot.velocity.normalized())
 		var from: Vector3=node.position
 		var travel: float=minf(float(shot.range),shot.velocity.length()*delta)
 		var to: Vector3=from+shot.velocity.normalized()*travel
@@ -155,6 +174,15 @@ func update(delta: float) -> void:
 			if shot.pierce<=0: break
 		shot.range=maxf(0,float(shot.range)-travel)
 		node.position=end
+		var fin: Node3D = node.get_node_or_null("FinRing") as Node3D
+		if fin: fin.rotation.z += delta*10.0
+		var halo: Node3D = node.get_node_or_null("Halo") as Node3D
+		if halo: halo.scale = Vector3(0.17,0.17,0.42) * (1.0 + 0.14*float(shot.tier)) * (1.0 + sin(Time.get_ticks_msec()*0.03 + float(index))*0.10)
+		var trail_t: float=float(shot.get("trail_t",0.0))+delta
+		if trail_t>=0.035:
+			trail_t=0.0
+			game.weapon_fx.trail_puff(end,shot.mode,0.75+0.14*float(shot.tier))
+		shot.trail_t=trail_t
 		if shot.pierce<=0 or occluded or shot.range<=0 or absf(end.x)>19 or absf(end.z)>19:
 			if occluded: game.weapon_fx.impact(end,-shot.velocity.normalized(),shot.mode,0.45)
 			node.queue_free()
@@ -163,7 +191,7 @@ func update(delta: float) -> void:
 func chain_hit(first: Node3D, shot: Dictionary) -> void:
 	var source: Node3D=first
 	var chained: Array=[first.get_instance_id()]
-	var jumps:=4 if shot.tier>=5 else 3 if shot.tier>=3 else 2
+	var jumps:=5 if shot.tier>=5 else 3 if shot.tier>=3 else 2
 	for jump in range(jumps):
 		var target: Node3D=null
 		var distance:=5.0 if shot.tier>=5 else 3.8
@@ -178,11 +206,13 @@ func chain_hit(first: Node3D, shot: Dictionary) -> void:
 		chained.append(target.get_instance_id())
 		game.weapon_fx.arc_link(source.position+Vector3(0,0.85,0),target.position+Vector3(0,0.85,0),shot.tier)
 		target.take_hit(shot.damage*pow(0.78,jump+1),false,(target.position-source.position).normalized(),"arc")
-		if target.dead: kills+=1
+		if target.dead:
+			kills+=1
+			if shot.tier>=5: game.rules.energy=minf(100.0,game.rules.energy+3.0)
 		source=target
 
 func blast(at: Vector3, shot: Dictionary, primary: Node3D) -> void:
-	var radius:=2.0 if shot.mode=="plasma" and shot.tier>=5 else 1.25
+	var radius:=2.0 if shot.mode=="plasma" and shot.tier>=5 else 1.65 if shot.mode=="scatter" and shot.tier>=5 else 1.25
 	game.weapon_fx.impact(at,Vector3.UP,shot.mode,1.3)
 	for enemy in game.enemies:
 		if enemy==primary or enemy.dead or enemy.spawning>0: continue

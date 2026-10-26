@@ -6,7 +6,7 @@ const Field = preload("res://scripts/combat_field.gd")
 const HUD = preload("res://scripts/hud.gd")
 const Palette = preload("res://scripts/palette.gd")
 const Updater = preload("res://scripts/updater.gd")
-const APP_VERSION := "1.4.3"
+const APP_VERSION := "2.0.0"
 const Traversal = preload("res://scripts/traversal.gd")
 const Campaign = preload("res://scripts/campaign.gd")
 const Weapons = preload("res://scripts/weapons.gd")
@@ -53,7 +53,7 @@ var dash_direction := Vector3.FORWARD
 var dash_hit: Array = []
 var enemies: Array = []
 var boss_ref: Node3D
-var camera_home := Vector3(0,24,29)
+var camera_home := Vector3(0,26,26)
 var camera: Camera3D
 var key_light: DirectionalLight3D
 var pulse_light: OmniLight3D
@@ -212,6 +212,7 @@ func setup_updater(args: Array) -> void:
 		updater.check_latest()
 
 func _process(_delta: float) -> void:
+	Art.animate_backdrop(_delta)
 	var now := Time.get_ticks_usec()
 	if qa_mode and not qa_simulation and state in ["run","boss"] and qa_last_frame_usec>0 and run_time>3:
 		var frame_ms := float(now-qa_last_frame_usec)/1000.0
@@ -234,44 +235,56 @@ func setup_world() -> void:
 	var env := Environment.new()
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color("0d1219")
-	sky_material.sky_horizon_color = Color("375667")
+	sky_material.sky_top_color = Color("0a2233")
+	sky_material.sky_horizon_color = Color("6d7f78")
 	# The surround is a dim gradient, not flat void: the deck reads as an
 	# object staged in space.
-	sky_material.ground_bottom_color = Color("1e2a38")
-	sky_material.ground_horizon_color = Color("3d5468")
-	sky_material.sky_curve = 0.2
+	sky_material.ground_bottom_color = Color("14202a")
+	sky_material.ground_horizon_color = Color("46606a")
+	sky_material.sky_curve = 0.12
 	sky.sky_material = sky_material
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.55
+	env.ambient_light_energy = 0.75
+	env.background_energy_multiplier = 1.45
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.glow_enabled = true
-	env.glow_intensity = 0.25
-	env.glow_strength = 0.9
-	env.glow_bloom = 0.12
+	env.glow_intensity = 0.35
+	env.glow_strength = 1.1
+	env.glow_bloom = 0.18
+	env.ssao_enabled = true
+	env.ssao_radius = 1.2
+	env.ssao_intensity = 1.6
+	env.ssr_enabled = true
+	env.ssr_max_steps = 48
+	env.volumetric_fog_enabled = true
+	env.volumetric_fog_density = 0.008
+	env.volumetric_fog_albedo = Color("33505c")
+	env.volumetric_fog_sky_affect = 0.35
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.06
 	env.adjustment_saturation = 0.98  # Mobile renderer has no SSAO; grounding comes from shadows + grain
 	env.fog_enabled = true
-	env.fog_light_color = Color("142344")
-	env.fog_density = 0.0015
+	env.fog_light_color = Color("1d3238")
+	env.fog_mode = Environment.FOG_MODE_DEPTH
+	env.fog_depth_begin = 42.0
+	env.fog_depth_end = 100.0
 	world.environment = env
 	world_environment = env
 	add_child(world)
 	key_light = DirectionalLight3D.new()
 	key_light.rotation_degrees = Vector3(-58,-28,0)
-	key_light.light_color = Color("f4f2ec")
-	key_light.light_energy = 1.45
+	key_light.light_color = Color("ffd9a8")
+	key_light.light_energy = 1.78
 	key_light.shadow_enabled = true
 	key_light.directional_shadow_max_distance = 90
 	add_child(key_light)
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-35,55,0)
-	fill.light_color = Color("cfd8de")
-	fill.light_energy = 0.35
+	fill.light_color = Color("7fa3ab")
+	fill.light_energy = 0.45
 	fill.shadow_enabled = false
 	add_child(fill)
 	var rim := DirectionalLight3D.new()
@@ -287,12 +300,12 @@ func setup_world() -> void:
 	pulse_light.visible = false
 	add_child(pulse_light)
 	camera = Camera3D.new()
-	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-	camera.size = 41
-	camera.position = Vector3(0,27,24)
-	camera.far = 200
+	camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+	camera.fov = 42
+	camera.position = camera_home
+	camera.far = 420
 	add_child(camera)
-	camera.look_at(Vector3.ZERO)
+	camera.look_at(Vector3(0,0,-1.5))
 	camera.current = true
 
 func configure_input() -> void:
@@ -354,23 +367,23 @@ func show_title_scene() -> void:
 	pedestal.position = Vector3(8,0,3)
 	set_sector_lighting(0)
 	player_node.position = Vector3(8,0,3)
-	player_node.scale = Vector3.ONE*5.8
+	player_node.scale = Vector3.ONE*4.6
 	player_node.rotation = Vector3(0,0.35,0)
 	player_node.visible = true
 	player_marker.visible = false
-	camera.size = 34
-	camera.position = Vector3(0,17,29)
+	camera.fov = 40
+	camera.position = Vector3(0,19,38)
 	camera.look_at(Vector3.ZERO)
 
 func set_sector_lighting(index: int) -> void:
-	var colors := [Color("f4f2ec"),Color("f5e3c2"),Color("e2ecf4")]
-	var fogs := [Color("141a20"),Color("211a12"),Color("131b23")]
+	var colors := [Color("ffd9a8"),Color("f5e3c2"),Color("e2ecf4")]
+	var fogs := [Color("1d3238"),Color("33291a"),Color("1b2c38")]
 	key_light.light_color = colors[index]
 	world_environment.fog_light_color = fogs[index]
 	var sky_material: ProceduralSkyMaterial = world_environment.sky.sky_material
-	sky_material.sky_horizon_color = fogs[index].lightened(0.025)
-	sky_material.ground_horizon_color = fogs[index]
-	sky_material.sky_top_color = fogs[index].darkened(0.78)
+	sky_material.sky_horizon_color = fogs[index].lightened(0.22)
+	sky_material.ground_horizon_color = fogs[index].lightened(0.08)
+	sky_material.sky_top_color = fogs[index].darkened(0.30)
 
 func start_campaign(seed: int = -1) -> void:
 	var chosen_seed: int = seed if seed>=0 else 271828 if qa_mode else int(rng.randi())
@@ -479,9 +492,9 @@ func start_run(is_practice: bool = false) -> void:
 	practice_start = Vector3.ZERO
 	player_node.position = Vector3.ZERO
 	player_node.scale = Vector3.ONE * 1.35
-	camera.size = 31.8
+	camera.fov = 42
 	camera.position = camera_home
-	camera.look_at(Vector3.ZERO)
+	camera.look_at(Vector3(0,0,-1.5))
 	player_node.rotation = Vector3.ZERO
 	player_previous = Vector3.ZERO
 	player_velocity = Vector3.ZERO
@@ -748,8 +761,8 @@ func _physics_process(delta: float) -> void:
 	shake = maxf(0,shake-step*2.5)
 	camera.position = camera_home+Vector3(sin(display_time*83),0,cos(display_time*69))*shake*float(settings.shake)
 	camera_punch = maxf(0.0,camera_punch-step*3.0)
-	var camera_base: float = 28.5 if state=="boss" else 31.8
-	camera.size = lerpf(camera.size, camera_base - camera_punch*2.4, minf(1.0,step*3.0))
+	var camera_base: float = 38.0 if state=="boss" else 42.0
+	camera.fov = lerpf(camera.fov, camera_base - camera_punch*3.0, minf(1.0,step*3.0))
 	var boss_hp := 0.0
 	var boss_max := 0.0
 	if is_instance_valid(boss_ref) and not boss_ref.dead:
@@ -894,6 +907,16 @@ func spawn_enemy(kind: String, at: Vector3) -> Node3D:
 	if campaign_active and campaign.sector>=3 and kind!="boss":
 		enemy.hp*=1.0+minf(2.2,float(campaign.sector-2)*0.06)
 		enemy.max_hp=enemy.hp
+	if not campaign_active and kind!="boss":
+		var ramp := minf(1.0, run_time/330.0)
+		enemy.hp *= 1.0 + ramp*0.35
+		enemy.max_hp = enemy.hp
+		enemy.speed *= 1.0 + ramp*0.12
+		if run_time>150 and kind!="mite" and rng.randf()<0.08:
+			enemy.elite=["swift","armored"][rng.randi_range(0,1)]
+			if enemy.elite=="swift": enemy.speed*=1.45
+			elif enemy.elite=="armored": enemy.hp*=1.8; enemy.max_hp=enemy.hp
+			enemy.base_scale=1.6
 	if campaign_active and campaign.sector>=4 and kind not in ["boss","mite"] and rng.randf()<0.14:
 		enemy.elite=["swift","armored","volatile"][rng.randi_range(0,2)]
 		if enemy.elite=="swift": enemy.speed*=1.45
@@ -927,8 +950,8 @@ func update_director(delta: float) -> void:
 			return
 		spawn_timer -= delta
 		if spawn_timer<=0:
-			spawn_timer = maxf(1.65,3.0-float(minute)*0.25)*(0.78 if hard_mode else 1.0)
-			var number := 1 if minute<2 else 2
+			spawn_timer = maxf(1.3,2.85-float(minute)*0.26)*(0.78 if hard_mode else 1.0)
+			var number := 3 if minute>=5 else 2 if minute>=2 else 1
 			for i in range(number):
 				var angle := rng.randf()*TAU
 				var at := Vector3(cos(angle),0,sin(angle))*13.7

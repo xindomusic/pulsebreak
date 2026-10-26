@@ -17,12 +17,12 @@ window/size/min_width=960
 window/size/min_height=600
 
 [rendering]
-renderer/rendering_method="mobile"
+renderer/rendering_method="forward_plus"
 renderer/rendering_method.mobile="mobile"
 rendering_device/driver.macos="metal"
 textures/default_filters/use_nearest_mipmap_filter=false
 textures/vram_compression/import_etc2_astc=true
-anti_aliasing/quality/msaa_3d=1
+anti_aliasing/quality/msaa_3d=2
 environment/defaults/default_clear_color=Color(0.025, 0.04, 0.07, 1)
 
 [audio]

@@ -4,34 +4,73 @@ const Traversal = preload("res://scripts/traversal.gd")
 const HAZARD_HEIGHT := 0.7
 var game: Node3D
 var bullets: Array = []
-var pool: Array[MeshInstance3D] = []
+var pool: Array[Node3D] = []
 var effects: Array = []
 var hazards: Array = []
 var fields: Array = []
 var delayed: Array = []
 var shot_mesh: SphereMesh
-var shot_material: StandardMaterial3D
+var shot_core_material: StandardMaterial3D
+var shot_glow_material: StandardMaterial3D
+var shot_tail_mesh: CylinderMesh
 const MAX_BULLETS := 220
 
 func _ready() -> void:
 	shot_mesh = SphereMesh.new()
 	shot_mesh.radius = 0.2
 	shot_mesh.height = 0.4
-	shot_mesh.radial_segments = 4
-	shot_mesh.rings = 1
-	shot_material = glow_material(Color("ff5a26"))
+	shot_mesh.radial_segments = 14
+	shot_mesh.rings = 8
+	shot_core_material = glow_material(Color("fff1d6"), false, 2.6)
+	shot_glow_material = glow_material(Color(1.0, 0.42, 0.14, 0.55), true, 2.2, true)
+	shot_tail_mesh = CylinderMesh.new()
+	shot_tail_mesh.top_radius = 0.16
+	shot_tail_mesh.bottom_radius = 0.015
+	shot_tail_mesh.height = 1.0
+	shot_tail_mesh.radial_segments = 10
 
-func glow_material(color: Color, transparent: bool = false) -> StandardMaterial3D:
+func glow_material(color: Color, transparent: bool = false, energy: float = 1.4, additive: bool = false) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.albedo_color = color
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.emission_enabled = true
 	m.emission = Color(color.r, color.g, color.b)
-	m.emission_energy_multiplier = 1.4
+	m.emission_energy_multiplier = energy
 	if transparent:
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	if additive:
+		m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.no_depth_test = false
 	return m
+
+func _make_bullet() -> Node3D:
+	# Hostile tracer: white-hot core, additive halo, tapering plasma tail.
+	# Children are sized relative to the root scale set in fire().
+	var root := Node3D.new()
+	root.name = "HostileShot"
+	var core := MeshInstance3D.new()
+	core.mesh = shot_mesh
+	core.material_override = shot_core_material
+	core.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	core.scale = Vector3(0.42, 0.42, 0.72)
+	root.add_child(core)
+	var halo := MeshInstance3D.new()
+	halo.mesh = shot_mesh
+	halo.material_override = shot_glow_material
+	halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	halo.scale = Vector3(1.0, 1.0, 1.0)
+	root.add_child(halo)
+	var tail := MeshInstance3D.new()
+	tail.mesh = shot_tail_mesh
+	tail.material_override = shot_glow_material
+	tail.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	tail.rotation.x = PI * 0.5
+	tail.position = Vector3(0, 0, -0.62)
+	tail.scale = Vector3(0.8, 0.8, 1.15)
+	root.add_child(tail)
+	add_child(root)
+	return root
 
 func ring(radius: float, color: Color) -> MeshInstance3D:
 	var mesh := TorusMesh.new()
@@ -78,13 +117,9 @@ func fire(origin: Vector3, direction: Vector3, count: int, speed: float) -> void
 		if bullets.size() >= MAX_BULLETS: break
 		var angle := (float(i) - float(count - 1) * 0.5) * 0.155
 		var velocity := direction.rotated(Vector3.UP, angle) * speed
-		var node: MeshInstance3D
+		var node: Node3D
 		if pool.is_empty():
-			node = MeshInstance3D.new()
-			node.mesh = shot_mesh
-			node.material_override = shot_material
-			node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			add_child(node)
+			node = _make_bullet()
 		else:
 			node = pool.pop_back()
 		node.visible = true
@@ -94,7 +129,7 @@ func fire(origin: Vector3, direction: Vector3, count: int, speed: float) -> void
 		bullets.append({"node":node,"velocity":velocity,"life":7.0})
 
 func discard_bullet(index: int) -> void:
-	var node: MeshInstance3D = bullets[index].node
+	var node: Node3D = bullets[index].node
 	node.visible = false
 	pool.append(node)
 	bullets.remove_at(index)
@@ -126,22 +161,26 @@ func line(from: Vector3, to: Vector3, color: Color, width: float = 0.04) -> void
 	if effects.size() > 65: return
 	var dist := from.distance_to(to)
 	if dist < 0.01: return
-	var node := MeshInstance3D.new()
-	var mesh := CylinderMesh.new()
-	mesh.top_radius = width
-	mesh.bottom_radius = width
-	mesh.height = dist
-	mesh.radial_segments = 5
-	node.mesh = mesh
-	node.material_override = glow_material(color)
-	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(node)
-	node.position = (from+to)*0.5
 	var up := (to-from).normalized()
 	var right := up.cross(Vector3.FORWARD).normalized()
 	if right.length_squared() < 0.1: right = up.cross(Vector3.RIGHT).normalized()
-	node.basis = Basis(right, up, right.cross(up)).orthonormalized()
-	effects.append({"node":node,"life":0.09,"total":0.09,"size":1.0,"style":"line"})
+	var frame := Basis(right, up, right.cross(up)).orthonormalized()
+	# Layered ray: bright core inside a wider additive sheath.
+	for layer: int in range(2):
+		var node := MeshInstance3D.new()
+		var mesh := CylinderMesh.new()
+		var radius: float = width * 0.55 if layer == 0 else width * 1.9
+		mesh.top_radius = radius
+		mesh.bottom_radius = radius
+		mesh.height = dist
+		mesh.radial_segments = 8
+		node.mesh = mesh
+		node.material_override = glow_material(Color("fff3e0"), false, 2.6) if layer == 0 else glow_material(Color(color.r, color.g, color.b, 0.5), true, 2.0, true)
+		node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(node)
+		node.position = (from+to)*0.5
+		node.basis = frame
+		effects.append({"node":node,"life":0.09,"total":0.09,"size":1.0,"style":"line"})
 
 func add_hazard(at: Vector3, radius: float, warning: float) -> void:
 	if hazards.size() >= 5: return
@@ -171,7 +210,9 @@ func update(delta: float, fx_delta: float = -1.0) -> void:
 	if fx_delta < 0.0: fx_delta = delta
 	for i in range(bullets.size()-1,-1,-1):
 		var b: Dictionary = bullets[i]
-		var node: MeshInstance3D = b.node
+		var node: Node3D = b.node
+		var flicker: float = 1.0 + sin(float(b.life) * 42.0 + float(i) * 1.7) * 0.10
+		node.scale = Vector3(1.15, 1.15, 3.2) * flicker
 		var previous := node.position
 		if game.rules.dash_time > 0 and game.rules.level("collector") >= 2:
 			var to_player: Vector3 = (game.player_position + Vector3(0,0.85,0)) - node.position

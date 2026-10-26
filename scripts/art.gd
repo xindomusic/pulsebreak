@@ -3,22 +3,23 @@ extends RefCounted
 ## All actors face +Z and have their origin at ground level.
 
 static var _materials: Dictionary = {}
+static var _spinners: Array[Node3D] = []
 static var _meshes: Dictionary = {}
 
 const PALETTE: Dictionary = {
 	# Floor values sit well below actor values: the deck must lose every
 	# contrast contest so small actors read by luminance, not size.
-	"deck": Color("171d24"),
-	"deck_alt": Color("1a2029"),
-	"seam": Color("060b1d"),
+	"deck": Color("31383f"),
+	"deck_alt": Color("353d46"),
+	"seam": Color("0b0d0b"),
 	"steel": Color("2b3138"),
 	"edge": Color("4a545e"),
-	"dark": Color("070c1a"),
-	"distant": Color("14181d"),
+	"dark": Color("0e100d"),
+	"distant": Color("2e3f4a"),
 	"teal_dim": Color("5f3413"),
 	"teal": Color("ff8a2a"),
 	"cyan": Color("ffb35c"),
-	"white": Color("eef8ff"),
+	"white": Color("f2ede2"),
 	"white_shadow": Color("8b98a5"),
 	"amber": Color("ffa83a"),
 	"orange": Color("ff6b29"),
@@ -29,33 +30,50 @@ const PALETTE: Dictionary = {
 	"violet": Color("8fb0c9"),
 	"ceramic": Color("ede9e0"),
 	"titanium": Color("9aa7b4"),
-	"visor": Color("07182f"),
+	"visor": Color("10130f"),
 	"solar": Color("e0a458"),
 	"storm": Color("8fb0c9"),
-	"deck_deep": Color("10141a"),
+	"deck_deep": Color("12151a"),
 	"deck_mark": Color("5a6a76"),
 	"solar_dim": Color("7d6a52"),
 	"storm_dim": Color("4d6478"),
-	"gunmetal": Color("101c33"),
+	"gunmetal": Color("24221c"),
 	"mint": Color("ffd98a"),
 	"cobalt": Color("454e59"),
-	"threat_armor": Color("8a3b34"),
-	"threat_plate": Color("c2503a"),
+	"threat_armor": Color("7e3524"),
+	"threat_plate": Color("9c4028"),
 	"threat_edge": Color("ff9962"),
 	"sky_inlay": Color("26313a"),
 	"solar_inlay": Color("322a22"),
 	"storm_inlay": Color("202a33"),
 	"rubber": Color("14181f"),
 	"worn_steel": Color("3d4c63"),
-	"copper": Color("b87347"),
+	"copper": Color("b08a45"),
 	"skin_plate": Color("d8dee9"),
 	"sky_lamp": Color("c3d5e0"),
 	"solar_lamp": Color("e0a458"),
 	"storm_lamp": Color("8fb0c9"),
+	"cloud": Color("aebfc2"),
+	"puddle": Color("141a20"),
 }
 
 
 static var _noise_texture: NoiseTexture2D
+static var _cloud_texture: GradientTexture2D
+
+static func _cloud_sprite() -> GradientTexture2D:
+	if _cloud_texture: return _cloud_texture
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(1, 1, 1, 0.8))
+	gradient.set_color(1, Color(1, 1, 1, 0))
+	_cloud_texture = GradientTexture2D.new()
+	_cloud_texture.gradient = gradient
+	_cloud_texture.fill = GradientTexture2D.FILL_RADIAL
+	_cloud_texture.fill_from = Vector2(0.5, 0.5)
+	_cloud_texture.fill_to = Vector2(1.0, 0.5)
+	_cloud_texture.width = 256
+	_cloud_texture.height = 256
+	return _cloud_texture
 
 static func _grain() -> NoiseTexture2D:
 	if _noise_texture: return _noise_texture
@@ -100,8 +118,18 @@ static func _material(key: String) -> StandardMaterial3D:
 		result.metallic = 0.95
 		result.roughness = 0.3
 	if key in ["deck", "deck_alt", "deck_deep", "seam", "distant", "sky_inlay", "solar_inlay", "storm_inlay"]:
-		result.metallic = 0.35
-		result.roughness = 0.72
+		result.metallic = 0.55
+		result.roughness = 0.40
+	if key in ["deck", "deck_alt"]:
+		result.clearcoat_enabled = true
+		result.clearcoat = 0.55
+		result.clearcoat_roughness = 0.22
+	if key == "puddle":
+		result.metallic = 0.0
+		result.roughness = 0.08
+		result.clearcoat_enabled = true
+		result.clearcoat = 1.0
+		result.clearcoat_roughness = 0.05
 	# Machined/worn surfaces get procedural grain in roughness so sky light
 	# breaks across them instead of reading as flat plastic.
 	if key in ["steel", "worn_steel", "deck", "deck_alt", "threat_armor", "gunmetal", "edge"]:
@@ -157,6 +185,18 @@ static func _material(key: String) -> StandardMaterial3D:
 		result.emission_enabled = true
 		result.emission = result.albedo_color
 		result.emission_energy_multiplier = 0.75
+	if key in ["deck", "deck_alt"] and ResourceLoader.exists("res://assets/textures/deck_albedo.png"):
+		result.albedo_texture = load("res://assets/textures/deck_albedo.png") as Texture2D
+		result.normal_texture = load("res://assets/textures/deck_normal.png") as Texture2D
+		result.normal_scale = 0.65
+		result.roughness_texture = load("res://assets/textures/deck_rough.png") as Texture2D
+		result.albedo_color = Color(0.92, 0.94, 0.98) if key == "deck" else Color(0.78, 0.81, 0.87)
+	if key == "cloud":
+		result.roughness = 1.0
+		result.metallic = 0.0
+		result.emission_enabled = true
+		result.emission = result.albedo_color
+		result.emission_energy_multiplier = 0.16
 	_materials[key] = result
 	return result
 
@@ -179,15 +219,15 @@ static func _mesh(key: String) -> Mesh:
 			cylinder.top_radius = 0.68 if key == "cone" else 1.0
 			cylinder.bottom_radius = 1.0
 			cylinder.height = 1.0
-			cylinder.radial_segments = 8 if key == "octagon" else 24
+			cylinder.radial_segments = 8 if key == "octagon" else 32
 			cylinder.rings = 2 if key != "octagon" else 1
 			result = cylinder
 		"sphere":
 			var sphere: SphereMesh = SphereMesh.new()
 			sphere.radius = 1.0
 			sphere.height = 2.0
-			sphere.radial_segments = 28
-			sphere.rings = 14
+			sphere.radial_segments = 36
+			sphere.rings = 18
 			result = sphere
 		"prism":
 			var prism: PrismMesh = PrismMesh.new()
@@ -204,7 +244,7 @@ static func _mesh(key: String) -> Mesh:
 static func _profile_mesh(profiles: Array[Vector3]) -> ArrayMesh:
 	var builder := SurfaceTool.new()
 	builder.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var shape: Array[Vector2] = [Vector2(-0.32,0.5),Vector2(0.32,0.5),Vector2(0.5,0.26),Vector2(0.5,-0.28),Vector2(0.30,-0.5),Vector2(-0.30,-0.5),Vector2(-0.5,-0.28),Vector2(-0.5,0.26)]
+	var shape: Array[Vector2] = [Vector2(-0.30,0.50),Vector2(-0.10,0.515),Vector2(0.10,0.515),Vector2(0.30,0.50),Vector2(0.44,0.38),Vector2(0.50,0.18),Vector2(0.50,-0.16),Vector2(0.43,-0.36),Vector2(0.29,-0.50),Vector2(0.0,-0.525),Vector2(-0.29,-0.50),Vector2(-0.43,-0.36),Vector2(-0.50,-0.16),Vector2(-0.50,0.18),Vector2(-0.44,0.38)]
 	var rings: Array = []
 	for profile: Vector3 in profiles:
 		var ring: Array[Vector3] = []
@@ -222,7 +262,15 @@ static func _profile_mesh(profiles: Array[Vector3]) -> ArrayMesh:
 			var normal: Vector3 = (b-a).cross(d-a).normalized()
 			var center: Vector3 = (a+b+c+d)*0.25
 			if normal.dot(Vector3(center.x,0,center.z))<0: normal=-normal
-			_mesh_face(builder,[a,b,c,d],normal)
+			# Smooth side shading: per-vertex radial normals round the shell;
+			# winding mirrors _mesh_face so front faces stay outward.
+			var reverse: bool = (b - a).cross(c - a).dot(normal) > 0.0
+			var quad: Array[Vector3] = [a, b, c, d]
+			for vi: int in [0, 2 if reverse else 1, 1 if reverse else 2, 0, 3 if reverse else 2, 2 if reverse else 3]:
+				var v: Vector3 = quad[vi]
+				builder.set_uv(Vector2(v.x, v.z) * 3.0)
+				builder.set_normal(Vector3(v.x, 0, v.z).normalized())
+				builder.add_vertex(v)
 	return builder.commit()
 
 
@@ -307,9 +355,9 @@ static func _transform(at: Vector3, size: Vector3, yaw: float = 0.0) -> Transfor
 	return Transform3D(Basis(Vector3.UP, yaw) * Basis.from_scale(size), at)
 
 
-static func _batch(parent: Node3D, node_name: String, shape: String, material_key: String, transforms: Array[Transform3D], shadows: bool = true) -> void:
+static func _batch(parent: Node3D, node_name: String, shape: String, material_key: String, transforms: Array[Transform3D], shadows: bool = true) -> MultiMeshInstance3D:
 	if transforms.is_empty():
-		return
+		return null
 	var mesh: MultiMesh = MultiMesh.new()
 	mesh.transform_format = MultiMesh.TRANSFORM_3D
 	mesh.mesh = _mesh(shape)
@@ -323,6 +371,13 @@ static func _batch(parent: Node3D, node_name: String, shape: String, material_ke
 	if not shadows:
 		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(instance)
+	return instance
+
+
+static func animate_backdrop(delta: float) -> void:
+	for node: Node3D in _spinners:
+		if is_instance_valid(node):
+			node.rotation.y += delta * float(node.get_meta("spin", 0.2))
 
 
 static func _ring(parent: Node3D, radius: float, width: float, height: float, material_key: String, count: int = 32, gap: float = 0.0) -> void:
@@ -384,10 +439,22 @@ static func build_arena(parent: Node3D) -> void:
 	_batch(deck, "CircuitInlays", "box", "teal_dim", grooves, false)
 	_batch(deck, "NavigationLights", "box", "teal", pips, false)
 	_batch(deck, "FlushFasteners", "octagon", "edge", fasteners, false)
+	var puddle_rng := RandomNumberGenerator.new()
+	puddle_rng.seed = 9182
+	var puddles: Array[Transform3D] = []
+	for index: int in range(13):
+		var px: float = puddle_rng.randf_range(-13.5, 13.5)
+		var pz: float = puddle_rng.randf_range(-13.5, 13.5)
+		if absf(px) < 2.5 and absf(pz) < 2.5:
+			continue
+		var pr: float = puddle_rng.randf_range(1.1, 2.6)
+		puddles.append(_transform(Vector3(px, 0.006, pz), Vector3(pr * 0.85, 0.012, pr * 0.6), puddle_rng.randf_range(0.0, TAU)))
+	_batch(deck, "RainPuddles", "cylinder", "puddle", puddles, false)
 	var center: Node3D = _group(deck, "CenterMarker", Vector3(0, 0.014, 0))
 	_ring(center, 0.58, 0.038, 0.012, "edge", 8, 0.28)
 	_build_perimeter(arena)
 	_build_supports(arena)
+	_build_overhead(arena)
 	_build_backdrop(arena)
 
 
@@ -452,7 +519,10 @@ static func _turbine(parent: Node3D, at: Vector3, yaw: float, size: float) -> vo
 	for index: int in range(12):
 		var angle: float = TAU * float(index) / 12.0
 		blades.append(_transform(Vector3(sin(angle) * 1.28, 0.86, cos(angle) * 1.28), Vector3(0.4, 0.12, 1.0), angle + 0.36))
-	_batch(turbine, "TurbineBlades", "box", "edge", blades)
+	var blade_node: MultiMeshInstance3D = _batch(turbine, "TurbineBlades", "box", "edge", blades)
+	if blade_node:
+		blade_node.set_meta("spin", 0.22 / size)
+		_spinners.append(blade_node)
 	_part(turbine, "cone", Vector3(0, 0.95, 0), Vector3(0.57, 0.56, 0.57), "steel")
 	_part(turbine, "octagon", Vector3(0, 1.24, 0), Vector3(0.24, 0.07, 0.24), "teal")
 	var lip: Node3D = _group(turbine, "Rim", Vector3(0, 0.78, 0))
@@ -460,6 +530,96 @@ static func _turbine(parent: Node3D, at: Vector3, yaw: float, size: float) -> vo
 	for side: float in [-1.0, 1.0]:
 		_part(turbine, "box", Vector3(side * 2.28, 0.65, 0), Vector3(0.22, 0.20, 1.0), "amber")
 		_part(turbine, "box", Vector3(side * 1.0, -1.9, 0), Vector3(0.44, 2.5, 1.0), "steel")
+
+
+static func _steam(parent: Node3D, at: Vector3, amount: int, size: float) -> void:
+	var p := GPUParticles3D.new()
+	p.name = "SteamVent"
+	p.amount = amount
+	p.lifetime = 4.2
+	p.preprocess = 4.2
+	p.position = at
+	var pm := ParticleProcessMaterial.new()
+	pm.direction = Vector3(0, 1, 0)
+	pm.spread = 13.0
+	pm.initial_velocity_min = 0.8
+	pm.initial_velocity_max = 1.25
+	pm.gravity = Vector3(0.12, 0.35, 0)
+	pm.scale_min = size * 0.7
+	pm.scale_max = size * 1.4
+	var fade := Gradient.new()
+	fade.set_color(0, Color(1, 1, 1, 0))
+	fade.set_color(1, Color(1, 1, 1, 0))
+	fade.add_point(0.25, Color(1, 1, 1, 0.38))
+	fade.add_point(0.7, Color(1, 1, 1, 0.3))
+	var ramp_tex := GradientTexture1D.new()
+	ramp_tex.gradient = fade
+	pm.color_ramp = ramp_tex
+	p.process_material = pm
+	var quad := QuadMesh.new()
+	quad.size = Vector2(3.2, 3.2)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_texture = _cloud_sprite()
+	mat.albedo_color = Color(0.78, 0.86, 0.89, 0.32)
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	quad.material = mat
+	p.draw_pass_1 = quad
+	parent.add_child(p)
+
+
+static func _embers(parent: Node3D) -> void:
+	var p := GPUParticles3D.new()
+	p.name = "DriftingEmbers"
+	p.amount = 130
+	p.lifetime = 5.0
+	p.preprocess = 5.0
+	p.position = Vector3(0, 1.5, 0)
+	var pm := ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pm.emission_box_extents = Vector3(19, 2.5, 19)
+	pm.direction = Vector3(0.25, 1, 0.1)
+	pm.spread = 25.0
+	pm.initial_velocity_min = 0.4
+	pm.initial_velocity_max = 1.1
+	pm.gravity = Vector3(0, 0.12, 0)
+	p.process_material = pm
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.09, 0.09)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_texture = _cloud_sprite()
+	mat.albedo_color = Color(1.0, 0.62, 0.25, 0.9)
+	mat.emission_enabled = true
+	mat.emission = Color("ff8a1a")
+	mat.emission_energy_multiplier = 2.0
+	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	quad.material = mat
+	p.draw_pass_1 = quad
+	parent.add_child(p)
+
+
+static func _build_overhead(arena: Node3D) -> void:
+	var gantries: Node3D = _group(arena, "OverheadGantries")
+	for gx: float in [-8.5, 9.5]:
+		var gantry: Node3D = _group(gantries, "Gantry", Vector3(gx, 0, -19.5))
+		for side: float in [-1.0, 1.0]:
+			_part(gantry, "box", Vector3(side * 3.4, 2.2, 0), Vector3(0.5, 5.6, 0.6), "gunmetal")
+			_part(gantry, "box", Vector3(side * 3.4, -0.2, 0), Vector3(1.1, 0.8, 1.2), "dark")
+		_part(gantry, "box", Vector3(0, 5.1, 0), Vector3(7.6, 0.55, 0.7), "gunmetal")
+		_part(gantry, "box", Vector3(0, 4.72, 0.18), Vector3(6.8, 0.1, 0.12), "teal_dim")
+		_beam(gantry, Vector3(1.4, 4.85, 0), Vector3(1.4, 3.1, 0), 0.05, "edge")
+		_part(gantry, "box", Vector3(1.4, 2.8, 0), Vector3(0.85, 0.65, 0.85), "copper")
+		_part(gantry, "octagon", Vector3(-3.4, 5.55, 0), Vector3(0.3, 0.22, 0.3), "solar_lamp")
+	for side: float in [-1.0, 1.0]:
+		var bridge: Node3D = _group(gantries, "PipeBridge", Vector3(side * 19.8, 0, 2.0))
+		_part(bridge, "box", Vector3(0, 1.4, -6.5), Vector3(0.55, 3.6, 0.7), "gunmetal")
+		_part(bridge, "box", Vector3(0, 1.4, 6.5), Vector3(0.55, 3.6, 0.7), "gunmetal")
+		_beam(bridge, Vector3(0, 3.3, -7.5), Vector3(0, 3.3, 7.5), 0.30, "steel")
+		_beam(bridge, Vector3(side * 0.45, 2.85, -7.5), Vector3(side * 0.45, 2.85, 7.5), 0.16, "copper")
+		_part(bridge, "octagon", Vector3(0, 3.3, 0), Vector3(0.95, 0.5, 0.95), "dark")
 
 
 static func _build_backdrop(arena: Node3D) -> void:
@@ -494,15 +654,31 @@ static func _build_backdrop(arena: Node3D) -> void:
 	rng.seed = 70831
 	for index: int in range(22):
 		var x: float = -68.0 + float(index) * 6.4
-		var z: float = rng.randf_range(-64.0, -42.0)
+		var z: float = rng.randf_range(-80.0, -54.0)
 		var height: float = rng.randf_range(5.0, 17.0)
 		var width: float = rng.randf_range(2.3, 5.5)
-		distant.append(_transform(Vector3(x, height * 0.5 - 11.0, z), Vector3(width, height, width * 0.7)))
-		city_lights.append(_transform(Vector3(x, height - 10.9, z), Vector3(0.06, 0.18, 0.06)))
+		distant.append(_transform(Vector3(x, height * 0.5 - 13.5, z), Vector3(width, height, width * 0.7)))
+		city_lights.append(_transform(Vector3(x, height - 13.4, z), Vector3(0.06, 0.18, 0.06)))
 		if index % 3 == 0:
 			distant.append(_transform(Vector3(x + 3.0, -4.0, z), Vector3(10.0, 0.65, 1.0)))
 	_batch(backdrop, "DistantMegastructures", "box", "distant", distant, false)
-	_batch(backdrop, "DistantBeaconLights", "box", "teal_dim", city_lights, false)
+	_batch(backdrop, "DistantBeaconLights", "box", "solar_lamp", city_lights, false)
+	var mid: Array[Transform3D] = []
+	var jibs: Array[Transform3D] = []
+	for index: int in range(12):
+		var mx: float = -55.0 + float(index) * 10.0 + rng.randf_range(-2.0, 2.0)
+		var mz: float = rng.randf_range(-44.0, -35.0)
+		var mh: float = rng.randf_range(4.0, 9.0)
+		mid.append(_transform(Vector3(mx, mh * 0.5 - 8.0, mz), Vector3(rng.randf_range(2.5, 4.5), mh, 2.5)))
+		if index % 3 == 1:
+			jibs.append(_transform(Vector3(mx + 2.6, mh - 7.6, mz), Vector3(6.5, 0.35, 0.35)))
+			jibs.append(_transform(Vector3(mx + 5.2, mh - 9.4, mz), Vector3(0.12, 3.4, 0.12)))
+			jibs.append(_transform(Vector3(mx + 5.2, mh - 11.3, mz), Vector3(0.9, 0.7, 0.9)))
+	for side: float in [-1.0, 1.0]:
+		for index: int in range(5):
+			mid.append(_transform(Vector3(side * rng.randf_range(40.0, 60.0), rng.randf_range(-6.5, -1.0), rng.randf_range(-32.0, 12.0)), Vector3(3.4, rng.randf_range(7.0, 13.0), 3.4)))
+	_batch(backdrop, "MidFoundry", "box", "distant", mid, false)
+	_batch(backdrop, "CraneJibs", "box", "distant", jibs, false)
 	var motes: Array[Transform3D] = []
 	for index: int in range(35):
 		var x: float = rng.randf_range(-27.0, 27.0)
@@ -512,9 +688,103 @@ static func _build_backdrop(arena: Node3D) -> void:
 		var radius: float = rng.randf_range(0.018, 0.042)
 		motes.append(_transform(Vector3(x, rng.randf_range(-3.0, 3.0), z), Vector3(radius, radius, radius)))
 	_batch(backdrop, "AtmosphericMotes", "sphere", "teal_dim", motes, false)
+	# Cloud sea: soft billboarded puffs below the deck edge.
+	var sea_group: Node3D = _group(backdrop, "CloudSea")
+	for index: int in range(48):
+		var angle: float = TAU * float(index) / 48.0 + rng.randf_range(-0.06, 0.06)
+		var dist: float = rng.randf_range(30.0, 95.0)
+		var puff := Sprite3D.new()
+		puff.texture = _cloud_sprite()
+		puff.modulate = Color(0.72, 0.80, 0.83, rng.randf_range(0.34, 0.58))
+		puff.pixel_size = rng.randf_range(24.0, 46.0) / 256.0
+		puff.scale.y = 0.42
+		puff.position = Vector3(cos(angle) * dist, rng.randf_range(-9.0, -4.2), sin(angle) * dist)
+		sea_group.add_child(puff)
+	for index: int in range(6):
+		var angle: float = TAU * float(index) / 6.0 + 0.3
+		var horizon := Sprite3D.new()
+		horizon.texture = _cloud_sprite()
+		horizon.modulate = Color(0.66, 0.76, 0.80, 0.22)
+		horizon.pixel_size = rng.randf_range(70.0, 95.0) / 256.0
+		horizon.scale.y = 0.35
+		horizon.position = Vector3(cos(angle) * 115.0, -11.0, sin(angle) * 115.0)
+		sea_group.add_child(horizon)
+	_steam(backdrop, Vector3(-20.2, 1.4, -8.8), 26, 0.9)
+	_steam(backdrop, Vector3(-9.8, 4.4, -23.0), 34, 1.3)
+	_steam(backdrop, Vector3(20.2, 1.1, 7.0), 30, 0.9)
+	_embers(backdrop)
+
+
+static var _model_cache: Dictionary = {}
+
+static func _model(name: String) -> PackedScene:
+	if _model_cache.has(name):
+		return _model_cache[name] as PackedScene
+	var path := "res://assets/models/" + name + ".glb"
+	var packed: PackedScene = load(path) as PackedScene if ResourceLoader.exists(path) else null
+	_model_cache[name] = packed
+	return packed
 
 
 static func player() -> Node3D:
+	var packed := _model("courier")
+	if packed:
+		var built := _player_from_model(packed)
+		if built:
+			return built
+	return _player_codebuilt()
+
+
+static func _instantiate_model(packed: PackedScene, inner_name: String) -> Node3D:
+	var wrapper: Node3D = packed.instantiate() as Node3D
+	var inner: Node3D = wrapper.get_node_or_null(inner_name) as Node3D
+	if inner:
+		wrapper.remove_child(inner)
+		wrapper.free()
+		return inner
+	return wrapper
+
+
+static func _player_from_model(packed: PackedScene) -> Node3D:
+	var root: Node3D = _instantiate_model(packed, "CourierModel")
+	root.name = "CourierModel"
+	var body: Node3D = root.get_node_or_null("Body") as Node3D
+	var torso: Node3D = root.get_node_or_null("Body/Torso") as Node3D
+	if not body or not torso:
+		root.free()
+		return null
+	var rig: Dictionary = {"body": body, "torso": torso, "hips": [], "knees": [], "shoulders": [], "elbows": [], "wings": [], "plumes": []}
+	rig["head"] = torso.get_node("Head")
+	for suffix: String in ["Left", "Right"]:
+		rig.hips.append(body.get_node("Hip" + suffix))
+		rig.knees.append(body.get_node("Hip" + suffix + "/Knee" + suffix))
+		rig.shoulders.append(torso.get_node("Shoulder" + suffix))
+		rig.elbows.append(torso.get_node("Shoulder" + suffix + "/Elbow" + suffix))
+		rig.wings.append(root.get_node("Reactor/Wing" + suffix))
+		rig.plumes.append(root.get_node("Reactor/Thruster" + suffix + "/Plume" + suffix))
+	rig["reactor"] = root.get_node("Reactor")
+	rig["ring"] = root.get_node("Ring")
+	rig["ring_y"] = (rig["ring"] as Node3D).position.y
+	# Tall vertical binders stay near-upright folded and splay on glide,
+	# unlike the code-built model's horizontal wing panels.
+	rig["wing_fold_yaw"] = 0.20
+	rig["wing_glide_yaw"] = 0.55
+	rig["wing_fold_roll"] = 0.10
+	rig["wing_glide_roll"] = 0.45
+	var weapon: Node3D = _build_player_weapon(root)
+	rig["weapon"] = weapon
+	rig["rifle"] = weapon.get_node("Rifle")
+	root.set_meta("rig", rig)
+	root.set_meta("gait_phase", 0.0)
+	root.set_meta("wing_deployment", 0.0)
+	root.set_meta("weapon_recoil", 0.0)
+	root.set_meta("weapon_aim", 0.0)
+	set_weapon(root, "kinetic", 1)
+	animate_player(root, 1.0, 0.0, false, false, false, 0.0)
+	return root
+
+
+static func _player_codebuilt() -> Node3D:
 	var root: Node3D = Node3D.new()
 	root.name = "CourierModel"
 	var body: Node3D = _group(root, "Body")
@@ -528,7 +798,7 @@ static func player() -> Node3D:
 	rig["torso"] = torso
 	_part(torso, "armor", Vector3(0, 0.21, 0), Vector3(0.50, 0.47, 0.32), "dark", Vector3(-0.06, 0, 0))
 	_part(torso, "cuirass", Vector3(0, 0.28, 0.07), Vector3(0.65, 0.43, 0.36), "ceramic", Vector3(-0.08, 0, 0))
-	_part(torso, "armor", Vector3(0, 0.08, 0.16), Vector3(0.35, 0.20, 0.13), "cobalt", Vector3(-0.16, 0, 0))
+	_part(torso, "armor", Vector3(0, 0.08, 0.16), Vector3(0.35, 0.20, 0.13), "gunmetal", Vector3(-0.16, 0, 0))
 	for side: float in [-1.0, 1.0]:
 		_part(torso, "armor", Vector3(side * 0.155, 0.32, 0.246), Vector3(0.15, 0.19, 0.042), "white")
 		_part(torso, "box", Vector3(side * 0.17, 0.405, 0.255), Vector3(0.14, 0.025, 0.025), "cyan")
@@ -569,7 +839,7 @@ static func player() -> Node3D:
 		var shoulder: Node3D = _group(torso, "Shoulder" + suffix, Vector3(side * 0.355, 0.36, 0))
 		rig.shoulders.append(shoulder)
 		_part(shoulder, "sphere", Vector3.ZERO, Vector3.ONE * 0.105, "dark")
-		_part(shoulder, "armor", Vector3(side * 0.025, 0.032, 0), Vector3(0.26, 0.20, 0.32), "cobalt", Vector3(0, 0, -side * 0.15))
+		_part(shoulder, "armor", Vector3(side * 0.025, 0.032, 0), Vector3(0.26, 0.20, 0.32), "ceramic", Vector3(0, 0, -side * 0.15))
 		_part(shoulder, "box", Vector3(side * 0.148, 0.025, 0.035), Vector3(0.025, 0.063, 0.13), "amber" if side < 0 else "cyan")
 		_part(shoulder, "armor", Vector3(side * 0.025, -0.15, 0), Vector3(0.135, 0.23, 0.15), "dark")
 		var elbow: Node3D = _group(shoulder, "Elbow" + suffix, Vector3(side * 0.025, -0.27, 0))
@@ -584,7 +854,7 @@ static func player() -> Node3D:
 	_part(head, "cylinder", Vector3(0, -0.09, 0), Vector3(0.086, 0.12, 0.086), "dark")
 	_part(head, "helmet", Vector3(0, 0.085, -0.005), Vector3(0.46, 0.45, 0.41), "ceramic", Vector3(-0.06, 0, 0))
 	_part(head, "armor", Vector3(0, 0.088, 0.168), Vector3(0.38, 0.16, 0.13), "visor", Vector3(-0.15, 0, 0))
-	_part(head, "armor", Vector3(0, 0.154, 0.175), Vector3(0.415, 0.065, 0.14), "cobalt", Vector3(-0.12, 0, 0))
+	_part(head, "armor", Vector3(0, 0.154, 0.175), Vector3(0.415, 0.065, 0.14), "copper", Vector3(-0.12, 0, 0))
 	_part(head, "armor", Vector3(0, 0.108, 0.238), Vector3(0.28, 0.031, 0.023), "cyan")
 	_part(head, "armor", Vector3(0, -0.024, 0.151), Vector3(0.21, 0.12, 0.16), "titanium", Vector3(-0.29, 0, 0))
 	_part(head, "box", Vector3(-0.07, 0.299, -0.015), Vector3(0.060, 0.019, 0.15), "amber")
@@ -606,8 +876,8 @@ static func player() -> Node3D:
 		rig.wings.append(wing)
 		var panels: Node3D = _group(wing, "Panels")
 		panels.scale.x = side
-		_part(panels, "wing", Vector3.ZERO, Vector3.ONE, "cobalt")
-		_part(panels, "wing", Vector3(0.04, 0.045, -0.012), Vector3(0.94, 0.6, 0.80), "ceramic")
+		_part(panels, "wing", Vector3.ZERO, Vector3.ONE, "ceramic")
+		_part(panels, "wing", Vector3(0.04, 0.045, -0.012), Vector3(0.94, 0.6, 0.80), "white")
 		_beam(panels, Vector3(0.19, 0.07, 0.10), Vector3(0.72, 0.07, 0.07), 0.023, "cyan")
 		_beam(panels, Vector3(0.74, 0.07, 0.046), Vector3(1.21, 0.07, -0.39), 0.025, "cyan")
 		for index: int in range(3):
@@ -636,7 +906,45 @@ static func player() -> Node3D:
 	return root
 
 
+static func _weapon_from_model(packed: PackedScene, parent: Node3D) -> Node3D:
+	var root: Node3D = _instantiate_model(packed, "RifleModel")
+	var rifle: Node3D = root.get_node_or_null("Rifle") as Node3D
+	if not rifle:
+		root.free()
+		return null
+	# Blender suffixes duplicate empty names (Evolved.001 ...); normalize so
+	# set_weapon's per-variant child lookups work for every variant.
+	for id: String in ["kinetic","scatter","arc","plasma"]:
+		var variant: Node3D = rifle.get_node_or_null(id) as Node3D
+		if not variant:
+			root.free()
+			return null
+		for child: Node in variant.get_children():
+			if child.name.begins_with("Evolved"):
+				child.name = "Evolved"
+			elif child.name.begins_with("Masterwork"):
+				child.name = "Masterwork"
+		if not variant.get_node_or_null("Evolved") or not variant.get_node_or_null("Masterwork"):
+			root.free()
+			return null
+	var pivot := _group(parent,"WeaponPivot",Vector3(0.31,1.04,0.18))
+	root.remove_child(rifle)
+	root.free()
+	pivot.add_child(rifle)
+	var marker := Marker3D.new()
+	marker.name="Muzzle"
+	marker.position=Vector3(0,0,1.02)
+	rifle.add_child(marker)
+	parent.set_meta("muzzle",marker)
+	return pivot
+
+
 static func _build_player_weapon(parent: Node3D) -> Node3D:
+	var packed := _model("rifles")
+	if packed:
+		var modeled := _weapon_from_model(packed, parent)
+		if modeled:
+			return modeled
 	var pivot := _group(parent,"WeaponPivot",Vector3(0.31,1.04,0.18))
 	var rifle := _group(pivot,"Rifle")
 	_part(rifle,"armor",Vector3(0,0,0.06),Vector3(0.26,0.22,0.46),"gunmetal")
@@ -790,14 +1098,14 @@ static func animate_player(model: Node3D, delta: float, speed_fraction: float, a
 		shoulder.rotation.z = lerpf(shoulder.rotation.z, lerpf(side*(0.70 if gliding else 0.10),0.45 if index==0 else -0.10,brace),blend)
 		var elbow_target: float = -0.36 if airborne else (-0.25 - speed * 0.40)
 		elbow.rotation.x = lerpf(elbow.rotation.x,lerpf(elbow_target,-1.12,brace),blend)
-		wing.rotation = Vector3(0.0, side * lerpf(1.35, 0.04, deployment), -side * lerpf(0.55, -0.08, deployment))
+		wing.rotation = Vector3(0.0, side * lerpf(float(rig.get("wing_fold_yaw", 1.35)), float(rig.get("wing_glide_yaw", 0.04)), deployment), -side * lerpf(float(rig.get("wing_fold_roll", 0.55)), float(rig.get("wing_glide_roll", -0.08)), deployment))
 		wing.scale=Vector3.ONE*lerpf(0.82,1.0,deployment)
 		plume.visible = airborne or dashing
 		plume.scale = Vector3(1.0, (0.85 if gliding else 1.25) + sin(time * 45.0 + float(index)) * 0.15, 1.0)
 	var reactor: Node3D = rig.reactor
 	reactor.transform=body.transform*torso.transform*Transform3D(Basis.IDENTITY,Vector3(0,0.25,-0.28))
 	var ring: Node3D = rig.ring
-	ring.position.y = 1.02 + body.position.y
+	ring.position.y = float(rig.get("ring_y", 1.02)) + body.position.y
 	var weapon: Node3D = rig.weapon
 	weapon.position=body.transform*torso.transform*Vector3(0.31,0.07,0.18)
 	if aim<0.01: weapon.rotation=weapon.rotation.lerp(Vector3.ZERO,blend)
@@ -807,6 +1115,16 @@ static func animate_player(model: Node3D, delta: float, speed_fraction: float, a
 
 
 static func enemy(kind: String) -> Node3D:
+	var inner_names := {"gunner": "GunnerModel", "charger": "ChargerModel", "bruiser": "BruiserModel", "splitter": "SplitterModel", "mite": "MiteModel"}
+	var file_kind: String = kind if inner_names.has(kind) else "gunner"
+	var packed := _model(file_kind)
+	if packed:
+		var modeled := _instantiate_model(packed, inner_names[file_kind])
+		modeled.name = inner_names[file_kind]
+		if modeled.get_node_or_null("Body"):
+			_rig_enemy(modeled, kind)
+			return modeled
+		modeled.free()
 	var root: Node3D
 	match kind:
 		"charger":
@@ -984,6 +1302,14 @@ static func _mite() -> Node3D:
 
 
 static func boss() -> Node3D:
+	var packed := _model("boss")
+	if packed:
+		var modeled := _instantiate_model(packed, "ReactorGuardianModel")
+		modeled.name = "ReactorGuardianModel"
+		if modeled.get_node_or_null("Body"):
+			_rig_enemy(modeled, "boss")
+			return modeled
+		modeled.free()
 	var root: Node3D = Node3D.new()
 	root.name = "ReactorGuardianModel"
 	var body: Node3D = _group(root, "Body")

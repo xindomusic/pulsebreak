@@ -34,6 +34,7 @@ var emitted := 0
 var recycled := 0
 var elapsed := 0.0
 var rng := RandomNumberGenerator.new()
+var flash_lights: Array[OmniLight3D] = []
 var numbers: Array[Dictionary] = []
 var number_pool: Array[Label3D] = []
 const MAX_NUMBERS := 24
@@ -61,7 +62,7 @@ static func _material(key: String) -> StandardMaterial3D:
 	else:
 		material.emission_enabled = true
 		material.emission = material.albedo_color
-		material.emission_energy_multiplier = 1.1
+		material.emission_energy_multiplier = 1.75
 		material.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	_materials[key] = material
 	return material
@@ -79,6 +80,8 @@ static func _mesh(key: String) -> Mesh:
 		mesh = ring
 	elif key in ["arc_core", "arc_glow"]:
 		mesh = _lightning_mesh(0.018 if key == "arc_core" else 0.065)
+	elif key in ["arc_core2", "arc_glow2"]:
+		mesh = _lightning_mesh(0.018 if key == "arc_core2" else 0.065, true)
 	elif key.begins_with("pulse_"):
 		mesh = _pulse_mesh(key)
 	else:
@@ -87,8 +90,11 @@ static func _mesh(key: String) -> Mesh:
 	return mesh
 
 
-static func _lightning_mesh(width: float) -> ArrayMesh:
+static func _lightning_mesh(width: float, mirrored: bool = false) -> ArrayMesh:
 	var points: Array[Vector3] = [Vector3.ZERO,Vector3(0.10,0.02,0.16),Vector3(-0.075,-0.025,0.33),Vector3(0.13,0.025,0.49),Vector3(-0.08,0.01,0.67),Vector3(0.055,-0.025,0.83),Vector3(0,0,1)]
+	if mirrored:
+		for i: int in range(points.size()):
+			points[i] = Vector3(-points[i].x * 1.15, -points[i].y, points[i].z)
 	var builder := SurfaceTool.new()
 	builder.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for index: int in range(points.size()-1):
@@ -195,7 +201,17 @@ func create_bolt(mode: String, tier: int) -> Node3D:
 			core = _part(root,"sphere",Vector3.ZERO,Vector3(0.065,0.065,0.25)*weight,"white")
 			_part(root,"sphere",Vector3(0,0,-0.32),Vector3(0.080,0.08,0.41)*weight,"kinetic").transparency = 0.23
 			_part(root,"sphere",Vector3(0,0,-0.62),Vector3(0.038,0.038,0.28)*weight,"kinetic").transparency = 0.46
+	# Shared AAA bolt dressing: additive halo around the core and, at
+	# masterwork tier, a spinning-ready stabilizing ring behind the head.
+	var halo := _part(root,"sphere",Vector3(0,0,-0.10),Vector3(0.17,0.17,0.42)*weight,mode)
+	halo.transparency = 0.52
+	halo.name = "Halo"
+	if rank >= 5:
+		var fin_ring := _part(root,"ring",Vector3(0,0,-0.30),Vector3.ONE*0.20*weight,"white")
+		fin_ring.rotation.x = PI*0.5
+		fin_ring.name = "FinRing"
 	core.name = "Core"
+	root.scale = Vector3.ONE*1.18
 	root.set_meta("mode",mode)
 	root.set_meta("tier",rank)
 	return root
@@ -242,6 +258,31 @@ func _emit(shape: String, material: Material, at: Vector3, size: Vector3, life: 
 	return entry
 
 
+func _flash_light(at: Vector3, color_key: String, energy: float, omni_range: float) -> void:
+	if low_effects: return
+	if flash_lights.is_empty():
+		for i: int in range(3):
+			var light := OmniLight3D.new()
+			light.light_energy = 0.0
+			light.shadow_enabled = false
+			light.omni_attenuation = 1.4
+			add_child(light)
+			flash_lights.append(light)
+	var best: OmniLight3D = flash_lights[0]
+	for light: OmniLight3D in flash_lights:
+		if light.light_energy < best.light_energy:
+			best = light
+	best.global_position = at
+	best.light_color = COLORS.get(color_key, Color(1, 0.7, 0.4))
+	best.light_energy = energy
+	best.omni_range = omni_range
+
+
+func trail_puff(at: Vector3, mode: String, scale_weight: float = 1.0) -> void:
+	if low_effects: return
+	_emit("sphere", _material(mode), at, Vector3.ONE * 0.105 * scale_weight, 0.14, "trail")
+
+
 func muzzle(at: Vector3, direction: Vector3, mode: String) -> void:
 	var strength := 1.30 if mode in ["plasma","scatter"] else 1.0
 	var flash := _emit("sphere",_material("white"),at,Vector3(0.12,0.12,0.27)*strength,0.07,"flash",true)
@@ -250,18 +291,42 @@ func muzzle(at: Vector3, direction: Vector3, mode: String) -> void:
 	if not low_effects:
 		var flare := _emit("sphere",_material(mode),at,Vector3.ONE*0.22*strength,0.11,"flash")
 		if not flare.is_empty(): flare.node.transparency=0.38
+		# Four-point star flare perpendicular to the shot direction.
+		var fwd0 := direction.normalized() if direction.length_squared()>0.001 else Vector3.BACK
+		var roll_q := Quaternion(fwd0, rng.randf_range(0.0, PI))
+		for blade: int in range(2):
+			var star := _emit("box",_material("white"),at,Vector3(0.62 if blade == 0 else 0.045, 0.045 if blade == 0 else 0.62, 0.03)*strength,0.05,"flash")
+			if not star.is_empty():
+				star.node.quaternion = Quaternion(Vector3.BACK,fwd0) * roll_q
+				star.node.transparency = 0.25
+		var forward := direction.normalized() if direction.length_squared()>0.001 else Vector3.BACK
+		var tongue := _emit("cone",_material(mode),at+forward*0.24,Vector3(0.15,0.52,0.15)*strength,0.055,"flash")
+		if not tongue.is_empty():
+			tongue.node.quaternion=Quaternion(Vector3.UP,forward)
+			tongue.node.transparency=0.15
+		_sparks(at+forward*0.12,forward,mode,4,0.85)
+	_flash_light(at,mode,1.5,4.5)
 
 
 func impact(at: Vector3, direction: Vector3, mode: String, strength: float = 1.0) -> void:
 	var weight := clampf(strength,0.55,2.2)
 	var forward := direction.normalized() if direction.length_squared()>0.001 else Vector3.BACK
 	_emit("sphere",_material("white"),at,Vector3.ONE*0.16*weight,0.085,"flash",true)
+	if at.y < 1.4 and not low_effects:
+		_emit("ring",_material(mode),Vector3(at.x,0.06,at.z),Vector3.ONE*0.14*weight,0.22,"impact_ring")
 	var flare := _emit("ring",_material(mode),at,Vector3.ONE*0.18*weight,0.17,"impact_ring",true)
 	if not flare.is_empty(): flare.node.quaternion=Quaternion(Vector3.UP,forward)
-	_sparks(at,-forward,mode,3 if low_effects else 7,weight)
+	_sparks(at,-forward,mode,5 if low_effects else 12,weight)
 	if not low_effects:
+		for chip_index: int in range(3):
+			var chip := _emit("box",_material(mode),at,Vector3.ONE*rng.randf_range(0.03,0.07)*weight,rng.randf_range(0.3,0.55),"debris")
+			if chip.is_empty(): break
+			chip.velocity=(-forward*rng.randf_range(0.8,2.0)+Vector3(rng.randf_range(-1.4,1.4),rng.randf_range(1.2,3.0),rng.randf_range(-1.4,1.4)))*weight
+			chip.spin=Vector3(rng.randf_range(-9,9),rng.randf_range(-9,9),rng.randf_range(-9,9))
+			chip.floor=0.03
 		var haze := _emit("sphere",_material("smoke"),at,Vector3.ONE*0.17,0.35,"smoke")
 		if not haze.is_empty(): haze.velocity=Vector3.UP*0.55
+	_flash_light(at,mode,2.0*weight,5.0)
 
 
 func _sparks(at: Vector3, direction: Vector3, mode: String, count: int, strength: float) -> void:
@@ -278,14 +343,20 @@ func arc_link(from: Vector3, to: Vector3, tier: int = 1) -> void:
 	if direction.length_squared()<0.002: return
 	var breadth := clampf(direction.length()*0.12,0.65,1.3)
 	var size := Vector3(breadth,breadth,direction.length())
-	var core := _emit("arc_core",_material("white"),from,size,0.12,"arc",true)
+	var variant: String = "2" if rng.randf() < 0.5 else ""
+	var core := _emit("arc_core" + variant,_material("white"),from,size,0.12,"arc",true)
 	if not core.is_empty(): core.node.quaternion=Quaternion(Vector3.BACK,direction.normalized())
-	var glow := _emit("arc_glow",_material("arc"),from,size,0.17,"arc",true)
+	var glow := _emit("arc_glow" + variant,_material("arc"),from,size,0.17,"arc",true)
 	if not glow.is_empty():
 		glow.node.quaternion=Quaternion(Vector3.BACK,direction.normalized())
 		glow.node.transparency=0.45
+	# Endpoint discharge globes sell where the ray lands.
+	_emit("sphere",_material("white"),to,Vector3.ONE*0.13,0.09,"flash",true)
+	if not low_effects:
+		var halo := _emit("sphere",_material("arc"),to,Vector3.ONE*0.24,0.13,"flash")
+		if not halo.is_empty(): halo.node.transparency=0.5
 	if tier>=3 and not low_effects:
-		var braid := _emit("arc_core",_material("arc"),from,size,0.14,"arc")
+		var braid := _emit("arc_core" + ("2" if variant.is_empty() else ""),_material("arc"),from,size,0.14,"arc")
 		if not braid.is_empty():
 			braid.node.quaternion=Quaternion(Vector3.BACK,direction.normalized())*Quaternion(Vector3.BACK,2.3)
 
@@ -419,8 +490,19 @@ func destroy_enemy(model: Node3D, at: Vector3, kind: String, direction: Vector3)
 	var center := at+Vector3.UP*(1.2 if kind=="boss" else 0.65)
 	_emit("sphere",_material("white"),center,Vector3.ONE*0.48*size,0.12,"flash",true)
 	_emit("sphere",_material(color),center,Vector3.ONE*0.65*size,0.24,"burst",true)
-	_emit("ring",_material(color),at+Vector3.UP*0.07,Vector3.ONE*0.25,0.38,"shock",true)
-	_sparks(center,Vector3.UP,color,6 if low_effects else 18,size)
+	_emit("ring",_material(color),at+Vector3.UP*0.07,Vector3.ONE*0.25*size,0.38,"shock",true)
+	_emit("ring",_material("white"),at+Vector3.UP*0.09,Vector3.ONE*0.16*size,0.26,"shock",true)
+	var pillar := _emit("cone",_material(color),center+Vector3.UP*0.35*size,Vector3(0.30,0.85,0.30)*size,0.20,"burst",true)
+	if not pillar.is_empty(): pillar.node.transparency=0.35
+	_sparks(center,Vector3.UP,color,int((10.0 if low_effects else 26.0)*size),size)
+	_flash_light(center,color,5.0*size,7.0*size)
+	if not low_effects:
+		for shard_index: int in range(6):
+			var shard := _emit("armor",_material(color),center,Vector3.ONE*rng.randf_range(0.06,0.15)*size,rng.randf_range(0.5,0.95),"debris")
+			if shard.is_empty(): break
+			var burst_dir := Vector3(rng.randf_range(-1,1),rng.randf_range(0.3,1.0),rng.randf_range(-1,1)).normalized()
+			shard.velocity=(burst_dir*rng.randf_range(2.0,4.2)+direction*1.2)*size
+			shard.spin=Vector3(rng.randf_range(-8,8),rng.randf_range(-8,8),rng.randf_range(-8,8))
 	var candidates: Array[MeshInstance3D] = []
 	_collect_parts(model,candidates)
 	candidates.sort_custom(func(a: MeshInstance3D,b: MeshInstance3D) -> bool:
@@ -502,6 +584,9 @@ func damage_number(at: Vector3, amount: float, shielded: bool = false) -> void:
 func update(delta: float) -> void:
 	if delta<=0.0: return
 	elapsed += delta
+	for light: OmniLight3D in flash_lights:
+		light.light_energy *= exp(-15.0*delta)
+		if light.light_energy < 0.02: light.light_energy = 0.0
 	for index: int in range(numbers.size()-1,-1,-1):
 		var entry: Dictionary = numbers[index]
 		entry.life -= delta
@@ -533,7 +618,7 @@ func update(delta: float) -> void:
 				node.scale=entry.base*(1.0+progress*2.6)
 				node.transparency=progress
 			"shock":
-				node.scale=Vector3.ONE*lerpf(0.25,2.2,1.0-pow(1.0-progress,2.0))
+				node.scale=Vector3.ONE*lerpf(0.25,2.2,1.0-pow(1.0-progress,2.0))*(entry.base.x/0.25)
 				node.transparency=progress
 			"burst":
 				node.scale=entry.base*(1.0+progress*0.85)
@@ -549,6 +634,9 @@ func update(delta: float) -> void:
 				node.transparency=progress
 			"arc":
 				node.transparency=clampf(progress*0.9,0.0,1.0)
+			"trail":
+				node.scale=entry.base*(1.0-progress*0.55)
+				node.transparency=0.25+progress*0.75
 			"ghost":
 				node.transparency=progress*0.85
 				node.scale=entry.base*(1.0+progress*0.06)
